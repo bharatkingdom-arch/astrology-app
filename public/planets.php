@@ -2,7 +2,7 @@
 
 echo "<h2>Swiss Ephemeris Test</h2>";
 
-$cmd = "cd /app/swisseph && make swetest 2>&1";
+$cmd = "/app/swisseph/swetest -p0123456789 -eswe -b1.1.2024 -ut0:0 2>&1";
 
 $output = [];
 $return = 0;
