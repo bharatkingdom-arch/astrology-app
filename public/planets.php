@@ -2,47 +2,30 @@
 
 echo "<h2>Swiss Ephemeris Planet Positions</h2>";
 
-/*
------------------------------------------
-CONFIG
------------------------------------------
-*/
+$swisseph = "/app/swisseph";
+$swetest  = "/app/swisseph/swetest";
+$ephe     = "/app/ephemeris";
 
-$swetest = "/app/swisseph/swetest";
-$ephe    = "/app/ephemeris";
+/* ------------------------------------------------
+   STEP 1 : Always compile swetest on Railway
+------------------------------------------------ */
 
-/*
------------------------------------------
-COMPILE SWETEST IF NOT EXISTS
------------------------------------------
-*/
+$compile = "cd $swisseph && make clean && make swetest 2>&1";
 
-if (!file_exists($swetest)) {
+$compile_output = [];
+exec($compile, $compile_output);
 
-    echo "<b>Compiling Swiss Ephemeris...</b><br>";
+echo "<h3>Compile Output</h3>";
+echo "<pre>";
+print_r($compile_output);
+echo "</pre>";
 
-    $compile = "cd /app/swisseph && make clean && make swetest 2>&1";
-    exec($compile, $compile_output);
-
-    echo "<pre>";
-    print_r($compile_output);
-    echo "</pre>";
-}
-
-/*
------------------------------------------
-DATE INPUT
------------------------------------------
-*/
+/* ------------------------------------------------
+   STEP 2 : Run swetest
+------------------------------------------------ */
 
 $date = "1.1.2024";
 $time = "0:0";
-
-/*
------------------------------------------
-RUN SWETEST
------------------------------------------
-*/
 
 $cmd = "$swetest -edir$ephe -p0123456789 -eswe -b$date -ut$time 2>&1";
 
@@ -51,11 +34,9 @@ $return = 0;
 
 exec($cmd, $output, $return);
 
-/*
------------------------------------------
-PARSE PLANET DATA
------------------------------------------
-*/
+/* ------------------------------------------------
+   STEP 3 : Parse planets
+------------------------------------------------ */
 
 $planets = [];
 
@@ -72,11 +53,9 @@ foreach ($output as $line) {
     }
 }
 
-/*
------------------------------------------
-DISPLAY RESULT
------------------------------------------
-*/
+/* ------------------------------------------------
+   STEP 4 : Display table
+------------------------------------------------ */
 
 echo "<table border='1' cellpadding='6'>";
 echo "<tr><th>Planet</th><th>Longitude</th></tr>";
@@ -91,13 +70,7 @@ foreach ($planets as $planet => $lon) {
 
 echo "</table>";
 
-/*
------------------------------------------
-DEBUG OUTPUT
------------------------------------------
-*/
-
-echo "<br><h3>Raw Output</h3>";
+echo "<h3>Raw Output</h3>";
 
 echo "<pre>";
 print_r($output);
