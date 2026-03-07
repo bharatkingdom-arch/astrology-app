@@ -1,23 +1,104 @@
 <?php
 
-echo "<h2>Swiss Ephemeris Test</h2>";
+echo "<h2>Swiss Ephemeris Planet Positions</h2>";
 
-$compile = "cd /app/swisseph && make clean && make swetest 2>&1";
-exec($compile, $compile_output);
+/*
+-----------------------------------------
+CONFIG
+-----------------------------------------
+*/
 
-echo "<h3>Compile output</h3>";
-echo "<pre>";
-print_r($compile_output);
-echo "</pre>";
+$swetest = "/app/swisseph/swetest";
+$ephe    = "/app/ephemeris";
 
-$cmd = "/app/swisseph/swetest -p0123456789 -eswe -b1.1.2024 -ut0:0 2>&1";
+/*
+-----------------------------------------
+COMPILE SWETEST IF NOT EXISTS
+-----------------------------------------
+*/
+
+if (!file_exists($swetest)) {
+
+    echo "<b>Compiling Swiss Ephemeris...</b><br>";
+
+    $compile = "cd /app/swisseph && make clean && make swetest 2>&1";
+    exec($compile, $compile_output);
+
+    echo "<pre>";
+    print_r($compile_output);
+    echo "</pre>";
+}
+
+/*
+-----------------------------------------
+DATE INPUT
+-----------------------------------------
+*/
+
+$date = "1.1.2024";
+$time = "0:0";
+
+/*
+-----------------------------------------
+RUN SWETEST
+-----------------------------------------
+*/
+
+$cmd = "$swetest -edir$ephe -p0123456789 -eswe -b$date -ut$time 2>&1";
 
 $output = [];
 $return = 0;
 
 exec($cmd, $output, $return);
 
-echo "<h3>Swetest output</h3>";
+/*
+-----------------------------------------
+PARSE PLANET DATA
+-----------------------------------------
+*/
+
+$planets = [];
+
+foreach ($output as $line) {
+
+    if (preg_match('/^(Sun|Moon|Mercury|Venus|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto)/', $line)) {
+
+        $parts = preg_split('/\s+/', trim($line));
+
+        $planet = $parts[0];
+        $longitude = $parts[1];
+
+        $planets[$planet] = $longitude;
+    }
+}
+
+/*
+-----------------------------------------
+DISPLAY RESULT
+-----------------------------------------
+*/
+
+echo "<table border='1' cellpadding='6'>";
+echo "<tr><th>Planet</th><th>Longitude</th></tr>";
+
+foreach ($planets as $planet => $lon) {
+
+    echo "<tr>";
+    echo "<td>$planet</td>";
+    echo "<td>$lon</td>";
+    echo "</tr>";
+}
+
+echo "</table>";
+
+/*
+-----------------------------------------
+DEBUG OUTPUT
+-----------------------------------------
+*/
+
+echo "<br><h3>Raw Output</h3>";
+
 echo "<pre>";
 print_r($output);
 echo "</pre>";
