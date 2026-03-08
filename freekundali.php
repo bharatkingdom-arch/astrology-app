@@ -38,7 +38,7 @@ if (isset($_POST['generate'])) {
         // ==========================
         // CALL ASTRO API
         // ==========================
-        $apiUrl = "http://localhost/astroapi/calculate.php?date={$date}&time={$time}";
+        $apiUrl = "https://astrology-app-4htr.onrender.com/api/calculate.php?date={$date}&time={$time}";
         $response = @file_get_contents($apiUrl);
 
         if ($response === FALSE) {
