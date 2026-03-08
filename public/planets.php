@@ -2,9 +2,7 @@
 
 echo "<h2>Swiss Ephemeris Test</h2>";
 
-$swetest = __DIR__ . "/../swisseph/swetest";
-
-$cmd = "$swetest -edir=" . __DIR__ . "/../ephemeris -b1.1.2000 -p0123456789 -fPl";
+$cmd = "/app/swisseph/swetest -edir=/app/ephemeris -b1.1.2000 -p0123456789 -fPl";
 
 $output = [];
 $return = 0;
