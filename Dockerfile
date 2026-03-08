@@ -2,10 +2,12 @@ FROM php:8.2-cli
 
 WORKDIR /app
 
-COPY . /app
+COPY . .
 
 RUN chmod +x swisseph/swetest
 
-EXPOSE 10000
+ENV PORT=8080
 
-CMD ["php", "-S", "0.0.0.0:10000"]
+EXPOSE 8080
+
+CMD php -S 0.0.0.0:$PORT
