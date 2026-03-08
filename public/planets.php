@@ -2,6 +2,11 @@
 
 echo "<h2>Swiss Ephemeris Test</h2>";
 
+/* DEBUG: show files inside container */
+echo "<pre>";
+print_r(scandir("/app/ephemeris"));
+echo "</pre>";
+
 $cmd = "/app/swisseph/swetest -edir=/app/ephemeris -b1.1.2000 -p0123456789 -fPl";
 
 $output = [];
