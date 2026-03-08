@@ -7,7 +7,7 @@ echo "<pre>";
 print_r(scandir("/app/ephemeris"));
 echo "</pre>";
 
-$cmd = "/app/swisseph/swetest -edir=/app/ephemeris -b1.1.2000 -p0123456789 -fPl";
+$cmd = "/app/swisseph/swetest -edir=/app/ephemeris/ -b1.1.2000 -p0123456789 -fPl";
 
 $output = [];
 $return = 0;
