@@ -64,9 +64,8 @@ $utTime = $dt->format("H:i");
 // SWISS EPHEMERIS PATH
 // ==========================
 
-$swetestPath = "/usr/local/swisseph/swetest";
-$ephePath    = "/usr/local/swisseph/ephe";
-
+$swetestPath = "/app/swisseph/swetest";
+$ephePath    = "/app/ephemeris";
 // ==========================
 // PLANETS COMMAND
 // ==========================
