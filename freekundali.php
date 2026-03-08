@@ -38,8 +38,19 @@ if (isset($_POST['generate'])) {
         // ==========================
         // CALL ASTRO API
         // ==========================
-        $apiUrl = "https://astrology-app-4htr.onrender.com/api/calculate.php?date={$date}&time={$time}";
-        $response = @file_get_contents($apiUrl);
+
+       $lat = 17.385;
+       $lon = 78.486;
+       $timezone = 5.5;
+
+       $apiUrl = "https://astrology-app-720155568345.asia-south1.run.app/public/api/calculate.php"
+        . "?date={$date}"
+        . "&time={$time}"
+        . "&lat={$lat}"
+        . "&lon={$lon}"
+        . "&timezone={$timezone}";
+
+         $response = @file_get_contents($apiUrl);
 
         if ($response === FALSE) {
             $error = "Unable to connect to astrology engine.";
