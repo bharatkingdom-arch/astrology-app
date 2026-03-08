@@ -1,25 +1,27 @@
 <?php
 
-require_once "../../engine/PlanetEngine.php";
+echo "<h2>Swiss Ephemeris Test</h2>";
 
-header("Content-Type: application/json");
+$swetest = __DIR__ . "/../swisseph/swetest";
 
-$date = $_GET['date'] ?? null;
-$time = $_GET['time'] ?? null;
-
-if (!$date || !$time) {
-
-    echo json_encode([
-        "status" => "error",
-        "message" => "date or time missing"
-    ]);
-
-    exit;
+/* compile swetest if not exists */
+if (!file_exists($swetest)) {
+    echo "<b>Compiling Swiss Ephemeris...</b><br>";
+    shell_exec("cd ../swisseph && make swetest");
 }
 
-$planets = PlanetEngine::getPlanets($date, $time);
+/* run swetest */
+$cmd = "$swetest -edir ../ephemeris -b1.1.2000 -p0123456789 -fPl";
 
-echo json_encode([
-    "status" => "success",
-    "planets" => $planets
-]);
+$output = [];
+$return = 0;
+
+exec($cmd . " 2>&1", $output, $return);
+
+echo "<pre>";
+print_r($output);
+echo "</pre>";
+
+echo "<br>Return code: $return";
+
+?>
