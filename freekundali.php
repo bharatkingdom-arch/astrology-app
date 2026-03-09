@@ -46,20 +46,27 @@ if (isset($_POST['generate'])) {
         $ch = curl_init($apiUrl);
 
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
 $response = curl_exec($ch);
 
-        if ($response === false) {
-            $error = "Unable to connect to astrology engine.";
-        } else {
+if ($response === false) {
 
-            $data = json_decode($response, true);
+    $error = "Unable to connect to astrology engine.";
 
-            if (!isset($data['status']) || $data['status'] !== 'success') {
-                $error = "Astrology calculation failed.";
-            } else {
+} else {
 
+    $data = json_decode($response, true);
+
+    if (!isset($data['status']) || $data['status'] !== 'success') {
+        $error = "Astrology calculation failed.";
+    } else {
+
+        $planets = $data['planets'] ?? [];
+        $houses  = $data['houses'] ?? [];
                 $planets = $data['planets'] ?? [];
                 $houses  = $data['houses'] ?? [];
                 $lagna = $data['houses']['Ascendant']['decimal'] ?? null;
