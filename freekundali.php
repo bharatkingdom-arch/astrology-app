@@ -46,29 +46,17 @@ if (isset($_POST['generate'])) {
         $lon = 78.486;
         $timezone = 5.5;
 
-        $apiUrl = "http://localhost:8080/public/api/calculate.php"
-            . "?date={$date}"
-            . "&time={$time}"
-            . "&lat={$lat}"
-            . "&lon={$lon}"
-            . "&timezone={$timezone}";
+        $_GET['date'] = $date;
+$_GET['time'] = $time;
+$_GET['lat'] = 17.385;
+$_GET['lon'] = 78.486;
+$_GET['timezone'] = 5.5;
 
-        // ==========================
-        // CALL API USING CURL
-        // ==========================
+ob_start();
+require __DIR__ . '/public/api/calculate.php';
+$response = ob_get_clean();
 
-        $ch = curl_init();
-
-curl_setopt_array($ch, [
-    CURLOPT_URL => $apiUrl,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_CONNECTTIMEOUT => 10,
-    CURLOPT_TIMEOUT => 20,
-    CURLOPT_SSL_VERIFYPEER => false,
-    CURLOPT_SSL_VERIFYHOST => false
-]);
-
-$response = curl_exec($ch);
+$data = json_decode($response, true);
 echo "<pre>";
 echo $apiUrl;
 echo "\n\n";
