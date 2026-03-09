@@ -1,3 +1,4 @@
+```php
 <?php
 session_start();
 
@@ -39,80 +40,61 @@ if (isset($_POST['generate'])) {
         $time = $datetime->format('H:i');
 
         // ==========================
-        // ASTRO API PARAMETERS
+        // CALL CALCULATION ENGINE
         // ==========================
 
-        $lat = 17.385;
-        $lon = 78.486;
-        $timezone = 5.5;
-
         $_GET['date'] = $date;
-$_GET['time'] = $time;
-$_GET['lat'] = 17.385;
-$_GET['lon'] = 78.486;
-$_GET['timezone'] = 5.5;
+        $_GET['time'] = $time;
+        $_GET['lat'] = 17.385;
+        $_GET['lon'] = 78.486;
+        $_GET['timezone'] = 5.5;
 
-ob_start();
-require __DIR__ . '/public/api/calculate.php';
-$response = ob_get_clean();
+        ob_start();
+        require __DIR__ . '/public/api/calculate.php';
+        $response = ob_get_clean();
 
-$data = json_decode($response, true);
+        $data = json_decode($response, true);
 
-if (curl_errno($ch)) {
-    $error = curl_error($ch);
-}
+        if (!$data || !isset($data['status']) || $data['status'] !== 'success') {
 
-        if ($response === false) {
-
-            $error = "Unable to connect to astrology engine.";
+            $error = "Astrology calculation failed.";
 
         } else {
 
-            $data = json_decode($response, true);
+            $planets = $data['planets'];
 
-            if (!isset($data['status']) || $data['status'] !== 'success') {
+            // ==========================
+            // JULIAN DAY
+            // ==========================
 
-                $error = "Astrology calculation failed.";
+            $jd = $datetime->getTimestamp() / 86400 + 2440587.5;
 
-            } else {
+            // ==========================
+            // PANCHANGA
+            // ==========================
 
-                $planets = $data['planets'];
+            $panchanga = Panchanga::calculate(
+                $planets['Sun']['decimal'],
+                $planets['Moon']['decimal'],
+                $jd
+            );
 
-                // ==========================
-                // JULIAN DAY
-                // ==========================
+            // ==========================
+            // STORE SESSION DATA
+            // ==========================
 
-                $jd = $datetime->getTimestamp() / 86400 + 2440587.5;
+            $_SESSION['kundli_data'] = [
+                'name' => $_POST['name'] ?? '',
+                'gender' => $_POST['gender'] ?? '',
+                'date' => "{$day}-{$month}-{$year}",
+                'time' => "{$hour}:{$minute}:{$second}",
+                'planets' => $planets,
+                'panchanga' => $panchanga
+            ];
 
-                // ==========================
-                // PANCHANGA
-                // ==========================
-
-                $panchanga = Panchanga::calculate(
-                    $planets['Sun']['decimal'],
-                    $planets['Moon']['decimal'],
-                    $jd
-                );
-
-                // ==========================
-                // STORE SESSION DATA
-                // ==========================
-
-                $_SESSION['kundli_data'] = [
-                    'name' => $_POST['name'] ?? '',
-                    'gender' => $_POST['gender'] ?? '',
-                    'date' => "{$day}-{$month}-{$year}",
-                    'time' => "{$hour}:{$minute}:{$second}",
-                    'planets' => $planets,
-                    'panchanga' => $panchanga
-                ];
-
-                header("Location: kundli-details.php");
-                exit;
-            }
+            header("Location: kundli-details.php");
+            exit;
         }
-
-        curl_close($ch);
 
     } else {
 
@@ -196,3 +178,4 @@ Generate Horoscope
 </section>
 
 <?php require 'bottom.php'; ?>
+```
