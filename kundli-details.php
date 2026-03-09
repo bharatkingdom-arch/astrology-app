@@ -2,10 +2,10 @@
 
 
 <?php
+session_start();
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
-session_start();
 
 /* ================= LOAD SESSION ================= */
 $data = $_SESSION['kundli_data'] ?? null;
@@ -17,11 +17,10 @@ if (!$data || empty($data['planets'])) {
 
 $panchanga = $data['panchanga'] ?? [];
 $planets   = $data['planets'] ?? [];
-$houses    = $data['houses'] ?? [];   // ✅ ADDED
+$houses    = $data['houses'] ?? [];
 
 require 'header.php';
 ?>
-
 <style>
 
 /* ================= TABS ================= */
