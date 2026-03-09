@@ -24,7 +24,10 @@ if (isset($_POST['generate'])) {
         $minute = str_pad($minute, 2, '0', STR_PAD_LEFT);
         $second = str_pad($second, 2, '0', STR_PAD_LEFT);
 
-        // Convert IST → UTC
+        // ==========================
+        // CONVERT IST → UTC
+        // ==========================
+
         $datetime = new DateTime(
             "{$year}-{$month}-{$day} {$hour}:{$minute}:{$second}",
             new DateTimeZone('Asia/Kolkata')
@@ -36,44 +39,44 @@ if (isset($_POST['generate'])) {
         $time = $datetime->format('H:i');
 
         // ==========================
-        // CALL ASTRO API
+        // ASTRO API PARAMETERS
         // ==========================
 
-       $lat = 17.385;
-       $lon = 78.486;
-       $timezone = 5.5;
+        $lat = 17.385;
+        $lon = 78.486;
+        $timezone = 5.5;
 
-       $apiUrl = "https://astrology-app-720155568345.asia-south1.run.app/public/api/calculate.php"
-        . "?date={$date}"
-        . "&time={$time}"
-        . "&lat={$lat}"
-        . "&lon={$lon}"
-        . "&timezone={$timezone}";
+        $apiUrl = "https://astrology-app-720155568345.asia-south1.run.app/public/api/calculate.php"
+            . "?date={$date}"
+            . "&time={$time}"
+            . "&lat={$lat}"
+            . "&lon={$lon}"
+            . "&timezone={$timezone}";
 
-         $ch = curl_init($apiUrl);
+        // ==========================
+        // CALL API USING CURL
+        // ==========================
 
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+        $ch = curl_init($apiUrl);
 
-$response = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
 
-if ($response === false) {
-    $error = "Unable to connect to astrology engine.";
-} else {
-    $data = json_decode($response, true);
-}
+        $response = curl_exec($ch);
 
-curl_close($ch);
+        if ($response === false) {
 
-        if ($response === FALSE) {
             $error = "Unable to connect to astrology engine.";
+
         } else {
 
             $data = json_decode($response, true);
 
             if (!isset($data['status']) || $data['status'] !== 'success') {
+
                 $error = "Astrology calculation failed.";
+
             } else {
 
                 $planets = $data['planets'];
@@ -81,20 +84,23 @@ curl_close($ch);
                 // ==========================
                 // JULIAN DAY
                 // ==========================
+
                 $jd = $datetime->getTimestamp() / 86400 + 2440587.5;
 
                 // ==========================
                 // PANCHANGA
                 // ==========================
+
                 $panchanga = Panchanga::calculate(
-    $planets['Sun']['decimal'],
-    $planets['Moon']['decimal'],
-    $jd
-);
+                    $planets['Sun']['decimal'],
+                    $planets['Moon']['decimal'],
+                    $jd
+                );
 
                 // ==========================
                 // STORE SESSION DATA
                 // ==========================
+
                 $_SESSION['kundli_data'] = [
                     'name' => $_POST['name'] ?? '',
                     'gender' => $_POST['gender'] ?? '',
@@ -109,8 +115,12 @@ curl_close($ch);
             }
         }
 
+        curl_close($ch);
+
     } else {
+
         $error = "Please enter valid birth date.";
+
     }
 }
 ?>
