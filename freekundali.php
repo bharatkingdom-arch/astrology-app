@@ -50,11 +50,17 @@ if (isset($_POST['generate'])) {
         $_GET['timezone'] = 5.5;
 
         ob_start();
-        require __DIR__ . '/public/api/calculate.php';
-        $response = ob_get_clean();
+require __DIR__ . '/public/api/calculate.php';
+$response = ob_get_clean();
 
-        $response = trim($response);
-        $data = json_decode($response, true);
+/* remove anything before JSON */
+$jsonStart = strpos($response, '{');
+
+if ($jsonStart !== false) {
+    $response = substr($response, $jsonStart);
+}
+
+$data = json_decode($response, true);
 
         if (!$data || !isset($data['status']) || $data['status'] !== 'success') {
 
