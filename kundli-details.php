@@ -10,6 +10,7 @@ if (!$data) {
 
 $panchanga = $data['panchanga'] ?? [];
 $planets   = $data['planets'] ?? [];
+$houses    = $data['houses'] ?? [];   // ADD THIS
 ?>
 
 <?php require 'header.php'; ?>
@@ -146,6 +147,42 @@ $planets   = $data['planets'] ?? [];
 </table>
 
 </div>
+
+<?php if (!empty($houses)): ?>
+
+<div class="table-box" style="background:#fdf7e6;">
+
+<h4>House Cusps (Placidus)</h4>
+
+<table>
+
+<tr>
+<th>House</th>
+<th>Degree (DMS)</th>
+</tr>
+
+<?php for ($i=1; $i<=12; $i++): ?>
+<tr>
+<td>House <?php echo $i; ?></td>
+<td><?php echo htmlspecialchars($houses["House $i"]['dms'] ?? ''); ?></td>
+</tr>
+<?php endfor; ?>
+
+<tr>
+<td><strong>Ascendant</strong></td>
+<td><?php echo htmlspecialchars($houses["Ascendant"]['dms'] ?? ''); ?></td>
+</tr>
+
+<tr>
+<td><strong>MC</strong></td>
+<td><?php echo htmlspecialchars($houses["MC"]['dms'] ?? ''); ?></td>
+</tr>
+
+</table>
+
+</div>
+
+<?php endif; ?>
 
 <!-- ================= PANCHANGA ================= -->
 
