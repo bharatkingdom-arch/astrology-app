@@ -57,11 +57,6 @@ require __DIR__ . '/public/api/calculate.php';
 $response = ob_get_clean();
 
 $data = json_decode($response, true);
-echo "<pre>";
-echo $apiUrl;
-echo "\n\n";
-echo $response;
-exit;
 
 if (curl_errno($ch)) {
     $error = curl_error($ch);
