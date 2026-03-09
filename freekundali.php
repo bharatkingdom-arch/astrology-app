@@ -33,48 +33,36 @@ if (isset($_POST['generate'])) {
         );
 
         $lat = floatval($_POST['latitude'] ?? 0);
-$lon = floatval($_POST['longitude'] ?? 0);
-$timezone = 5.5;
+        $lon = floatval($_POST['longitude'] ?? 0);
+        $timezone = 5.5;
 
-if ($lat == 0 || $lon == 0) {
-    $error = "Please select birth place from suggestions.";
-}
+        if ($lat == 0 || $lon == 0) {
+            $error = "Please select birth place from suggestions.";
+        }
 
-        $apiUrl = "https://astrology-app-720155568345.asia-south1.run.app/public/api/calculate.php"
-            . "?date={$date}"
-            . "&time={$time}"
-            . "&lat={$lat}"
-            . "&lon={$lon}"
-            . "&timezone={$timezone}";
-            
+        if (!$error) {
 
-        $ch = curl_init($apiUrl);
+            $_GET['date'] = $date;
+            $_GET['time'] = $time;
+            $_GET['lat'] = $lat;
+            $_GET['lon'] = $lon;
+            $_GET['timezone'] = $timezone;
 
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            ob_start();
+            require __DIR__ . '/public/api/calculate.php';
+            $response = ob_get_clean();
 
-$response = curl_exec($ch);
+            $data = json_decode($response, true);
 
-if ($response === false) {
+            if (!isset($data['status']) || $data['status'] !== 'success') {
 
-    $error = "Unable to connect to astrology engine.";
+                $error = "Astrology calculation failed.";
 
-} else {
+            } else {
 
-    $data = json_decode($response, true);
-
-    if (!isset($data['status']) || $data['status'] !== 'success') {
-        $error = "Astrology calculation failed.";
-    } else {
-
-        
-    
                 $planets = $data['planets'] ?? [];
                 $houses  = $data['houses'] ?? [];
-                $lagna = $data['houses']['Ascendant']['decimal'] ?? null;
+                $lagna = $houses['Ascendant']['decimal'] ?? null;
 
                 $jd = $datetime->getTimestamp() / 86400 + 2440587.5;
 
@@ -154,7 +142,7 @@ if ($response === false) {
 
 <label>Birth Place*</label>
 
-<input type="text" id="birth_place" name="birthplace" required>
+<input type="text" id="birth_place" name="birthplace" placeholder="Enter a location" required>
 
 <input type="hidden" id="latitude" name="latitude">
 <input type="hidden" id="longitude" name="longitude">
