@@ -5,7 +5,7 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require_once 'engine/Panchanga.php';
+require_once __DIR__ . '/engine/Panchanga.php';
 
 $error = null;
 $planets = [];
@@ -53,6 +53,7 @@ if (isset($_POST['generate'])) {
         require __DIR__ . '/public/api/calculate.php';
         $response = ob_get_clean();
 
+        $response = trim($response);
         $data = json_decode($response, true);
 
         if (!$data || !isset($data['status']) || $data['status'] !== 'success') {
