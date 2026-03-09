@@ -36,7 +36,7 @@ if (isset($_POST['generate'])) {
         $lon = floatval($_POST['longitude'] ?? 0);
         $timezone = 5.5;
 
-        $apiUrl = "https://astroloak.com/astroapi/calculate.php"
+        $apiUrl = "https://astrology-app-720155568345.asia-south1.run.app/public/api/calculate.php"
             . "?date={$date}"
             . "&time={$time}"
             . "&lat={$lat}"
