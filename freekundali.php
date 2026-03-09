@@ -46,8 +46,7 @@ if ($lat == 0 || $lon == 0) {
             . "&lat={$lat}"
             . "&lon={$lon}"
             . "&timezone={$timezone}";
-            echo $apiUrl;
-exit;
+            
 
         $ch = curl_init($apiUrl);
 
@@ -71,8 +70,8 @@ if ($response === false) {
         $error = "Astrology calculation failed.";
     } else {
 
-        $planets = $data['planets'] ?? [];
-        $houses  = $data['houses'] ?? [];
+        
+    
                 $planets = $data['planets'] ?? [];
                 $houses  = $data['houses'] ?? [];
                 $lagna = $data['houses']['Ascendant']['decimal'] ?? null;
