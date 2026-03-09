@@ -1,4 +1,3 @@
-```php
 <?php
 session_start();
 
@@ -25,87 +24,69 @@ if (isset($_POST['generate'])) {
         $minute = str_pad($minute, 2, '0', STR_PAD_LEFT);
         $second = str_pad($second, 2, '0', STR_PAD_LEFT);
 
-        // ==========================
-        // CONVERT IST → UTC
-        // ==========================
+        $date = sprintf("%02d.%02d.%04d", $day, $month, $year);
+        $time = sprintf("%02d:%02d", $hour, $minute);
 
         $datetime = new DateTime(
             "{$year}-{$month}-{$day} {$hour}:{$minute}:{$second}",
             new DateTimeZone('Asia/Kolkata')
         );
 
-        $datetime->setTimezone(new DateTimeZone('UTC'));
+        $lat = floatval($_POST['latitude'] ?? 0);
+        $lon = floatval($_POST['longitude'] ?? 0);
+        $timezone = 5.5;
 
-        $date = $datetime->format('d.m.Y');
-        $time = $datetime->format('H:i');
+        $apiUrl = "https://astroloak.com/astroapi/calculate.php"
+            . "?date={$date}"
+            . "&time={$time}"
+            . "&lat={$lat}"
+            . "&lon={$lon}"
+            . "&timezone={$timezone}";
 
-        // ==========================
-        // CALL ASTRO ENGINE
-        // ==========================
+        $response = file_get_contents($apiUrl);
 
-        $_GET['date'] = $date;
-        $_GET['time'] = $time;
-        $_GET['lat'] = 17.385;
-        $_GET['lon'] = 78.486;
-        $_GET['timezone'] = 5.5;
-
-        ob_start();
-        require __DIR__ . '/public/api/calculate.php';
-        $response = ob_get_clean();
-
-        // remove garbage before JSON
-        $jsonStart = strpos($response, '{');
-        if ($jsonStart !== false) {
-            $response = substr($response, $jsonStart);
-        }
-
-        $data = json_decode($response, true);
-
-        if (!$data || !isset($data['status']) || $data['status'] !== 'success') {
-
-            $error = "Astrology calculation failed.";
-
+        if ($response === false) {
+            $error = "Unable to connect to astrology engine.";
         } else {
 
-            $planets = $data['planets'];
+            $data = json_decode($response, true);
 
-            // ==========================
-            // JULIAN DAY
-            // ==========================
+            if (!isset($data['status']) || $data['status'] !== 'success') {
+                $error = "Astrology calculation failed.";
+            } else {
 
-            $jd = $datetime->getTimestamp() / 86400 + 2440587.5;
+                $planets = $data['planets'] ?? [];
+                $houses  = $data['houses'] ?? [];
+                $lagna = $data['houses']['Ascendant']['decimal'] ?? null;
 
-            // ==========================
-            // PANCHANGA
-            // ==========================
+                $jd = $datetime->getTimestamp() / 86400 + 2440587.5;
 
-            $panchanga = Panchanga::calculate(
-                $planets['Sun']['decimal'],
-                $planets['Moon']['decimal'],
-                $jd
-            );
+                $panchanga = Panchanga::calculate(
+                    $planets['Sun']['decimal'] ?? 0,
+                    $planets['Moon']['decimal'] ?? 0,
+                    $jd
+                );
 
-            // ==========================
-            // STORE SESSION DATA
-            // ==========================
+                $_SESSION['kundli_data'] = [
+                    'name' => $_POST['name'] ?? '',
+                    'gender' => $_POST['gender'] ?? '',
+                    'date' => "{$day}-{$month}-{$year}",
+                    'time' => "{$hour}:{$minute}:{$second}",
+                    'latitude' => $lat,
+                    'longitude' => $lon,
+                    'planets' => $planets,
+                    'houses' => $houses,
+                    'panchanga' => $panchanga,
+                    'lagna' => $lagna
+                ];
 
-            $_SESSION['kundli_data'] = [
-                'name' => $_POST['name'] ?? '',
-                'gender' => $_POST['gender'] ?? '',
-                'date' => "{$day}-{$month}-{$year}",
-                'time' => "{$hour}:{$minute}:{$second}",
-                'planets' => $planets,
-                'panchanga' => $panchanga
-            ];
-
-            header("Location: kundli-details.php");
-            exit;
+                header("Location: kundli-details.php");
+                exit;
+            }
         }
 
     } else {
-
         $error = "Please enter valid birth date.";
-
     }
 }
 ?>
@@ -155,7 +136,11 @@ if (isset($_POST['generate'])) {
 </div>
 
 <label>Birth Place*</label>
-<input type="text" name="birthplace" required>
+
+<input type="text" id="birth_place" name="birthplace" required>
+
+<input type="hidden" id="latitude" name="latitude">
+<input type="hidden" id="longitude" name="longitude">
 
 <button type="submit" name="generate" class="generate-btn">
 Generate Horoscope
@@ -183,5 +168,36 @@ Generate Horoscope
 </div>
 </section>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARG42w7pQoMVayxHrD7D6kFNfMEfpdMF8&libraries=places"></script>
+
+<script>
+
+function initAutocomplete(){
+
+const input = document.getElementById("birth_place");
+
+const autocomplete = new google.maps.places.Autocomplete(input,{
+types:['(cities)']
+});
+
+autocomplete.addListener("place_changed",function(){
+
+const place = autocomplete.getPlace();
+
+if(!place.geometry) return;
+
+document.getElementById("latitude").value =
+place.geometry.location.lat();
+
+document.getElementById("longitude").value =
+place.geometry.location.lng();
+
+});
+
+}
+
+google.maps.event.addDomListener(window,'load',initAutocomplete);
+
+</script>
+
 <?php require 'bottom.php'; ?>
-```
