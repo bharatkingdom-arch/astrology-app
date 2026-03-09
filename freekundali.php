@@ -57,13 +57,27 @@ if (isset($_POST['generate'])) {
         // CALL API USING CURL
         // ==========================
 
-        $ch = curl_init($apiUrl);
+        $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+curl_setopt_array($ch, [
+    CURLOPT_URL => $apiUrl,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_CONNECTTIMEOUT => 10,
+    CURLOPT_TIMEOUT => 20,
+    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYHOST => false
+]);
 
-        $response = curl_exec($ch);
+$response = curl_exec($ch);
+echo "<pre>";
+echo $apiUrl;
+echo "\n\n";
+echo $response;
+exit;
+
+if (curl_errno($ch)) {
+    $error = curl_error($ch);
+}
 
         if ($response === false) {
 
