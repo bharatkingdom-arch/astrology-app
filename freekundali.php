@@ -33,8 +33,12 @@ if (isset($_POST['generate'])) {
         );
 
         $lat = floatval($_POST['latitude'] ?? 0);
-        $lon = floatval($_POST['longitude'] ?? 0);
-        $timezone = 5.5;
+$lon = floatval($_POST['longitude'] ?? 0);
+$timezone = 5.5;
+
+if ($lat == 0 || $lon == 0) {
+    $error = "Please select birth place from suggestions.";
+}
 
         $apiUrl = "https://astrology-app-720155568345.asia-south1.run.app/public/api/calculate.php"
             . "?date={$date}"
@@ -42,6 +46,8 @@ if (isset($_POST['generate'])) {
             . "&lat={$lat}"
             . "&lon={$lon}"
             . "&timezone={$timezone}";
+            echo $apiUrl;
+exit;
 
         $ch = curl_init($apiUrl);
 
