@@ -50,7 +50,21 @@ if (isset($_POST['generate'])) {
         . "&lon={$lon}"
         . "&timezone={$timezone}";
 
-         $response = @file_get_contents($apiUrl);
+         $ch = curl_init($apiUrl);
+
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+
+$response = curl_exec($ch);
+
+if ($response === false) {
+    $error = "Unable to connect to astrology engine.";
+} else {
+    $data = json_decode($response, true);
+}
+
+curl_close($ch);
 
         if ($response === FALSE) {
             $error = "Unable to connect to astrology engine.";
