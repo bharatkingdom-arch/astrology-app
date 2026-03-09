@@ -40,7 +40,7 @@ if (isset($_POST['generate'])) {
         $time = $datetime->format('H:i');
 
         // ==========================
-        // CALL CALCULATION ENGINE
+        // CALL ASTRO ENGINE
         // ==========================
 
         $_GET['date'] = $date;
@@ -50,17 +50,16 @@ if (isset($_POST['generate'])) {
         $_GET['timezone'] = 5.5;
 
         ob_start();
-require __DIR__ . '/public/api/calculate.php';
-$response = ob_get_clean();
+        require __DIR__ . '/public/api/calculate.php';
+        $response = ob_get_clean();
 
-/* remove anything before JSON */
-$jsonStart = strpos($response, '{');
+        // remove garbage before JSON
+        $jsonStart = strpos($response, '{');
+        if ($jsonStart !== false) {
+            $response = substr($response, $jsonStart);
+        }
 
-if ($jsonStart !== false) {
-    $response = substr($response, $jsonStart);
-}
-
-$data = json_decode($response, true);
+        $data = json_decode($response, true);
 
         if (!$data || !isset($data['status']) || $data['status'] !== 'success') {
 
@@ -117,13 +116,13 @@ $data = json_decode($response, true);
 <div class="kundli-container">
 
 <div class="kundli-title">
-    <h1>Free Kundli Online</h1>
-    <p>Get instant & accurate Janam Kundli</p>
-    <div class="kundli-divider"></div>
+<h1>Free Kundli Online</h1>
+<p>Get instant & accurate Janam Kundli</p>
+<div class="kundli-divider"></div>
 </div>
 
 <div class="kundli-description">
-    <p>Enter your birth details below to generate your horoscope instantly.</p>
+<p>Enter your birth details below to generate your horoscope instantly.</p>
 </div>
 
 <div class="kundli-wrapper">
