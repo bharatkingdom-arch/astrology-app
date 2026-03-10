@@ -45,6 +45,23 @@ function degreeInSign($degree) {
 $d1 = [];
 $d9 = [];
 
+/* ================= ASCENDANT ================= */
+
+$ascDegree = $data['houses']['Ascendant']['decimal'] ?? null;
+
+if ($ascDegree !== null) {
+
+    $ascRasi = getRasi($ascDegree);
+
+    if ($ascRasi >= 1 && $ascRasi <= 12) {
+
+        $d1[$ascRasi][] = [
+            "short" => "Asc",
+            "deg"   => degreeInSign($ascDegree)
+        ];
+    }
+}
+
 foreach ($planets as $planet => $planetData) {
         $degree = $planetData['decimal'];   // ✅ extract decimal value
 
