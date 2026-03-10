@@ -36,7 +36,7 @@ class Avakhada {
     public static function calculate($moonLongitude) {
 
         $nakIndex = floor($moonLongitude / 13.333333);
-        $nakOffset = $moonLongitude % 13.333333;
+        $nakOffset = fmod($moonLongitude, 13.333333);
         $pada = floor($nakOffset / 3.333333) + 1;
 
         $nak = self::$nakshatras[$nakIndex];
