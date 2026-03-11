@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+/* ================= PREVENT OLD SESSION / CACHE ================= */
+
+unset($_SESSION['kundli_data']);
+
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -42,6 +48,8 @@ if (isset($_POST['generate'])) {
 
         if (!$error) {
 
+            /* ================= CALL API ================= */
+
             $_GET['date'] = $date;
             $_GET['time'] = $time;
             $_GET['lat'] = $lat;
@@ -54,7 +62,7 @@ if (isset($_POST['generate'])) {
 
             $data = json_decode($response, true);
 
-            if (!isset($data['status']) || $data['status'] !== 'success') {
+            if (!$data || !isset($data['status']) || $data['status'] !== 'success') {
 
                 $error = "Astrology calculation failed.";
 
@@ -62,15 +70,22 @@ if (isset($_POST['generate'])) {
 
                 $planets = $data['planets'] ?? [];
                 $houses  = $data['houses'] ?? [];
+
                 $lagna = $houses['Ascendant']['decimal'] ?? null;
 
+                /* ================= JULIAN DAY ================= */
+
                 $jd = $datetime->getTimestamp() / 86400 + 2440587.5;
+
+                /* ================= PANCHANGA ================= */
 
                 $panchanga = Panchanga::calculate(
                     $planets['Sun']['decimal'] ?? 0,
                     $planets['Moon']['decimal'] ?? 0,
                     $jd
                 );
+
+                /* ================= STORE SESSION ================= */
 
                 $_SESSION['kundli_data'] = [
                     'name' => $_POST['name'] ?? '',
