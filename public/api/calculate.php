@@ -1,20 +1,25 @@
 <?php
 
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
+// Only send headers if called via browser
+if (!headers_sent()) {
+    header("Content-Type: application/json");
+    header("Access-Control-Allow-Origin: *");
+}
 
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
-/// ==========================
+
+// ==========================
 // INPUT
 // ==========================
 
-$date = $_GET['date'] ?? null;      // format: 22.02.2026
-$time = $_GET['time'] ?? null;      // LOCAL time
+$date = $_GET['date'] ?? null;
+$time = $_GET['time'] ?? null;
 $lat  = isset($_GET['lat']) ? floatval($_GET['lat']) : null;
 $lon  = isset($_GET['lon']) ? floatval($_GET['lon']) : null;
 $timezone = isset($_GET['timezone']) ? floatval($_GET['timezone']) : 0;
+
 
 if ($date === null || $time === null || $lat === null || $lon === null) {
 
@@ -27,10 +32,14 @@ if ($date === null || $time === null || $lat === null || $lon === null) {
 
 
 // ==========================
-// LOCAL TIME → UTC
+// CONVERT LOCAL TIME → UTC
 // ==========================
 
-$dt = DateTime::createFromFormat("d.m.Y H:i", "$date $time");
+$dt = DateTime::createFromFormat(
+    "d.m.Y H:i",
+    "$date $time",
+    new DateTimeZone("Asia/Kolkata")
+);
 
 if (!$dt) {
 
@@ -41,18 +50,14 @@ if (!$dt) {
     exit;
 }
 
-$hours   = floor($timezone);
-$minutes = ($timezone - $hours) * 60;
-
-$dt->modify("-{$hours} hours");
-$dt->modify("-{$minutes} minutes");
+// Convert IST → UTC
+$dt->setTimezone(new DateTimeZone("UTC"));
 
 $utcDate = $dt->format("d.m.Y");
 $utTime  = $dt->format("H:i");
 
-
 // ==========================
-// SWISS EPHEMERIS PATH (CLOUD RUN)
+// SWISS EPHEMERIS PATH
 // ==========================
 
 $swetestPath = "/app/swisseph/swetest";
@@ -63,7 +68,7 @@ $ephePath    = "/app/ephemeris";
 // PLANETS COMMAND
 // ==========================
 
-$planetCommand = "$swetestPath -edir$ephePath -sid1 -ay1 -b$utcDate -ut$utTime -p0123456789t -fPl";
+$planetCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -p0123456789t -fPl";
 
 $planetOutput = shell_exec($planetCommand);
 
@@ -128,7 +133,7 @@ foreach ($lines as $line) {
 
         $planets[$planetName] = [
             "decimal" => $value,
-            "dms"     => decimalToDMS($value)
+            "dms" => decimalToDMS($value)
         ];
     }
 }
@@ -140,24 +145,24 @@ foreach ($lines as $line) {
 
 if (isset($planets['Rahu'])) {
 
-    $rahuDecimal = $planets['Rahu']['decimal'];
+    $rahu = $planets['Rahu']['decimal'];
 
-    $ketuDecimal = fmod($rahuDecimal + 180, 360);
+    $ketu = fmod($rahu + 180, 360);
 
-    if ($ketuDecimal < 0) $ketuDecimal += 360;
+    if ($ketu < 0) $ketu += 360;
 
     $planets['Ketu'] = [
-        "decimal" => $ketuDecimal,
-        "dms"     => decimalToDMS($ketuDecimal)
+        "decimal" => $ketu,
+        "dms" => decimalToDMS($ketu)
     ];
 }
 
 
 // ==========================
-// HOUSES + ASCENDANT
+// HOUSES + ASC
 // ==========================
 
-$houseCommand = "$swetestPath -edir$ephePath -sid1 -ay1 -b$utcDate -ut$utTime -house$lat,$lon,P -fPl";
+$houseCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -house$lat,$lon,P -fPl";
 
 $houseOutput = shell_exec($houseCommand);
 
@@ -171,44 +176,43 @@ if ($houseOutput) {
 
         $line = trim($line);
 
-        // House cusps
         if (strpos($line, 'house') === 0) {
 
             $parts = preg_split('/\s+/', $line);
 
             if (count($parts) >= 3) {
 
-                $houseNumber = $parts[1];
-                $value = floatval($parts[2]);
+                $num = $parts[1];
+                $val = floatval($parts[2]);
 
-                $houses["House $houseNumber"] = [
-                    "decimal" => $value,
-                    "dms"     => decimalToDMS($value)
+                $houses["House $num"] = [
+                    "decimal" => $val,
+                    "dms" => decimalToDMS($val)
                 ];
             }
         }
 
-        // Ascendant
         if (strpos($line, 'Ascendant') === 0) {
 
             $parts = preg_split('/\s+/', $line);
+
             $asc = floatval($parts[1]);
 
             $houses["Ascendant"] = [
                 "decimal" => $asc,
-                "dms"     => decimalToDMS($asc)
+                "dms" => decimalToDMS($asc)
             ];
         }
 
-        // MC
         if (strpos($line, 'MC') === 0) {
 
             $parts = preg_split('/\s+/', $line);
+
             $mc = floatval($parts[1]);
 
             $houses["MC"] = [
                 "decimal" => $mc,
-                "dms"     => decimalToDMS($mc)
+                "dms" => decimalToDMS($mc)
             ];
         }
     }
@@ -220,13 +224,12 @@ if ($houseOutput) {
 // ==========================
 
 echo json_encode([
-    "status"    => "success",
-    "date"      => $date,
-    "utc_date"  => $utcDate,
-    "utc_time"  => $utTime,
-    "latitude"  => $lat,
+    "status" => "success",
+    "date" => $date,
+    "utc_time" => $utTime,
+    "latitude" => $lat,
     "longitude" => $lon,
-    "ayanamsa"  => "Lahiri",
-    "planets"   => $planets,
-    "houses"    => $houses
+    "ayanamsa" => "Lahiri",
+    "planets" => $planets,
+    "houses" => $houses
 ], JSON_PRETTY_PRINT);
