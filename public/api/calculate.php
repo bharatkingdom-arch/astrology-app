@@ -1,35 +1,24 @@
 <?php
+header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
 
-// Only send headers if called via browser
-if (!headers_sent()) {
-    header("Content-Type: application/json");
-    header("Access-Control-Allow-Origin: *");
-}
-
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
-
-
-// ==========================
+/// ==========================
 // INPUT
 // ==========================
 
-$date = $_GET['date'] ?? null;
-$time = $_GET['time'] ?? null;
+$date = $_GET['date'] ?? null;      // format: 22.02.2026
+$time = $_GET['time'] ?? null;      // LOCAL time (e.g., 08:50)
 $lat  = isset($_GET['lat']) ? floatval($_GET['lat']) : null;
 $lon  = isset($_GET['lon']) ? floatval($_GET['lon']) : null;
 $timezone = isset($_GET['timezone']) ? floatval($_GET['timezone']) : 0;
 
-
 if ($date === null || $time === null || $lat === null || $lon === null) {
-
     echo json_encode([
         "status" => "error",
         "message" => "Missing date, time, latitude or longitude"
     ]);
     exit;
 }
-
 
 // ==========================
 // CONVERT LOCAL → UTC
@@ -71,14 +60,12 @@ if (!$dt) {
 // IMPORTANT: time already UTC from freekundali.php
 $utTime = $dt->format("H:i");
 
-
 // ==========================
 // SWISS EPHEMERIS PATH
 // ==========================
 
 $swetestPath = "/app/swisseph/swetest";
-$ephePath    = "/app/ephemeris";
-
+$ephePath = "/app/ephemeris";
 
 // ==========================
 // PLANETS COMMAND
@@ -89,7 +76,6 @@ $planetCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -p0123456
 $planetOutput = shell_exec($planetCommand);
 
 if (!$planetOutput) {
-
     echo json_encode([
         "status" => "error",
         "message" => "Swiss Ephemeris failed (planets)"
@@ -97,15 +83,13 @@ if (!$planetOutput) {
     exit;
 }
 
-
 // ==========================
-// DECIMAL → DMS
+// DECIMAL → DMS FUNCTION
 // ==========================
 
 function decimalToDMS($decimal)
 {
     $decimal = fmod($decimal, 360);
-
     if ($decimal < 0) $decimal += 360;
 
     $deg = floor($decimal);
@@ -125,7 +109,6 @@ function decimalToDMS($decimal)
 
     return sprintf("%d° %02d′ %02d″", $deg, $min, $sec);
 }
-
 
 // ==========================
 // PARSE PLANETS
@@ -149,35 +132,33 @@ foreach ($lines as $line) {
 
         $planets[$planetName] = [
             "decimal" => $value,
-            "dms" => decimalToDMS($value)
+            "dms"     => decimalToDMS($value)
         ];
     }
 }
 
-
 // ==========================
-// ADD KETU
+// ADD KETU (OPPOSITE RAHU)
 // ==========================
 
 if (isset($planets['Rahu'])) {
 
-    $rahu = $planets['Rahu']['decimal'];
+    $rahuDecimal = $planets['Rahu']['decimal'];
+    $ketuDecimal = fmod($rahuDecimal + 180, 360);
 
-    $ketu = fmod($rahu + 180, 360);
-
-    if ($ketu < 0) $ketu += 360;
+    if ($ketuDecimal < 0) $ketuDecimal += 360;
 
     $planets['Ketu'] = [
-        "decimal" => $ketu,
-        "dms" => decimalToDMS($ketu)
+        "decimal" => $ketuDecimal,
+        "dms"     => decimalToDMS($ketuDecimal)
     ];
 }
 
-
 // ==========================
-// HOUSES + ASC
+// HOUSES + ASCENDANT
 // ==========================
 
+// ✅ CORRECT LAT,LON ORDER
 $houseCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -house$lat,$lon,P -fPl";
 
 $houseOutput = shell_exec($houseCommand);
@@ -192,18 +173,19 @@ if ($houseOutput) {
 
         $line = trim($line);
 
+        // House cusps
         if (strpos($line, 'house') === 0) {
 
             $parts = preg_split('/\s+/', $line);
 
             if (count($parts) >= 3) {
 
-                $num = $parts[1];
-                $val = floatval($parts[2]);
+                $houseNumber = $parts[1];
+                $value = floatval($parts[2]);
 
-                $houses["House $num"] = [
-                    "decimal" => $val,
-                    "dms" => decimalToDMS($val)
+                $houses["House $houseNumber"] = [
+                    "decimal" => $value,
+                    "dms"     => decimalToDMS($value)
                 ];
             }
         }
@@ -219,6 +201,7 @@ if ($houseOutput) {
                 "dms"     => decimalToDMS($asc)
             ];
         }
+
         // MC
         if (strpos($line, 'MC') === 0) {
 
@@ -233,18 +216,17 @@ if ($houseOutput) {
     }
 }
 
-
 // ==========================
-// OUTPUT
+// FINAL OUTPUT
 // ==========================
 
 echo json_encode([
-    "status" => "success",
-    "date" => $date,
-    "utc_time" => $utTime,
-    "latitude" => $lat,
+    "status"    => "success",
+    "date"      => $date,
+    "utc_time"  => $utTime,
+    "latitude"  => $lat,
     "longitude" => $lon,
-    "ayanamsa" => "Lahiri",
-    "planets" => $planets,
-    "houses" => $houses
+    "ayanamsa"  => "Lahiri",
+    "planets"   => $planets,
+    "houses"    => $houses
 ], JSON_PRETTY_PRINT);
