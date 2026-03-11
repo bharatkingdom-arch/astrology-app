@@ -11,6 +11,13 @@ if (!$data) {
 }
 
 $planets = $data['planets'] ?? [];
+$lagna = null;
+
+if (isset($data['lagna']['decimal'])) {
+    $lagna = $data['lagna']['decimal'];
+} elseif (isset($data['lagna']) && is_numeric($data['lagna'])) {
+    $lagna = $data['lagna'];
+}
 
 /* ================= SHORT NAMES ================= */
 
@@ -28,7 +35,6 @@ function getRasi($degree) {
 }
 
 function degreeInSign($degree) {
-
     $deg = fmod($degree, 30);
     if ($deg < 0) $deg += 30;
 
@@ -40,45 +46,77 @@ function degreeInSign($degree) {
     return sprintf("%02d° %02d' %02d\"", $d, $m, $s);
 }
 
+function getSignName($rasi) {
+    $signs = [
+        1=>"Aries",2=>"Taurus",3=>"Gemini",4=>"Cancer",
+        5=>"Leo",6=>"Virgo",7=>"Libra",8=>"Scorpio",
+        9=>"Sagittarius",10=>"Capricorn",11=>"Aquarius",12=>"Pisces"
+    ];
+    return $signs[$rasi] ?? '';
+}
+
+function getNakshatraPada($degree) {
+
+    $nakshatras = [
+        "Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra",
+        "Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni",
+        "Uttara Phalguni","Hasta","Chitra","Swati","Vishakha",
+        "Anuradha","Jyeshtha","Mula","Purva Ashadha","Uttara Ashadha",
+        "Shravana","Dhanishta","Shatabhisha","Purva Bhadrapada",
+        "Uttara Bhadrapada","Revati"
+    ];
+
+    $nakNumber = floor($degree / 13.333333);
+    $nakName = $nakshatras[$nakNumber] ?? '';
+
+    $balance = fmod($degree, 13.333333);
+    $pada = floor($balance / 3.333333) + 1;
+
+    return [$nakName, $pada];
+}
+
 /* ================= MAP D1 & D9 ================= */
 
 $d1 = [];
 $d9 = [];
 
-/* ================= ASCENDANT ================= */
+foreach ($planets as $planet => $planetData) {
 
-$ascDegree = $data['houses']['Ascendant']['decimal'] ?? null;
+    if (!isset($planetData['decimal'])) continue;
 
-if ($ascDegree !== null) {
+    $degree = floatval($planetData['decimal']);
 
-    $ascRasi = getRasi($ascDegree);
+    // D1
+    $rasi1 = getRasi($degree);
+    $d1[$rasi1][] = [
+        "short" => $short[$planet] ?? $planet,
+        "deg"   => degreeInSign($degree)
+    ];
 
-    $d1[$ascRasi][] = [
-        "short" => "Asc",
-        "deg"   => degreeInSign($ascDegree)
+    // D9
+    $rasi9 = Navamsha::calculate($degree);
+    $d9[$rasi9][] = [
+        "short" => $short[$planet] ?? $planet
     ];
 }
-foreach ($planets as $planet => $planetData) {
-        $degree = $planetData['decimal'];   // ✅ extract decimal value
 
-    // ---------- D1 ----------
-    $rasi1 = getRasi($degree);
+/* ---------- ADD LAGNA ---------- */
 
-    if ($rasi1 >= 1 && $rasi1 <= 12) {
-        $d1[$rasi1][] = [
-            "short" => $short[$planet] ?? $planet,
-            "deg"   => degreeInSign($degree)
-        ];
-    }
+$lagnaRasiD1 = null;
+$lagnaRasiD9 = null;
 
-    // ---------- D9 ----------
-    $rasi9 = Navamsha::calculate($degree);
+if ($lagna !== null) {
 
-    if ($rasi9 >= 1 && $rasi9 <= 12) {
-        $d9[$rasi9][] = [
-            "short" => $short[$planet] ?? $planet
-        ];
-    }
+    $lagnaRasiD1 = getRasi($lagna);
+    $d1[$lagnaRasiD1][] = [
+        "short" => "Lagna",
+        "deg"   => degreeInSign($lagna)
+    ];
+
+    $lagnaRasiD9 = Navamsha::calculate($lagna);
+    $d9[$lagnaRasiD9][] = [
+        "short" => "Lagna"
+    ];
 }
 
 /* Ensure all houses exist */
@@ -91,8 +129,6 @@ for ($i=1; $i<=12; $i++) {
 <?php require 'header.php'; ?>
 
 <style>
-
-/* ================= TABS ================= */
 .kundli-tabs {
     display:flex;
     justify-content:space-between;
@@ -116,8 +152,6 @@ for ($i=1; $i<=12; $i++) {
     font-weight:600;
 }
 
-/* ================= LAYOUT ================= */
-
 .charts-row {
     display:flex;
     justify-content:center;
@@ -129,10 +163,28 @@ for ($i=1; $i<=12; $i++) {
     text-align:center;
 }
 
-svg {
-    background:#e6e0cf;
+.table-box {
+    margin-top:60px;
+    padding:20px;
+    background:#f4f4f4;
+    border-radius:10px;
 }
 
+.table-box table {
+    width:100%;
+    border-collapse:collapse;
+}
+
+.table-box th,
+.table-box td {
+    padding:8px;
+    border:1px solid #ccc;
+    text-align:center;
+}
+
+.table-box th {
+    background:#ddd;
+}
 </style>
 
 <section class="kundli-section">
@@ -140,80 +192,125 @@ svg {
 
 <h2>Kundli Charts</h2>
 
-<!-- ================= TABS ================= -->
 <div class="kundli-tabs">
     <a href="basic-details.php">Basic</a>
     <a href="south-chart.php" class="active">Kundli</a>
     <a href="engine/kpdetails.php">KP</a>
-
     <a href="#">Ashtakavarga</a>
     <a href="#">Dasha</a>
 </div>
 
 <div class="charts-row">
 
-<!-- ================= D1 ================= -->
 <div class="chart-box">
 <h3>Rasi (D1)</h3>
-<?php renderSouthChart($d1, true); ?>
+<?php renderSouthChart($d1, true, $lagnaRasiD1); ?>
 </div>
 
-<!-- ================= D9 ================= -->
 <div class="chart-box">
 <h3>Navamsa (D9)</h3>
-<?php renderSouthChart($d9, false); ?>
+<?php renderSouthChart($d9, false, $lagnaRasiD9); ?>
 </div>
 
 </div>
 
+<<!-- ================= PLANETARY TABLE ================= -->
+
+<div class="table-box">
+<h3>Planetary Details</h3>
+
+<table>
+<tr>
+    <th>Planet</th>
+    <th>Sign</th>
+    <th>Degree (DMS)</th>
+    <th>Nakshatra</th>
+    <th>Pada</th>
+</tr>
+
+<?php
+/* ===== LAGNA FIRST ===== */
+if ($lagna !== null):
+
+    $rasi = getRasi($lagna);
+    $sign = getSignName($rasi);
+    $dms  = degreeInSign($lagna);
+    list($nak, $pada) = getNakshatraPada($lagna);
+?>
+
+<tr style="background:#fff6b3; font-weight:bold;">
+    <td>Lagna</td>
+    <td><?= $sign ?></td>
+    <td><?= $dms ?></td>
+    <td><?= $nak ?></td>
+    <td><?= $pada ?></td>
+</tr>
+
+<?php endif; ?>
+
+
+<?php
+/* ===== PLANETS ===== */
+foreach ($planets as $planet => $planetData):
+
+    if (!isset($planetData['decimal'])) continue;
+
+    $deg  = floatval($planetData['decimal']);
+    $rasi = getRasi($deg);
+    $sign = getSignName($rasi);
+    $dms  = degreeInSign($deg);
+    list($nak, $pada) = getNakshatraPada($deg);
+?>
+
+<tr>
+    <td><?= htmlspecialchars($planet) ?></td>
+    <td><?= $sign ?></td>
+    <td><?= $dms ?></td>
+    <td><?= $nak ?></td>
+    <td><?= $pada ?></td>
+</tr>
+
+<?php endforeach; ?>
+
+</table>
+</div>
 </div>
 </section>
 
 <?php require 'bottom.php'; ?>
 
 <?php
-/* =====================================================
-   SOUTH INDIAN CHART RENDER FUNCTION (400x400 FIXED)
-===================================================== */
+/* ================= SOUTH CHART RENDER ================= */
 
-function renderSouthChart($data, $showDegree = false) {
+function renderSouthChart($data, $showDegree = false, $lagnaRasi = null) {
 
 $positions = [
-    12 => [10,20],
-    1  => [110,20],
-    2  => [210,20],
-    3  => [310,20],
-
-    11 => [10,120],
-    4  => [310,120],
-
-    10 => [10,220],
-    5  => [310,220],
-
-    9  => [10,320],
-    8  => [110,320],
-    7  => [210,320],
-    6  => [310,320],
+    12 => [10,20], 1=>[110,20], 2=>[210,20], 3=>[310,20],
+    11 => [10,120], 4=>[310,120],
+    10 => [10,220], 5=>[310,220],
+    9 => [10,320], 8=>[110,320], 7=>[210,320], 6=>[310,320],
 ];
 
 echo '<svg width="400" height="400" style="background:#e6e0cf">';
 
-/* Outer Border */
+if ($lagnaRasi !== null && isset($positions[$lagnaRasi])) {
+    $x = floor($positions[$lagnaRasi][0] / 100) * 100;
+    $y = floor($positions[$lagnaRasi][1] / 100) * 100;
+    echo '<rect x="'.$x.'" y="'.$y.'" width="100" height="100" fill="#fff6b3"/>';
+}
+
 echo '<rect x="0" y="0" width="400" height="400" fill="none" stroke="#444" stroke-width="2"/>';
 
-/* Vertical Lines */
-echo '<line x1="100" y1="0" x2="100" y2="400" stroke="#444" stroke-width="1"/>';
-echo '<line x1="200" y1="0" x2="200" y2="100" stroke="#444" stroke-width="1"/>';
-echo '<line x1="200" y1="300" x2="200" y2="400" stroke="#444" stroke-width="1"/>';
-echo '<line x1="300" y1="0" x2="300" y2="400" stroke="#444" stroke-width="1"/>';
+echo '<line x1="100" y1="0" x2="100" y2="400" stroke="#444"/>';
+echo '<line x1="200" y1="0" x2="200" y2="100" stroke="#444"/>';
+echo '<line x1="200" y1="300" x2="200" y2="400" stroke="#444"/>';
+echo '<line x1="300" y1="0" x2="300" y2="400" stroke="#444"/>';
 
-/* Horizontal Lines */
-echo '<line x1="0" y1="100" x2="400" y2="100" stroke="#444" stroke-width="1"/>';
-echo '<line x1="0" y1="200" x2="100" y2="200" stroke="#444" stroke-width="1"/>';
-echo '<line x1="300" y1="200" x2="400" y2="200" stroke="#444" stroke-width="1"/>';
-echo '<line x1="0" y1="300" x2="400" y2="300" stroke="#444" stroke-width="1"/>';
+echo '<line x1="0" y1="100" x2="400" y2="100" stroke="#444"/>';
+echo '<line x1="0" y1="200" x2="100" y2="200" stroke="#444"/>';
+echo '<line x1="300" y1="200" x2="400" y2="200" stroke="#444"/>';
+echo '<line x1="0" y1="300" x2="400" y2="300" stroke="#444"/>';
 
-/* Planet Text */
 foreach ($positions as $rasi => $pos) {
 
     if (!empty($data[$rasi])) {
@@ -230,7 +327,6 @@ foreach ($positions as $rasi => $pos) {
             }
 
             echo '</text>';
-
             $y += 15;
         }
     }
@@ -238,3 +334,4 @@ foreach ($positions as $rasi => $pos) {
 
 echo '</svg>';
 }
+?>
