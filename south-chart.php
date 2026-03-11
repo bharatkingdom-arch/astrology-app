@@ -53,15 +53,11 @@ if ($ascDegree !== null) {
 
     $ascRasi = getRasi($ascDegree);
 
-    if ($ascRasi >= 1 && $ascRasi <= 12) {
-
-        $d1[$ascRasi][] = [
-            "short" => "Asc",
-            "deg"   => degreeInSign($ascDegree)
-        ];
-    }
+    $d1[$ascRasi][] = [
+        "short" => "Asc",
+        "deg"   => degreeInSign($ascDegree)
+    ];
 }
-
 foreach ($planets as $planet => $planetData) {
         $degree = $planetData['decimal'];   // ✅ extract decimal value
 
