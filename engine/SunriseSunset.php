@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Sunrise & Sunset Calculator
