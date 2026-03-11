@@ -1,3 +1,4 @@
+
 /* ================= GLOBAL ================= */
 
 html {
@@ -198,6 +199,8 @@ body {
     width: 85%;
     margin: auto;
 }
+
+
 /* ================= COMPLIMENTARY SECTION ================= */
 
 .complimentary-section {
@@ -205,31 +208,57 @@ body {
     padding: 80px 0;
 }
 
+/* Container MUST NOT be flex */
 .complimentary-container {
     width: 90%;
     margin: auto;
+    display: block; /* force vertical layout */
 }
 
+/* Heading fixed on top */
 .section-title {
     text-align: center;
     font-size: 22px;
     letter-spacing: 1px;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
 }
 
+/* Horizontal sliding ONLY for cards */
 .complimentary-cards {
     display: flex;
-    justify-content: space-between;
     gap: 30px;
+
+    flex-wrap: nowrap !important;
+    justify-content: flex-start;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    padding-bottom: 15px;
 }
 
+/* Hide scrollbar (optional clean look) */
+.complimentary-cards::-webkit-scrollbar {
+    height: 6px;
+}
+.complimentary-cards::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+/* Individual cards */
 .comp-card {
-    flex: 1;
+    min-width: 300px;
+    flex: 0 0 auto !important;
+    scroll-snap-align: start;
+
     background: #eaeaea;
     padding: 40px 25px;
     border-radius: 15px;
     text-align: center;
-    position: relative;
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     transition: 0.3s ease;
 }
@@ -248,15 +277,6 @@ body {
     justify-content: center;
     font-size: 36px;
     margin: 0 auto 20px auto;
-}
-
-.comp-card h4 {
-    margin-bottom: 15px;
-}
-
-.comp-card p {
-    font-size: 14px;
-    line-height: 1.6;
 }
 
 /* ================= STATS SECTION ================= */
@@ -299,22 +319,44 @@ body {
     letter-spacing: 1px;
 }
 
+/* Wrapper should NOT control layout */
 .news-wrapper {
     width: 90%;
     margin: auto;
-    display: flex;
-    align-items: center;
     position: relative;
 }
 
+/* Enable horizontal sliding */
 .news-container {
     display: flex;
     gap: 30px;
-    overflow: hidden;
+
+    flex-wrap: nowrap;          /* prevent wrapping */
+    overflow-x: auto;           /* enable horizontal scroll */
+    overflow-y: hidden;
+
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    padding-bottom: 10px;
 }
 
+/* Optional scrollbar style */
+.news-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.news-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+/* Make cards behave like slides */
 .news-card {
-    width: 300px;
+    min-width: 300px;           /* IMPORTANT */
+    flex: 0 0 300px;            /* fixed width */
+    scroll-snap-align: start;
+
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
@@ -330,6 +372,7 @@ body {
     width: 100%;
     height: 180px;
     object-fit: cover;
+    display: block;
 }
 
 .news-content {
@@ -371,7 +414,6 @@ body {
 .right-arrow {
     margin-left: 20px;
 }
-
 /* ================= BLOG SECTION ================= */
 
 .blog-section {
@@ -821,3 +863,791 @@ body {
     color: #000;
     font-weight: 600;
 }
+
+/* ================= KUNDLI DETAILS HEADER AREA ================= */
+
+.kundli-header-box {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    text-align: center;
+}
+
+/* Birth Details Line */
+.birth-bar {
+    margin-top: 15px;
+    font-size: 15px;
+    color: #444;
+}
+
+/* Lagna Highlight */
+.lagna-bar {
+    margin-top: 15px;
+    padding: 12px;
+    background: linear-gradient(to right, #eef6ff, #f4df3e20);
+    border-radius: 25px;
+    font-weight: 600;
+    color: #000;
+    display: inline-block;
+}
+
+/* Improve Tabs spacing */
+.kundli-tabs {
+    margin-top: 25px;
+}
+
+/* Make active tab more visible */
+.kundli-tabs .active {
+    background: #f4df3e;
+    color: #000;
+}
+
+/* Responsive Improvement */
+@media (max-width: 768px) {
+    .kundli-tabs {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .kundli-tabs a {
+        flex: 48%;
+        margin-bottom: 5px;
+    }
+
+    .birth-bar {
+        font-size: 13px;
+    }
+}
+
+/* ================= SOUTH CHART PAGE ================= */
+
+.charts-row {
+    flex-wrap: wrap;
+}
+
+.chart-box h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* SVG chart box */
+.chart-box svg {
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* ================= PLANETARY TABLE STYLING ================= */
+
+.table-box {
+    margin-top: 60px;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+.table-box h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.table-box table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table-box th {
+    background: #f4df3e;
+    color: #000;
+    font-weight: 600;
+}
+
+.table-box th,
+.table-box td {
+    padding: 10px;
+    border: 1px solid #eee;
+}
+
+.table-box tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.table-box tr:hover {
+    background: #fff8cc;
+    transition: 0.2s ease;
+}
+
+/* Highlight Lagna row */
+.table-box tr strong {
+    color: #000;
+}
+
+/* ================= RESPONSIVE FIX ================= */
+
+@media (max-width: 1024px) {
+
+    .charts-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .chart-box {
+        width: 100%;
+    }
+
+    .chart-box svg {
+        width: 100%;
+        height: auto;
+    }
+
+    .table-box {
+        padding: 20px;
+    }
+}
+
+/* ================= UNIVERSAL ALIGNMENT FIX ================= */
+
+/* Prevent horizontal scroll */
+html, body {
+    overflow-x: hidden;
+}
+
+/* Make all sections safe width */
+section,
+.hero-container,
+.services,
+.next-section .container,
+.complimentary-container,
+.stats-container,
+.news-wrapper,
+.blog-wrapper,
+.astrologer-wrapper,
+.text-container,
+.footer-container,
+.kundli-container {
+    max-width: 1400px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Make images responsive without changing size logic */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Prevent flex overflow breaking */
+.services,
+.complimentary-cards,
+.stats-container,
+.news-container,
+.blog-container,
+.astrologer-container,
+.kundli-wrapper {
+    flex-wrap: wrap;
+}
+
+/* Ensure all cards align evenly */
+.service-card,
+.comp-card,
+.news-card,
+.blog-card,
+.astrologer-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Tables responsive without design change */
+.table-box {
+    overflow-x: auto;
+}
+
+.table-box table {
+    min-width: 600px;
+}
+
+/* Fix SVG responsiveness */
+.chart-box svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ================= TABLET FIX ================= */
+
+@media (max-width: 1024px) {
+
+    .hero-container {
+        padding: 40px;
+    }
+
+    .hero-right {
+        max-width: 100%;
+    }
+
+    .kundli-wrapper {
+        gap: 30px;
+    }
+
+}
+
+/* ================= MOBILE FIX ================= */
+
+@media (max-width: 768px) {
+
+    /* Stack layout but keep design */
+    .nav-wrapper {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .hero-container {
+        flex-wrap: wrap;
+        text-align: center;
+        padding: 30px 20px;
+    }
+
+    .hero-right {
+        max-width: 100%;
+        margin-top: 20px;
+    }
+
+    .services,
+    .complimentary-cards,
+    .stats-container,
+    .blog-container,
+    .astrologer-container {
+        justify-content: center;
+    }
+
+    .news-wrapper,
+    .blog-wrapper,
+    .astrologer-wrapper {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .kundli-wrapper {
+        flex-direction: column;
+    }
+
+    .birth-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+/* ================= SMALL MOBILE FIX ================= */
+
+@media (max-width: 480px) {
+
+    .birth-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-container {
+        padding: 20px 15px;
+    }
+
+    .text-container {
+        width: 95%;
+    }
+
+}
+
+/* ================= HORIZONTAL SLIDING SECTIONS ================= */
+
+
+
+/* Hide scrollbar (optional clean look) */
+.complimentary-container::-webkit-scrollbar,
+.stats-container::-webkit-scrollbar,
+.news-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.complimentary-container::-webkit-scrollbar-thumb,
+.stats-container::-webkit-scrollbar-thumb,
+.news-wrapper::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+/* Make inner blocks fixed width so they slide */
+.complimentary-cards,
+.stats-container > *,
+.news-container {
+    flex: 0 0 auto;
+}
+
+/* Make cards behave like slides */
+.comp-card,
+.stat-box,
+.news-card {
+    scroll-snap-align: start;
+    flex: 0 0 300px;
+}
+
+/* Allow news container to scroll */
+.news-container {
+    display: flex;
+    gap: 30px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+/* ================= HORIZONTAL SLIDING SECTIONS ================= */
+
+/* Enable horizontal scroll for these section containers */
+.complimentary-cards,
+.stats-container,
+.news-container,
+.blog-container,
+.astrologer-container {
+    display: flex;
+    gap: 30px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    padding-bottom: 10px;
+}
+
+/* Hide scrollbar (clean look) */
+.complimentary-cards::-webkit-scrollbar,
+.stats-container::-webkit-scrollbar,
+.news-container::-webkit-scrollbar,
+.blog-container::-webkit-scrollbar,
+.astrologer-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.complimentary-cards::-webkit-scrollbar-thumb,
+.stats-container::-webkit-scrollbar-thumb,
+.news-container::-webkit-scrollbar-thumb,
+.blog-container::-webkit-scrollbar-thumb,
+.astrologer-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+/* Make cards fixed width so they slide */
+.comp-card,
+.stat-box,
+.news-card,
+.blog-card,
+.astrologer-card {
+    flex: 0 0 300px;
+    scroll-snap-align: start;
+}
+
+/* ===================================================== */
+/*        CLEAN HORIZONTAL SLIDING SECTIONS FIX         */
+/* ===================================================== */
+
+/* FORCE NO WRAP (override previous rule) */
+.complimentary-cards,
+.stats-container,
+.news-container,
+.blog-container,
+.astrologer-container {
+    flex-wrap: nowrap !important;
+}
+
+/* Enable horizontal scroll */
+.complimentary-cards,
+.stats-container,
+.news-container,
+.blog-container,
+.astrologer-container {
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    padding-bottom: 10px;
+}
+
+/* Clean scrollbar */
+.complimentary-cards::-webkit-scrollbar,
+.stats-container::-webkit-scrollbar,
+.news-container::-webkit-scrollbar,
+.blog-container::-webkit-scrollbar,
+.astrologer-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.complimentary-cards::-webkit-scrollbar-thumb,
+.stats-container::-webkit-scrollbar-thumb,
+.news-container::-webkit-scrollbar-thumb,
+.blog-container::-webkit-scrollbar-thumb,
+.astrologer-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+/* Fixed slide width */
+.comp-card,
+.stat-box,
+.news-card,
+.blog-card,
+.astrologer-card {
+    flex: 0 0 300px !important;
+    scroll-snap-align: start;
+}
+
+/* ================= FINAL FIX - HEADING MUST NOT SCROLL ================= */
+
+.complimentary-container {
+    display: block !important; /* stop sideways layout */
+    overflow: visible !important; /* prevent scrolling */
+}
+
+/* ================= GLOBAL ================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+
+    padding-top: 95px; /* 🔥 Required for fixed header */
+}
+
+/* ================= NAVBAR (FIXED & STABLE) ================= */
+
+.navbar {
+    background: #f5f5f5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+
+    padding: 15px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.nav-wrapper {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ================= LOGO ================= */
+
+.logo-section {
+    display: flex;
+    align-items: center;
+}
+
+.logo-circle {
+    width: 38px;
+    height: 38px;
+    background: #f4df3e;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* ================= MENU ================= */
+
+.menu-section {
+    text-align: right;
+}
+
+.top-menu {
+    margin-bottom: 6px;
+}
+
+.top-menu a,
+.bottom-menu a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+}
+
+.login-btn {
+    background: #f4df3e;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ================= SECTION CONTAINERS ================= */
+
+section,
+.hero-container,
+.services,
+.next-section .container,
+.complimentary-container,
+.stats-container,
+.news-wrapper,
+.blog-wrapper,
+.astrologer-wrapper,
+.text-container,
+.footer-container,
+.kundli-container {
+    max-width: 1400px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ================= TABLE BOX ================= */
+
+.table-box {
+    margin-top: 60px;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    overflow-x: auto;
+}
+
+.table-box table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 700px;
+}
+
+.table-box th {
+    background: #f4df3e;
+    color: #000;
+    font-weight: 600;
+}
+
+.table-box th,
+.table-box td {
+    padding: 10px;
+    border: 1px solid #eee;
+}
+
+.table-box tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.table-box tr:hover {
+    background: #fff8cc;
+}
+
+/* ================= SOUTH CHART FIX ================= */
+
+.south-chart {
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.south-chart table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.south-chart td {
+    border: 3px solid #000;  /* 🔥 Dark thick border */
+    height: 95px;
+    vertical-align: top;
+    padding: 6px;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+.center-box {
+    text-align: center;
+    font-weight: bold;
+    background: #f4df3e;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1024px) {
+
+    .nav-wrapper {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .table-box {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .nav-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .top-menu,
+    .bottom-menu {
+        text-align: left;
+    }
+
+    body {
+        padding-top: 110px; /* extra space for wrapped header */
+    }
+}
+
+@media (max-width: 480px) {
+
+    body {
+        padding-top: 120px;
+    }
+
+}
+
+/* ===== Dropdown ===== */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 180px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    z-index: 1000;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px 14px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+}
+
+.dropdown-content a:hover {
+    background-color: #f2f2f2;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* ================= TABS (Same as Kundli Details) ================= */
+
+.kundli-tabs {
+    display: flex;
+    justify-content: space-between;
+    background: #f3f3f3;
+    border-radius: 40px;
+    padding: 6px;
+    margin: 20px 0;
+}
+
+.kundli-tabs a {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    border-radius: 30px;
+    transition: 0.3s;
+}
+
+.kundli-tabs a:hover {
+    background: #eaeaea;
+}
+
+.kundli-tabs .active {
+    background: #f4c400;
+    font-weight: 600;
+}
+
+/* ===== FORCE CENTER MAIN HEADING ===== */
+.pr-container h2{
+    text-align:center !important;
+    width:100%;
+    display:block;
+}
+
+/* ===== FORCE CENTER START TEXT ===== */
+.pr-container p{
+    text-align:center !important;
+}
+
+/* ===== FORCE CENTER NAKSHATRA TITLE ===== */
+.pr-header{
+    text-align:center !important;
+    width:100%;
+}
+
+/* ===== FORCE CENTER PADA HEADER ===== */
+.pr-pada-header{
+    text-align:center !important;
+}
+
+/* ===== GAP BELOW MAIN HEADING ===== */
+.pr-container h2{
+    margin-bottom: 30px;
+}
+
+/* ===== OPTIONAL: extra space before first card ===== */
+.pr-card:first-of-type{
+    margin-top: 10px;
+}
+
+#suggestions{
+    background:#fff;
+    border:1px solid #ccc;
+    max-height:200px;
+    overflow-y:auto;
+    position:absolute;
+    width:100%;
+    z-index:1000;
+}
+
+.suggestion-item{
+    padding:8px;
+    cursor:pointer;
+    border-bottom:1px solid #eee;
+}
+
+.suggestion-item:hover{
+    background:#f4f4f4;
+}
+
