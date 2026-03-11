@@ -1,9 +1,4 @@
-
 <?php
-session_start();
-ini_set('display_errors',1);
-error_reporting(E_ALL);
-
 session_start();
 require_once '../engine/SunriseSunset.php';
 require_once '../engine/MuhurthaLagna.php';
