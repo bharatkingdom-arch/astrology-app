@@ -192,27 +192,26 @@ if ($houseOutput) {
             }
         }
 
+        // Ascendant
         if (strpos($line, 'Ascendant') === 0) {
 
             $parts = preg_split('/\s+/', $line);
-
             $asc = floatval($parts[1]);
 
             $houses["Ascendant"] = [
                 "decimal" => $asc,
-                "dms" => decimalToDMS($asc)
+                "dms"     => decimalToDMS($asc)
             ];
         }
-
+        // MC
         if (strpos($line, 'MC') === 0) {
 
             $parts = preg_split('/\s+/', $line);
-
             $mc = floatval($parts[1]);
 
             $houses["MC"] = [
                 "decimal" => $mc,
-                "dms" => decimalToDMS($mc)
+                "dms"     => decimalToDMS($mc)
             ];
         }
     }
