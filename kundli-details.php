@@ -1,7 +1,6 @@
 <?php
 session_start();
-session_unset();
-?>
+
 $data = $_SESSION['kundli_data'] ?? null;
 
 if (!$data) {
