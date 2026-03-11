@@ -111,7 +111,7 @@ $houses    = $data['houses'] ?? [];   // ADD THIS
 <div class="kundli-tabs">
     <a href="basic-details.php">Basic</a>
     <a href="south-chart.php" class="active">Kundli</a>
-    <a href="#">KP</a>
+    <a href="engine/kpdetails.php">KP</a>
     <a href="#">Ashtakavarga</a>
     <a href="#">Charts</a>
     <a href="#">Dasha</a>
