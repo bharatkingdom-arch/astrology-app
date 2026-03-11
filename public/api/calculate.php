@@ -53,7 +53,8 @@ if (!$dt) {
 // Convert IST → UTC
 $dt->setTimezone(new DateTimeZone("UTC"));
 
-$utTime = $dt->format("H:i");
+$utcDate = $dt->format("d.m.Y");
+$utTime  = $dt->format("H:i");
 
 // ==========================
 // SWISS EPHEMERIS PATH
