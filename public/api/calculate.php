@@ -32,10 +32,14 @@ if ($date === null || $time === null || $lat === null || $lon === null) {
 
 
 // ==========================
-// TIME (already UTC)
+// CONVERT LOCAL TIME → UTC
 // ==========================
 
-$dt = DateTime::createFromFormat("d.m.Y H:i", "$date $time");
+$dt = DateTime::createFromFormat(
+    "d.m.Y H:i",
+    "$date $time",
+    new DateTimeZone("Asia/Kolkata")
+);
 
 if (!$dt) {
 
@@ -46,8 +50,10 @@ if (!$dt) {
     exit;
 }
 
-$utTime = $dt->format("H:i");
+// Convert IST → UTC
+$dt->setTimezone(new DateTimeZone("UTC"));
 
+$utTime = $dt->format("H:i");
 
 // ==========================
 // SWISS EPHEMERIS PATH
