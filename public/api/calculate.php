@@ -32,17 +32,12 @@ if ($date === null || $time === null || $lat === null || $lon === null) {
 
 
 // ==========================
-// CONVERT LOCAL TIME → UTC
+// CONVERT LOCAL → UTC
 // ==========================
 
-$dt = DateTime::createFromFormat(
-    "d.m.Y H:i",
-    "$date $time",
-    new DateTimeZone("Asia/Kolkata")
-);
+$dt = DateTime::createFromFormat("d.m.Y H:i", "$date $time");
 
 if (!$dt) {
-
     echo json_encode([
         "status" => "error",
         "message" => "Invalid date/time format"
@@ -50,11 +45,32 @@ if (!$dt) {
     exit;
 }
 
-// Convert IST → UTC
-$dt->setTimezone(new DateTimeZone("UTC"));
+// subtract timezone (example 5.5 for IST)
+$hours = floor($timezone);
+$minutes = ($timezone - $hours) * 60;
 
-$utcDate = $dt->format("d.m.Y");
-$utTime  = $dt->format("H:i");
+$dt->modify("-{$hours} hours");
+$dt->modify("-{$minutes} minutes");
+
+$utTime = $dt->format("H:i");
+
+// ==========================
+// VALIDATE DATE/TIME
+// ==========================
+
+$dt = DateTime::createFromFormat("d.m.Y H:i", "$date $time");
+
+if (!$dt) {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Invalid date/time format"
+    ]);
+    exit;
+}
+
+// IMPORTANT: time already UTC from freekundali.php
+$utTime = $dt->format("H:i");
+
 
 // ==========================
 // SWISS EPHEMERIS PATH
