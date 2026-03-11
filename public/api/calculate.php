@@ -2,17 +2,17 @@
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 
-/// ==========================
+// ==========================
 // INPUT
 // ==========================
 
-$date = $_GET['date'] ?? null;      // format: 22.02.2026
-$time = $_GET['time'] ?? null;      // LOCAL time (e.g., 08:50)
-$lat  = isset($_GET['lat']) ? floatval($_GET['lat']) : null;
-$lon  = isset($_GET['lon']) ? floatval($_GET['lon']) : null;
-$timezone = isset($_GET['timezone']) ? floatval($_GET['timezone']) : 0;
+$date     = $_GET['date']     ?? null;   // format: 01.01.2000
+$time     = $_GET['time']     ?? null;   // format: 08:50
+$lat      = $_GET['lat']      ?? null;
+$lon      = $_GET['lon']      ?? null;
+$timezone = $_GET['timezone'] ?? 0;      // example: 5.5 for IST
 
-if ($date === null || $time === null || $lat === null || $lon === null) {
+if (!$date || !$time || !$lat || !$lon) {
     echo json_encode([
         "status" => "error",
         "message" => "Missing date, time, latitude or longitude"
@@ -21,7 +21,7 @@ if ($date === null || $time === null || $lat === null || $lon === null) {
 }
 
 // ==========================
-// CONVERT LOCAL → UTC
+// CONVERT LOCAL TIME → UT
 // ==========================
 
 $dt = DateTime::createFromFormat("d.m.Y H:i", "$date $time");
@@ -34,30 +34,13 @@ if (!$dt) {
     exit;
 }
 
-// subtract timezone (example 5.5 for IST)
+// subtract timezone to get UT
 $hours = floor($timezone);
 $minutes = ($timezone - $hours) * 60;
 
 $dt->modify("-{$hours} hours");
 $dt->modify("-{$minutes} minutes");
 
-$utTime = $dt->format("H:i");
-
-// ==========================
-// VALIDATE DATE/TIME
-// ==========================
-
-$dt = DateTime::createFromFormat("d.m.Y H:i", "$date $time");
-
-if (!$dt) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Invalid date/time format"
-    ]);
-    exit;
-}
-
-// IMPORTANT: time already UTC from freekundali.php
 $utTime = $dt->format("H:i");
 
 // ==========================
@@ -78,7 +61,7 @@ $planetOutput = shell_exec($planetCommand);
 if (!$planetOutput) {
     echo json_encode([
         "status" => "error",
-        "message" => "Swiss Ephemeris failed (planets)"
+        "message" => "Swiss Ephemeris failed"
     ]);
     exit;
 }
@@ -144,8 +127,8 @@ foreach ($lines as $line) {
 if (isset($planets['Rahu'])) {
 
     $rahuDecimal = $planets['Rahu']['decimal'];
-    $ketuDecimal = fmod($rahuDecimal + 180, 360);
 
+    $ketuDecimal = fmod($rahuDecimal + 180, 360);
     if ($ketuDecimal < 0) $ketuDecimal += 360;
 
     $planets['Ketu'] = [
@@ -155,11 +138,10 @@ if (isset($planets['Rahu'])) {
 }
 
 // ==========================
-// HOUSES + ASCENDANT
+// HOUSES CALCULATION
 // ==========================
 
-// ✅ CORRECT LAT,LON ORDER
-$houseCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -house$lat,$lon,P -fPl";
+$houseCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -house$lon,$lat,P -fPl";
 
 $houseOutput = shell_exec($houseCommand);
 
@@ -173,7 +155,7 @@ if ($houseOutput) {
 
         $line = trim($line);
 
-        // House cusps
+        // house lines
         if (strpos($line, 'house') === 0) {
 
             $parts = preg_split('/\s+/', $line);
@@ -217,13 +199,14 @@ if ($houseOutput) {
 }
 
 // ==========================
-// FINAL OUTPUT
+// FINAL JSON OUTPUT
 // ==========================
 
 echo json_encode([
     "status"    => "success",
     "date"      => $date,
-    "utc_time"  => $utTime,
+    "time"      => $time,
+    "ut_time"   => $utTime,
     "latitude"  => $lat,
     "longitude" => $lon,
     "ayanamsa"  => "Lahiri",
