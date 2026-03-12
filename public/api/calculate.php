@@ -2,15 +2,15 @@
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 
-// ==========================
-// INPUT
-// ==========================
+/* ==========================
+INPUT
+========================== */
 
-$date     = $_GET['date']     ?? null;   // format: 01.01.2000
-$time     = $_GET['time']     ?? null;   // format: 08:50
+$date     = $_GET['date']     ?? null;
+$time     = $_GET['time']     ?? null;
 $lat      = $_GET['lat']      ?? null;
 $lon      = $_GET['lon']      ?? null;
-$timezone = $_GET['timezone'] ?? 0;      // example: 5.5 for IST
+$timezone = $_GET['timezone'] ?? 0;
 
 if (!$date || !$time || !$lat || !$lon) {
     echo json_encode([
@@ -20,9 +20,9 @@ if (!$date || !$time || !$lat || !$lon) {
     exit;
 }
 
-// ==========================
-// CONVERT LOCAL TIME → UT
-// ==========================
+/* ==========================
+CONVERT LOCAL TIME → UT
+========================== */
 
 $dt = DateTime::createFromFormat("d.m.Y H:i", "$date $time");
 
@@ -34,7 +34,6 @@ if (!$dt) {
     exit;
 }
 
-// subtract timezone to get UT
 $hours = floor($timezone);
 $minutes = ($timezone - $hours) * 60;
 
@@ -43,18 +42,18 @@ $dt->modify("-{$minutes} minutes");
 
 $utTime = $dt->format("H:i");
 
-// ==========================
-// SWISS EPHEMERIS PATH
-// ==========================
+/* ==========================
+SWISS EPHEMERIS PATH
+========================== */
 
 $swetestPath = "/app/swisseph/swetest";
-$ephePath = "/app/ephemeris";
+$ephePath    = "/app/ephemeris";
 
-// ==========================
-// PLANETS COMMAND
-// ==========================
+/* ==========================
+PLANETS COMMAND
+========================== */
 
-$planetCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -p0123456789t -fPl";
+$planetCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -p0123456789t -fPls";
 
 $planetOutput = shell_exec($planetCommand);
 
@@ -66,9 +65,9 @@ if (!$planetOutput) {
     exit;
 }
 
-// ==========================
-// DECIMAL → DMS FUNCTION
-// ==========================
+/* ==========================
+DECIMAL → DMS
+========================== */
 
 function decimalToDMS($decimal)
 {
@@ -93,19 +92,47 @@ function decimalToDMS($decimal)
     return sprintf("%d° %02d′ %02d″", $deg, $min, $sec);
 }
 
-// ==========================
-// PARSE PLANETS
-// ==========================
+/* ==========================
+COMBUST FUNCTION
+========================== */
+
+function isCombust($planet, $planet_long, $sun_long)
+{
+    $limits = [
+        "Mercury" => 14,
+        "Venus" => 10,
+        "Mars" => 17,
+        "Jupiter" => 11,
+        "Saturn" => 15
+    ];
+
+    if (!isset($limits[$planet])) return false;
+
+    $diff = abs($planet_long - $sun_long);
+
+    if ($diff > 180) {
+        $diff = 360 - $diff;
+    }
+
+    return $diff <= $limits[$planet];
+}
+
+/* ==========================
+PARSE PLANETS
+========================== */
 
 $lines = explode("\n", trim($planetOutput));
 $planets = [];
 
 foreach ($lines as $line) {
 
-    if (preg_match('/^(Sun|Moon|Mercury|Venus|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto|true Node|True Node)\s+([\d\.]+)/', trim($line), $matches)) {
+    $line = trim($line);
+
+    if (preg_match('/^(Sun|Moon|Mercury|Venus|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto|true Node|True Node)\s+([\d\.]+)\s+([-\d\.]+)/', $line, $matches)) {
 
         $name  = strtolower($matches[1]);
         $value = floatval($matches[2]);
+        $speed = floatval($matches[3]);
 
         if ($name === 'true node') {
             $planetName = 'Rahu';
@@ -115,14 +142,16 @@ foreach ($lines as $line) {
 
         $planets[$planetName] = [
             "decimal" => $value,
-            "dms"     => decimalToDMS($value)
+            "dms" => decimalToDMS($value),
+            "speed" => $speed,
+            "retrograde" => ($speed < 0)
         ];
     }
 }
 
-// ==========================
-// ADD KETU (OPPOSITE RAHU)
-// ==========================
+/* ==========================
+ADD KETU
+========================== */
 
 if (isset($planets['Rahu'])) {
 
@@ -133,13 +162,30 @@ if (isset($planets['Rahu'])) {
 
     $planets['Ketu'] = [
         "decimal" => $ketuDecimal,
-        "dms"     => decimalToDMS($ketuDecimal)
+        "dms" => decimalToDMS($ketuDecimal),
+        "speed" => 0,
+        "retrograde" => true
     ];
 }
 
-// ==========================
-// HOUSES CALCULATION
-// ==========================
+/* ==========================
+COMBUST CHECK
+========================== */
+
+if (isset($planets["Sun"])) {
+
+    $sunLongitude = $planets["Sun"]["decimal"];
+
+    foreach ($planets as $planet => &$data) {
+
+        $data["combust"] = isCombust($planet, $data["decimal"], $sunLongitude);
+
+    }
+}
+
+/* ==========================
+HOUSES
+========================== */
 
 $houseCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -house$lon,$lat,P -fPl";
 
@@ -155,7 +201,6 @@ if ($houseOutput) {
 
         $line = trim($line);
 
-        // house lines
         if (strpos($line, 'house') === 0) {
 
             $parts = preg_split('/\s+/', $line);
@@ -167,12 +212,11 @@ if ($houseOutput) {
 
                 $houses["House $houseNumber"] = [
                     "decimal" => $value,
-                    "dms"     => decimalToDMS($value)
+                    "dms" => decimalToDMS($value)
                 ];
             }
         }
 
-        // Ascendant
         if (strpos($line, 'Ascendant') === 0) {
 
             $parts = preg_split('/\s+/', $line);
@@ -180,11 +224,10 @@ if ($houseOutput) {
 
             $houses["Ascendant"] = [
                 "decimal" => $asc,
-                "dms"     => decimalToDMS($asc)
+                "dms" => decimalToDMS($asc)
             ];
         }
 
-        // MC
         if (strpos($line, 'MC') === 0) {
 
             $parts = preg_split('/\s+/', $line);
@@ -192,15 +235,15 @@ if ($houseOutput) {
 
             $houses["MC"] = [
                 "decimal" => $mc,
-                "dms"     => decimalToDMS($mc)
+                "dms" => decimalToDMS($mc)
             ];
         }
     }
 }
 
-// ==========================
-// FINAL JSON OUTPUT
-// ==========================
+/* ==========================
+FINAL JSON
+========================== */
 
 echo json_encode([
     "status"    => "success",
