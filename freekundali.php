@@ -3,7 +3,7 @@ session_start();
 
 /* ================= PREVENT OLD SESSION / CACHE ================= */
 
-unset($_SESSION['kundli_data']);
+
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 
