@@ -136,18 +136,18 @@ $houses    = $data['houses'] ?? [];   // ADD THIS
 <th>Longitude (°)</th>
 </tr>
 
-<?php foreach ($planets as $planet => $data): 
+<?php foreach ($planets as $planet => $data): ?>
 
-$status = "";
+<?php
+$status = '';
 
-if (isset($data['retrograde']) && $data['retrograde'] === true) {
-    $status .= " (R)";
+if (isset($data['retrograde']) && $data['retrograde']) {
+    $status .= ' (R)';
 }
 
-if (isset($data['combust']) && $data['combust'] === true) {
-    $status .= " (C)";
+if (isset($data['combust']) && $data['combust']) {
+    $status .= ' (C)';
 }
-
 ?>
 
 <tr>
@@ -156,7 +156,6 @@ if (isset($data['combust']) && $data['combust'] === true) {
 </tr>
 
 <?php endforeach; ?>
-
 
 </table>
 
