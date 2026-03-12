@@ -176,11 +176,11 @@ if (isset($planets["Sun"])) {
 
     $sunLongitude = $planets["Sun"]["decimal"];
 
-    foreach ($planets as $planet => &$data) {
+    foreach ($planets as $planet => $data) {
 
-        $data["combust"] = isCombust($planet, $data["decimal"], $sunLongitude);
+    $planets[$planet]["combust"] = isCombust($planet, $data["decimal"], $sunLongitude);
 
-    }
+}
 }
 
 /* ==========================
