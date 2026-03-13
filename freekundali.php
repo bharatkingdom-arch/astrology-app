@@ -4,11 +4,8 @@ session_start();
 if(isset($_SESSION['user_name'])){
     echo "Logged in as: " . $_SESSION['user_name'];
 }
-?>
 
 /* ================= PREVENT OLD SESSION / CACHE ================= */
-
-
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 
@@ -16,7 +13,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once __DIR__ . '/engine/Panchanga.php';
-
 $error = null;
 $planets = [];
 
