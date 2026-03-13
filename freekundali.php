@@ -180,7 +180,9 @@ Generate Horoscope
 <h3>Saved Kundli</h3>
 <div class="saved-content">
 <p>Please login to check your saved horoscope!</p>
-<a href="#" class="login-btn-kundli">Login</a>
+<a href="/google-login.php" class="login-btn-kundli">
+Login with Google
+</a>
 </div>
 </div>
 
