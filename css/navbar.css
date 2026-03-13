@@ -1,0 +1,69 @@
+/* ================= NAVBAR (STICKY) ================= */
+
+.navbar {
+    background: #f5f5f5;
+    position: sticky;   /* 🔥 STABLE */
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+
+    padding: 15px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.nav-wrapper {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* LOGO */
+.logo-section {
+    display: flex;
+    align-items: center;
+}
+
+.logo-circle {
+    width: 38px;
+    height: 38px;
+    background: #f4df3e;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* MENU SECTION */
+.menu-section {
+    text-align: right;
+}
+
+.top-menu {
+    margin-bottom: 6px;
+}
+
+.top-menu a,
+.bottom-menu a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+}
+
+.login-btn {
+    background: #f4df3e;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+}

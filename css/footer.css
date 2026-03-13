@@ -1,0 +1,124 @@
+/* ================= FOOTER ================= */
+
+.footer {
+    background: #4a4a4a;
+    color: #ddd;
+    padding: 60px 0;
+}
+
+/* MAIN CONTAINER */
+.footer-container {
+    width: 90%;
+    margin: auto;
+}
+
+/* ================= ABOUT SECTION ================= */
+
+.footer-about {
+    padding-bottom: 30px;
+    border-bottom: 1px solid #666;
+    margin-bottom: 50px;
+}
+
+.footer-about h3 {
+    color: #fff;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.footer-about h3::after {
+    content: "";
+    width: 50px;
+    height: 3px;
+    background: #f4df3e;
+    display: block;
+    margin-top: 6px;
+}
+
+.footer-about p {
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 900px;
+}
+
+/* ================= FOOTER GRID ================= */
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 50px;
+}
+
+/* COLUMN */
+
+.footer-col h4 {
+    color: #fff;
+    margin-bottom: 15px;
+    position: relative;
+    font-size: 16px;
+}
+
+.footer-col h4::after {
+    content: "";
+    width: 40px;
+    height: 3px;
+    background: #f4df3e;
+    display: block;
+    margin-top: 6px;
+}
+
+/* SUBTITLE (Shubh Muhurat, Shop our products, Corporate Info) */
+
+.footer-subtitle {
+    color: #fff;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    position: relative;
+    font-size: 15px;
+}
+
+.footer-subtitle::after {
+    content: "";
+    width: 40px;
+    height: 3px;
+    background: #f4df3e;
+    display: block;
+    margin-top: 6px;
+}
+
+/* LINKS */
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 8px;
+}
+
+.footer-col ul li a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: #f4df3e;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1024px) {
+    .footer-links {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-links {
+        grid-template-columns: 1fr;
+    }
+}

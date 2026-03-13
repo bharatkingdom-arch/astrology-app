@@ -585,8 +585,9 @@ if (preg_match('/House\s*(\d+)/i', $house, $match)) {
 
 /* D1 Lagna Sign Index */
 $d1SignIndex = null;
-if (isset($data['lagna']['decimal'])) {
-    $d1SignIndex = floor($data['lagna']['decimal'] / 30);
+
+if (isset($houses['Ascendant']['decimal'])) {
+    $d1SignIndex = floor($houses['Ascendant']['decimal'] / 30);
 }
 
 /* PR Sign Index */
