@@ -8,9 +8,11 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$login_user = $_SESSION['user_name'] ?? null;
+$login_user  = $_SESSION['user_name'] ?? null;
+$user_email  = $_SESSION['user_email'] ?? null;
 
 require_once __DIR__ . '/engine/Panchanga.php';
+
 $error = null;
 $planets = [];
 
@@ -99,6 +101,40 @@ if (isset($_POST['generate'])) {
                     'lagna' => $lagna
                 ];
 
+                /* ================= SAVE KUNDLI ================= */
+
+                if ($user_email) {
+
+                    require_once __DIR__ . '/engine/db.php';
+
+                    $planets_json = json_encode($planets);
+                    $houses_json  = json_encode($houses);
+
+                    $stmt = $conn->prepare("
+                        INSERT INTO kundlis
+                        (user_email,name,gender,birth_date,birth_time,latitude,longitude,planets,houses)
+                        VALUES (?,?,?,?,?,?,?,?,?)
+                    ");
+
+                    $birth_date = "{$year}-{$month}-{$day}";
+                    $birth_time = "{$hour}:{$minute}:{$second}";
+
+                    $stmt->bind_param(
+                        "ssssddsss",
+                        $user_email,
+                        $_POST['name'],
+                        $_POST['gender'],
+                        $birth_date,
+                        $birth_time,
+                        $lat,
+                        $lon,
+                        $planets_json,
+                        $houses_json
+                    );
+
+                    $stmt->execute();
+                }
+
                 header("Location: kundli-details.php");
                 exit;
             }
@@ -114,6 +150,14 @@ if (isset($_POST['generate'])) {
 
 <section class="kundli-section">
 <div class="kundli-container">
+
+<?php if($login_user): ?>
+
+<div style="margin-bottom:15px;font-weight:bold;">
+Logged in as: <?= htmlspecialchars($login_user) ?>
+</div>
+
+<?php endif; ?>
 
 <div class="kundli-title">
 <h1>Free Kundli Online</h1>
@@ -169,7 +213,7 @@ Generate Horoscope
 
 <?php if ($error): ?>
 <div style="margin-top:20px; color:red;">
-<?php echo $error; ?>
+<?= $error ?>
 </div>
 <?php endif; ?>
 
@@ -178,10 +222,23 @@ Generate Horoscope
 <div class="kundli-saved-box">
 <h3>Saved Kundli</h3>
 <div class="saved-content">
+
+<?php if($user_email): ?>
+
+<a href="/saved-kundlis.php" class="login-btn-kundli">
+View Saved Kundlis
+</a>
+
+<?php else: ?>
+
 <p>Please login to check your saved horoscope!</p>
+
 <a href="/google-login.php" class="login-btn-kundli">
 Login with Google
 </a>
+
+<?php endif; ?>
+
 </div>
 </div>
 
