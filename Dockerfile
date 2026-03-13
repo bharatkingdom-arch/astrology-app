@@ -1,13 +1,15 @@
-FROM php:8.2-cli
+FROM php:8.2-apache
 
-WORKDIR /app
+WORKDIR /var/www/html
 
-COPY . .
+COPY . /var/www/html
 
 RUN chmod +x swisseph/swetest
 
+RUN docker-php-ext-install mysqli
+
 ENV PORT=8080
 
-EXPOSE 8080
+RUN sed -i 's/80/${PORT}/g' /etc/apache2/ports.conf /etc/apache2/sites-enabled/000-default.conf
 
-CMD ["sh","-c","php -S 0.0.0.0:$PORT"]
+EXPOSE 8080
