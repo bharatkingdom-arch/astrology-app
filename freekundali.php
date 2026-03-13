@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+if(isset($_SESSION['user_name'])){
+    echo "Logged in as: " . $_SESSION['user_name'];
+}
+?>
+
 /* ================= PREVENT OLD SESSION / CACHE ================= */
 
 

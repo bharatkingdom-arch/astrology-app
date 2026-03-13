@@ -39,6 +39,6 @@ $user = json_decode($userinfo, true);
 $_SESSION['user_email'] = $user['email'];
 $_SESSION['user_name'] = $user['name'];
 
-header("Location: freekundali.php");
+header("Location: dashboard.php");
 exit;
 ?>
