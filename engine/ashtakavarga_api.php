@@ -3,7 +3,8 @@
 /* STEP 1: GET TOKEN */
 
 $client_id = "1b88a6d8-e904-4046-97f1-5537cfe9c827";
-$client_secret = "7bx6ITreX95KG1pe6XmRJY3rzZOIngYidIMSsi3e";
+$client_secret = "t4ADts9eegyqYtSr29WzITkyViwKqq02TN9FUMoT";
+
 
 $token_url = "https://api.prokerala.com/token";
 
@@ -32,7 +33,8 @@ $url = "https://api.prokerala.com/v2/astrology/ashtakavarga";
 $params = [
     "ayanamsa" => 1,
     "coordinates" => "17.3850,78.4867",
-    "datetime" => "1990-01-01T10:30:00+05:30"
+    "datetime" => "1990-01-01T10:30:00+05:30",
+    "planet" => "Sun"
 ];
 
 $ch = curl_init($url . "?" . http_build_query($params));
