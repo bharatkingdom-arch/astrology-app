@@ -246,36 +246,39 @@ Login with Google
 </div>
 </section>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARG42w7pQoMVayxHrD7D6kFNfMEfpdMF8&libraries=places"></script>
-
 <script>
 
-function initAutocomplete(){
+const apiKey = "fce70220d8a54a3b898d9363403bcae1";
 
 const input = document.getElementById("birth_place");
 
-const autocomplete = new google.maps.places.Autocomplete(input,{
-types:['(cities)']
+let timeout = null;
+
+input.addEventListener("input", function(){
+
+clearTimeout(timeout);
+
+const text = this.value;
+
+if(text.length < 3) return;
+
+timeout = setTimeout(async () => {
+
+let url = "https://api.geoapify.com/v1/geocode/autocomplete?text="+text+"&limit=5&apiKey="+apiKey;
+
+let res = await fetch(url);
+let data = await res.json();
+
+if(!data.features.length) return;
+
+let place = data.features[0].properties;
+
+document.getElementById("latitude").value = place.lat;
+document.getElementById("longitude").value = place.lon;
+
+},300);
+
 });
-
-autocomplete.addListener("place_changed",function(){
-
-const place = autocomplete.getPlace();
-
-if(!place.geometry) return;
-
-document.getElementById("latitude").value =
-place.geometry.location.lat();
-
-document.getElementById("longitude").value =
-place.geometry.location.lng();
-
-});
-
-}
-
-google.maps.event.addDomListener(window,'load',initAutocomplete);
 
 </script>
-
 <?php require 'bottom.php'; ?>
