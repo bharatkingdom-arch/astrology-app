@@ -11,7 +11,11 @@ RUN docker-php-ext-install mysqli
 
 RUN a2enmod rewrite
 
-# Change Apache port from 80 → 8080
+# Disable conflicting Apache modules
+RUN a2dismod mpm_event
+RUN a2enmod mpm_prefork
+
+# Change Apache port to 8080
 RUN sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
 RUN sed -i 's/:80/:8080/g' /etc/apache2/sites-available/000-default.conf
 
