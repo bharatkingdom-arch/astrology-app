@@ -1,0 +1,41 @@
+/* ===============================
+   Geoapify Places Autocomplete
+   =============================== */
+
+.place-suggestions{
+position:absolute;
+background:#ffffff;
+border:1px solid #ddd;
+border-top:none;
+width:100%;
+max-height:220px;
+overflow-y:auto;
+z-index:9999;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.place-item{
+padding:10px 12px;
+font-size:14px;
+cursor:pointer;
+border-bottom:1px solid #f1f1f1;
+transition:background 0.2s;
+}
+
+.place-item:last-child{
+border-bottom:none;
+}
+
+.place-item:hover{
+background:#f5f5f5;
+}
+
+.place-item strong{
+color:#222;
+}
+
+.place-empty{
+padding:10px;
+color:#888;
+font-size:13px;
+}

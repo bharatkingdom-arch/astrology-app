@@ -200,7 +200,9 @@ Logged in as: <?= htmlspecialchars($login_user) ?>
 
 <label>Birth Place*</label>
 
-<input type="text" id="birth_place" name="birthplace" placeholder="Enter a location" required>
+<input type="text" id="birth_place" name="birthplace" placeholder="Enter a location" autocomplete="off" required>
+
+<div id="place_suggestions" class="place-suggestions"></div>
 
 <input type="hidden" id="latitude" name="latitude">
 <input type="hidden" id="longitude" name="longitude">
@@ -251,6 +253,7 @@ Login with Google
 const apiKey = "fce70220d8a54a3b898d9363403bcae1";
 
 const input = document.getElementById("birth_place");
+const suggestions = document.getElementById("place_suggestions");
 
 let timeout = null;
 
@@ -260,7 +263,10 @@ clearTimeout(timeout);
 
 const text = this.value;
 
-if(text.length < 3) return;
+if(text.length < 3){
+suggestions.innerHTML="";
+return;
+}
 
 timeout = setTimeout(async () => {
 
@@ -269,12 +275,34 @@ let url = "https://api.geoapify.com/v1/geocode/autocomplete?text="+text+"&limit=
 let res = await fetch(url);
 let data = await res.json();
 
-if(!data.features.length) return;
+suggestions.innerHTML = "";
 
-let place = data.features[0].properties;
+if(!data.features.length){
+suggestions.innerHTML = "<div class='place-empty'>No results</div>";
+return;
+}
 
-document.getElementById("latitude").value = place.lat;
-document.getElementById("longitude").value = place.lon;
+data.features.forEach(place => {
+
+let item = document.createElement("div");
+item.className = "place-item";
+
+item.innerText = place.properties.formatted;
+
+item.onclick = function(){
+
+input.value = place.properties.formatted;
+
+document.getElementById("latitude").value = place.properties.lat;
+document.getElementById("longitude").value = place.properties.lon;
+
+suggestions.innerHTML = "";
+
+};
+
+suggestions.appendChild(item);
+
+});
 
 },300);
 

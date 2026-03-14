@@ -12,8 +12,11 @@ $BASE_URL = "/";
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="<?= $BASE_URL ?>style.css">
-</head>
 
+    <!-- Places Autocomplete CSS -->
+    <link rel="stylesheet" href="<?= $BASE_URL ?>css/places.css">
+
+</head>
 <body>
 
 <header class="navbar">
