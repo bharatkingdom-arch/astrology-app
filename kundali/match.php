@@ -53,8 +53,10 @@ function getRasiFromNakshatra($nak,$pada){
     }
 }
 
-$boy = $_GET['boy'] ?? '';
-$girl = $_GET['girl'] ?? '';
+$boy = $boy ?? '';
+$girl = $girl ?? '';
+$boy_pada = $boy_pada ?? 1;
+$girl_pada = $girl_pada ?? 1;
 
 // ================= SUPPORT =================
 $rasi_map = ["Mesha"=>1,"Vrishabha"=>2,"Mithuna"=>3,"Karka"=>4,"Simha"=>5,"Kanya"=>6,"Tula"=>7,"Vrischika"=>8,"Dhanu"=>9,"Makara"=>10,"Kumbha"=>11,"Meena"=>12];
