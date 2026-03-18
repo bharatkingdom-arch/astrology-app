@@ -187,32 +187,24 @@ if(isset($_GET['b_day'])){
     $g_time = $_GET['g_hour'].":".$_GET['g_min'];
 
   // ===== API =====
-// ===== API DIRECT CALL =====
 
-// Boy
-$_GET['date'] = $b_date;
-$_GET['time'] = $b_time;
-$_GET['lat']  = $_GET['b_lat'];
-$_GET['lon']  = $_GET['b_lon'];
-$_GET['timezone'] = $_GET['b_tz'];
+$api = "https://www.astroloak.com/astroapi/calculate.php";
 
-ob_start();
-include __DIR__ . "/../api/calculate.php";
-$b_data = json_decode(ob_get_clean(), true);
+$b_url = $api . "?date=$b_date&time=$b_time&lat=".$_GET['b_lat']."&lon=".$_GET['b_lon']."&timezone=".$_GET['b_tz'];
 
-// Girl
-$_GET['date'] = $g_date;
-$_GET['time'] = $g_time;
-$_GET['lat']  = $_GET['g_lat'];
-$_GET['lon']  = $_GET['g_lon'];
-$_GET['timezone'] = $_GET['g_tz'];
+$g_url = $api . "?date=$g_date&time=$g_time&lat=".$_GET['g_lat']."&lon=".$_GET['g_lon']."&timezone=".$_GET['g_tz'];
 
-ob_start();
-include __DIR__ . "/../api/calculate.php";
-$g_data = json_decode(ob_get_clean(), true);
-    $boyMoon  = $b_data['planets']['Moon']['decimal'];
-    $girlMoon = $g_data['planets']['Moon']['decimal'];
-
+// FETCH DATA
+$b_data = json_decode(file_get_contents($b_url), true);
+$g_data = json_decode(file_get_contents($g_url), true);
+if(
+    !$b_data || !$g_data ||
+    !isset($b_data['planets']['Moon']['decimal']) ||
+    !isset($g_data['planets']['Moon']['decimal'])
+){
+    echo "<div class='result'>❌ API not responding properly</div>";
+    exit;
+}
     function getNakshatraPada($moon){
         $nakshatras = [
             "Ashwini","Bharani","Krittika","Rohini","Mrigashira",
