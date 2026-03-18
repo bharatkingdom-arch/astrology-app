@@ -205,6 +205,9 @@ if(
     echo "<div class='result'>❌ API not responding properly</div>";
     exit;
 }
+
+$boyMoon  = $b_data['planets']['Moon']['decimal'];
+$girlMoon = $g_data['planets']['Moon']['decimal'];
     function getNakshatraPada($moon){
         $nakshatras = [
             "Ashwini","Bharani","Krittika","Rohini","Mrigashira",
@@ -235,8 +238,6 @@ if(
         <button style='padding:8px 15px;'>🔄 New Match</button>
          </a>
           </div>";
-
-        echo "<div class='result'>";
 
     echo "<div class='result'>";
     echo "<h3>Result</h3>";
