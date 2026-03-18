@@ -186,13 +186,19 @@ if(isset($_GET['b_day'])){
     $g_date = $_GET['g_day'].".".$_GET['g_month'].".".$_GET['g_year'];
     $g_time = $_GET['g_hour'].":".$_GET['g_min'];
 
-    // ===== API =====
-    $b_url = "http://localhost/astroapi/calculate.php?date=$b_date&time=$b_time&lat=".$_GET['b_lat']."&lon=".$_GET['b_lon']."&timezone=".$_GET['b_tz'];
-    $g_url = "http://localhost/astroapi/calculate.php?date=$g_date&time=$g_time&lat=".$_GET['g_lat']."&lon=".$_GET['g_lon']."&timezone=".$_GET['g_tz'];
+  // ===== API =====
+$api = "https://" . $_SERVER['HTTP_HOST'] . "/api/calculate.php";
 
-    $b_data = json_decode(file_get_contents($b_url), true);
-    $g_data = json_decode(file_get_contents($g_url), true);
+$b_url = $api . "?date=$b_date&time=$b_time&lat=".$_GET['b_lat']."&lon=".$_GET['b_lon']."&timezone=".$_GET['b_tz'];
+$g_url = $api . "?date=$g_date&time=$g_time&lat=".$_GET['g_lat']."&lon=".$_GET['g_lon']."&timezone=".$_GET['g_tz'];
 
+$b_data = json_decode(file_get_contents($b_url), true);
+$g_data = json_decode(file_get_contents($g_url), true);
+
+if(!$b_data || !$g_data){
+    echo "<div class='result'>❌ API Error</div>";
+    exit;
+}
     $boyMoon  = $b_data['planets']['Moon']['decimal'];
     $girlMoon = $g_data['planets']['Moon']['decimal'];
 
@@ -234,10 +240,10 @@ if(isset($_GET['b_day'])){
     echo "<b>Boy:</b> $boyNak (Pada $boyPada)<br>";
     echo "<b>Girl:</b> $girlNak (Pada $girlPada)<br>";
 
-    $_GET['boy'] = $boyNak;
-    $_GET['boy_pada'] = $boyPada;
-    $_GET['girl'] = $girlNak;
-    $_GET['girl_pada'] = $girlPada;
+    $boy = $boyNak;
+$boy_pada = $boyPada;
+$girl = $girlNak;
+$girl_pada = $girlPada;
 
     include "match.php";
     include "rajju.php";
