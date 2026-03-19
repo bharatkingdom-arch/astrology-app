@@ -1,8 +1,8 @@
 <?php
 include 'rajju_algorithm.php';
 
-$boy = $_GET['boy'] ?? '';
-$girl = $_GET['girl'] ?? '';
+$boy = $boy ?? '';
+$girl = $girl ?? '';
 ?>
 
 <!DOCTYPE html>
