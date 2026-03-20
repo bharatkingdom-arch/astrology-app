@@ -11,7 +11,7 @@
             <div class="blog-card">
                 <img src="assets/images/blog1.jpg" alt="">
                 <div class="blog-content">
-                    <h4>How Astrotalk Is Using AI to Become a Smarter, More Trusted Astrology Platform</h4>
+                    <h4>How Astroloak Is Using AI to Become a Smarter, More Trusted Astrology Platform</h4>
                     <div class="blog-meta">
                         <span>Astrologer Anshika</span>
                         <span>November 14, 2025</span>
@@ -44,7 +44,7 @@
             <div class="blog-card">
                 <img src="assets/images/blog4.jpg" alt="">
                 <div class="blog-content">
-                    <h4>Khazani Ayurveda: Ancient Remedies Backed by Astrotalk</h4>
+                    <h4>Khazani Ayurveda: Ancient Remedies Backed by Astroloak</h4>
                     <div class="blog-meta">
                         <span>Astrologer Anshika</span>
                         <span>September 07, 2025</span>

@@ -4,9 +4,9 @@
 
         <!-- ABOUT FULL WIDTH -->
         <div class="footer-about">
-            <h3>About Astrotalk</h3>
+            <h3>About Astroloak</h3>
             <p>
-                Astrotalk is the best astrology website for online Astrology predictions.
+                Astroloak is the best astrology website for online Astrology predictions.
                 Talk to Astrologer on call and get answers to all your worries by
                 seeing the future life through Astrology Kundli Predictions from
                 the best Astrologers from India.
@@ -20,22 +20,22 @@
             <div class="footer-col">
                 <h4>Horoscope</h4>
                 <ul>
-                    <li>Today's Horoscope</li>
-                    <li>Tomorrow's Horoscope</li>
-                    <li>Weekly Horoscope</li>
-                    <li>Monthly Horoscope</li>
-                    <li>Yearly Horoscope</li>
+                    <li><a href="#">Today's Horoscope</a></li>
+                    <li><a href="#">Tomorrow's Horoscope</a></li>
+                    <li><a href="#">Weekly Horoscope</a></li>
+                    <li><a href="#">Monthly Horoscope</a></li>
+                    <li><a href="#">Yearly Horoscope</a></li>
                 </ul>
 
                 <h4 class="footer-subtitle">Shubh Muhurat</h4>
                 <ul>
-                    <li>Annanprashan Muhurat</li>
-                    <li>Naamkaran Muhurat</li>
-                    <li>Car/Bike Muhurat</li>
-                    <li>Marriage Muhurat</li>
-                    <li>Bhoomi Pujan Muhurat</li>
-                    <li>Griha Pravesh Muhurat</li>
-                    <li>Mundan Muhurat</li>
+                    <li><a href="#">Annanprashan Muhurat</a></li>
+                    <li><a href="#">Naamkaran Muhurat</a></li>
+                    <li><a href="#">Car/Bike Muhurat</a></li>
+                    <li><a href="#">Marriage Muhurat</a></li>
+                    <li><a href="#">Bhoomi Pujan Muhurat</a></li>
+                    <li><a href="#">Griha Pravesh Muhurat</a></li>
+                    <li><a href="#">Mundan Muhurat</a></li>
                 </ul>
             </div>
 
@@ -44,7 +44,7 @@
                 <h4>Important Links</h4>
                 <ul>
                     <li><a href="#">Astromall</a></li>
-                    <li><a href="#">Astrotalk Store</a></li>
+                    <li><a href="#">Astroloak Store</a></li>
                     <li><a href="#">Today Panchang</a></li>
                     <li><a href="#">Live Astrologers</a></li>
                     <li><a href="#">How to read kundali</a></li>
@@ -52,7 +52,7 @@
                     <li><a href="#">Kundli Matching</a></li>
                     <li><a href="#">Chat with Astrologer</a></li>
                     <li><a href="#">Talk to Astrologer</a></li>
-                    <li><a href="#">Astrotalk Reviews</a></li>
+                    <li><a href="#">Astroloak Reviews</a></li>
                     <li><a href="#">Astrology Yoga</a></li>
                     <li><a href="#">Kaalsarp Doshas</a></li>
                     <li><a href="#">Child Astrology</a></li>
@@ -74,7 +74,7 @@
                     <li><a href="#">Vastu Shastra</a></li>
                     <li><a href="#">Love Calculator</a></li>
                     <li><a href="#">Guru Purnima 2025</a></li>
-                    <li><a href="#">Astrotalk Sitemap</a></li>
+                    <li><a href="#">Astroloak Sitemap</a></li>
                 </ul>
 
                 <h4 class="footer-subtitle">Shop our products</h4>
@@ -118,7 +118,7 @@
     <ul>
         <li>📞 We are available 24x7 on chat support</li>
         <li><a href="#" class="chat-link">click to start chat</a></li>
-        <li>✉ Email ID: contact@astrotalk.com</li>
+        <li>✉ Email ID: contact@astroloak.com</li>
     </ul>
 
     <!-- SECURE -->

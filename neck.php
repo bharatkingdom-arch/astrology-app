@@ -7,7 +7,7 @@
         </div>
 
         <div class="hero-right">
-            <h4>200+ Celebs recommend Astrotalk</h4>
+            <h4>200+ Celebs recommend Astroloak</h4>
             <h1>Chat With Astrologer</h1>
             <a href="#" class="chat-btn">Chat Now</a>
         </div>

@@ -66,7 +66,7 @@
             <p><strong>Q: Is astrology prediction true?</strong></p>
             <p>A: Predictions reflect cosmic influences, but your free will always plays a role.</p>
 
-            <p><strong>Q: How reliable is the Astrotalk app?</strong></p>
+            <p><strong>Q: How reliable is the Astroloak app?</strong></p>
             <p>A: The platform maintains high reliability with verified astrologers and secure systems.</p>
         </div>
 
