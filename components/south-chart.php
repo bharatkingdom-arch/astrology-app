@@ -23,7 +23,8 @@ if (!isset($chartCenter)) {
 
 <style>
 .south-chart {
-    max-width: 520px;
+    width: 100%;
+    max-width: 100%;
     margin: 25px auto;
     overflow-x: auto;
     padding: 4px;
