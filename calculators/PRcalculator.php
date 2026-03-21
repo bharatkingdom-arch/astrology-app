@@ -185,18 +185,7 @@ require '../header.php';
 
 ?>
 
-<style>
-html, body {
-    overflow-x: hidden;
-}
 
-/* MOST IMPORTANT FIX */
-.kundli-section,
-.kundli-container,
-.table-box {
-    overflow: visible !important;
-}
-</style>
 
 <section class="kundli-section">
 <div class="kundli-container" id="pdf-content">
@@ -406,16 +395,10 @@ $transitChartFinal = $transitChart;   // ✅ SAVE TRANSIT CHART
 ?>
 
 
-<style>
-/* IMPORTANT: remove width forcing */
-.table-box{
-    width:auto !important;
-}
-</style>
 
-<div style="display:flex; justify-content:center; align-items:flex-start; gap:40px; margin:40px 0; flex-wrap:wrap;">
+<div class="charts-row">
 
-    <div style="width:520px; min-width:520px; max-width:520px; text-align:center;">
+    <div class="chart-box">
     <h4>PR South Chart</h4>
 
     <?php
@@ -430,7 +413,7 @@ $transitChartFinal = $transitChart;   // ✅ SAVE TRANSIT CHART
     ?>
 </div>
 
-    <div style="width:520px; min-width:520px; max-width:520px; text-align:center;">
+    <div class="chart-box">
     <h4>Transit South Chart</h4>
 
     <?php
