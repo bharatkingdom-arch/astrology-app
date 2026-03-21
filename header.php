@@ -1,7 +1,7 @@
 <?php
 // Base URL for routing
 $BASE_URL = "/";
-$CSS_VER = "3.0." . time(); // Cache buster
+$CSS_VER = "3.1." . time(); // Cache buster
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,12 +41,18 @@ $CSS_VER = "3.0." . time(); // Cache buster
             <div class="logo-text">Astroloak</div>
         </a>
 
-        <!-- Hamburger (mobile) -->
-        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false">
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-        </button>
+        <!-- Mobile Controls (Always visible on mobile) -->
+        <div class="mobile-controls">
+            <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
+                <span class="icon-moon">🌙</span>
+                <span class="icon-sun">☀️</span>
+            </button>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
 
         <!-- Menu -->
         <div class="menu-section" id="menuSection" role="navigation">
@@ -64,10 +70,7 @@ $CSS_VER = "3.0." . time(); // Cache buster
                 </div>
                 <a href="#">Horoscopes ▾</a>
                 <a href="#">Eng ▾</a>
-                <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
-                    <span class="icon-moon">🌙</span>
-                    <span class="icon-sun">☀️</span>
-                </button>
+                <!-- Login on mobile moves inside menu, on desktop stays top right -->
                 <button class="login-btn">Login</button>
             </div>
 
