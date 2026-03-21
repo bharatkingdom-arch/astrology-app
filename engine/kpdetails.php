@@ -99,18 +99,8 @@ $signPositions = [
 ];
 ?>
 
-<style>
-.kp-container{max-width:1100px;margin:40px auto;}
-.kundli-tabs{display:flex;background:#f3f3f3;border-radius:40px;padding:6px;margin-bottom:30px;}
-.kundli-tabs a{flex:1;text-align:center;padding:10px;text-decoration:none;color:#333;border-radius:30px;}
-.kundli-tabs .active{background:#f4c400;font-weight:600;}
-.table-box{background:#f4f4f4;padding:20px;border-radius:10px;margin-bottom:40px;}
-.table-box table{width:100%;border-collapse:collapse;}
-.table-box th,.table-box td{padding:8px;border:1px solid #ccc;text-align:center;}
-.table-box th{background:#ddd;}
-</style>
-
-<section class="kp-container">
+<section class="kundli-section">
+<div class="kundli-container">
 
 <div class="kundli-tabs">
 <a href="../basic-details.php">Basic</a>
@@ -254,6 +244,7 @@ echo "<tr>
 </table>
 </div>
 
+</div>
 </section>
 
 <?php require_once __DIR__.'/../bottom.php'; ?>

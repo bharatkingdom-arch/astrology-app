@@ -128,64 +128,7 @@ for ($i=1; $i<=12; $i++) {
 
 <?php require 'header.php'; ?>
 
-<style>
-.kundli-tabs {
-    display:flex;
-    justify-content:space-between;
-    background:#f3f3f3;
-    border-radius:40px;
-    padding:6px;
-    margin:20px 0;
-}
 
-.kundli-tabs a {
-    flex:1;
-    text-align:center;
-    padding:10px 0;
-    text-decoration:none;
-    color:#333;
-    border-radius:30px;
-}
-
-.kundli-tabs .active {
-    background:#f4c400;
-    font-weight:600;
-}
-
-.charts-row {
-    display:flex;
-    justify-content:center;
-    gap:80px;
-    margin-top:40px;
-}
-
-.chart-box {
-    text-align:center;
-}
-
-.table-box {
-    margin-top:60px;
-    padding:20px;
-    background:#f4f4f4;
-    border-radius:10px;
-}
-
-.table-box table {
-    width:100%;
-    border-collapse:collapse;
-}
-
-.table-box th,
-.table-box td {
-    padding:8px;
-    border:1px solid #ccc;
-    text-align:center;
-}
-
-.table-box th {
-    background:#ddd;
-}
-</style>
 
 <section class="kundli-section">
 <div class="kundli-container">

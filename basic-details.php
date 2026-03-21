@@ -41,83 +41,7 @@ function decimalToDMS($degree)
 
 <?php require 'header.php'; ?>
 
-<style>
 
-/* ================= TABS ================= */
-.kundli-tabs {
-    display:flex;
-    justify-content:space-between;
-    background:#f3f3f3;
-    border-radius:40px;
-    padding:6px;
-    margin:20px 0;
-}
-
-.kundli-tabs a {
-    flex:1;
-    text-align:center;
-    padding:10px 0;
-    text-decoration:none;
-    color:#333;
-    font-weight:500;
-    border-radius:30px;
-    transition:0.3s;
-}
-
-.kundli-tabs a:hover {
-    background:#eaeaea;
-}
-
-.kundli-tabs .active {
-    background:#f4c400;
-    font-weight:600;
-}
-
-/* ================= LAYOUT ================= */
-.details-container {
-    max-width:1100px;
-    margin:40px auto;
-}
-
-.details-row {
-    display:flex;
-    gap:30px;
-}
-
-.details-box {
-    flex:1;
-    background:#f4f4f4;
-    padding:20px;
-    border-radius:10px;
-    border:1px solid #ddd;
-}
-
-.details-box h3 {
-    margin-bottom:20px;
-    font-size:18px;
-}
-
-.detail-item {
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:12px;
-    font-size:14px;
-}
-
-.section-title {
-    margin-top:30px;
-    font-size:18px;
-}
-
-.panchang-box {
-    margin-top:15px;
-    background:#f4f4f4;
-    padding:20px;
-    border-radius:10px;
-    border:1px solid #ddd;
-}
-
-</style>
 
 <section class="kundli-section">
 <div class="kundli-container">
@@ -218,9 +142,8 @@ function decimalToDMS($degree)
 
 <!-- ================= PANCHANG DETAILS ================= -->
 
-<h3 class="section-title">Panchang Details</h3>
-
-<div class="panchang-box">
+<div class="details-box" style="margin-top:20px;">
+    <h3>Panchang Details</h3>
 
     <div class="detail-item">
         <span>Tithi</span>

@@ -70,6 +70,11 @@ $CSS_VER = "3.2." . time(); // Cache buster
                 </div>
                 <a href="#">Horoscopes ▾</a>
                 <a href="#">Eng ▾</a>
+                <!-- Desktop Theme Toggle -->
+                <button class="theme-btn desk-theme-btn" aria-label="Toggle theme" style="margin-right: 15px;">
+                    <span class="icon-moon">🌙</span>
+                    <span class="icon-sun">☀️</span>
+                </button>
                 <!-- Login on mobile moves inside menu, on desktop stays top right -->
                 <button class="login-btn">Login</button>
             </div>
@@ -92,14 +97,14 @@ $CSS_VER = "3.2." . time(); // Cache buster
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // Theme toggle
-    const themeBtn = document.getElementById('themeToggle');
-    if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
+    const themeBtns = document.querySelectorAll('.theme-btn');
+    themeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
             document.documentElement.classList.toggle('light-theme');
             const isLight = document.documentElement.classList.contains('light-theme');
             localStorage.setItem('astroTheme', isLight ? 'light' : 'dark');
         });
-    }
+    });
 
     // Hamburger toggle
     const hamburger = document.getElementById('hamburgerBtn');
