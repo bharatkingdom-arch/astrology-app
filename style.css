@@ -140,7 +140,7 @@ h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;line-height:1.
   transition:opacity .15s;
 }
 .login-btn:hover{opacity:.85}
-.mobile-controls{display:flex;align-items:center;gap:var(--s2)}
+.mobile-controls{display:none} /* Hidden on desktop */
 .theme-btn{
   background:transparent;border:1px solid var(--border-hover);color:var(--text-1);
   width:32px;height:32px;border-radius:50%;display:flex;justify-content:center;align-items:center;
@@ -576,7 +576,8 @@ tr:hover td{background:var(--bg-card-hover)}
   .dropdown{display:block}
   .dropdown-content{position:static;transform:none;border:none;box-shadow:none;border-radius:0;min-width:auto;background:var(--bg-secondary);margin-top:5px}
   .dropdown-content a{padding-left:16px;font-size:14px}
-  .theme-btn{margin:0} /* Reset override */
+  .mobile-controls{display:flex;align-items:center;gap:var(--s3)}
+  .top-menu .theme-btn{display:none} /* Hide desktop theme btn on mobile */
   .login-btn{margin:12px 0;width:100%;display:block;text-align:center;padding:12px}
   .hero-right h1{font-size:28px}
   .hero-desc{font-size:14px}

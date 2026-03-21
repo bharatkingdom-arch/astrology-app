@@ -1,7 +1,7 @@
 <?php
 // Base URL for routing
 $BASE_URL = "/";
-$CSS_VER = "3.1." . time(); // Cache buster
+$CSS_VER = "3.2." . time(); // Cache buster
 ?>
 <!DOCTYPE html>
 <html lang="en">
