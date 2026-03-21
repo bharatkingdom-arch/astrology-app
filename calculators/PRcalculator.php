@@ -422,7 +422,7 @@ $transitChartFinal = $transitChart;   // ✅ SAVE TRANSIT CHART
     text-align:center;
 }
 
-/* Force the chart and table to strictly follow the width */
+/* Force the chart and table to strictly follow both width and height */
 .chart-box .south-chart {
     width: 520px !important;
     max-width: 520px !important;
@@ -434,11 +434,23 @@ $transitChartFinal = $transitChart;   // ✅ SAVE TRANSIT CHART
     table-layout: fixed !important;
 }
 
-/* Ensure center box content doesn't push width */
-.chart-box .center-box {
-    word-break: break-all;
+/* Fixed height cells — prevents rows from stretching due to content */
+.chart-box .south-chart td {
+    height: 115px !important;
+    max-height: 115px !important;
+    overflow: hidden !important;
+    vertical-align: top !important;
+    font-size: 13px;
+}
+
+/* Center cell is taller since it spans 2 rows */
+.chart-box .south-chart td.center-box {
+    height: 230px !important;
+    max-height: 230px !important;
+    overflow: auto !important;
     font-size: 12px;
-    padding: 2px;
+    word-break: break-word;
+    padding: 4px;
 }
 
 /* IMPORTANT: remove width forcing */
