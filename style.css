@@ -1627,12 +1627,21 @@ html:not(.light-theme) .icon-moon { display: none; }
 
 .south-chart td {
     border: 2px solid var(--accent);
-    height: 95px;
     vertical-align: top;
-    padding: 8px;
+    padding: 0;
     font-size: 13px;
     background: var(--bg-card);
     color: var(--text-primary);
+}
+
+.south-chart td .cell-content {
+    height: 110px;
+    overflow: hidden;
+    padding: 8px;
+}
+
+.south-chart td.center-box .cell-content {
+    height: 220px;
 }
 
 .center-box {

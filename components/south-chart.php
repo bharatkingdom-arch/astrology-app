@@ -36,11 +36,17 @@ if (!isset($chartCenter)) {
 
 .south-chart td {
     border: 2px solid #2b2b2b; /* SAME thickness everywhere */
-    height: 110px;
     vertical-align: top;
-    padding: 6px;
+    padding: 0;
     font-size: 14px;
     background: #d6cdb9;
+}
+
+/* Fixed height wrapper inside each cell */
+.south-chart td .cell-content {
+    height: 110px;
+    overflow: hidden;
+    padding: 6px;
 }
 
 .south-chart td.highlight {
@@ -53,6 +59,11 @@ if (!isset($chartCenter)) {
     font-size: 13px;
     line-height: 1.6;
 }
+
+/* Center box content wrapper - taller since it spans 2 rows */
+.south-chart td.center-box .cell-content {
+    height: 220px;
+}
 </style>
 <div class="south-chart">
 
@@ -60,61 +71,61 @@ if (!isset($chartCenter)) {
 
 <tr>
 <td class="<?= ($lagnaHouse==12)?'highlight':'' ?>">
-    <?= $chart[12] ?? '' ?>
+    <div class="cell-content"><?= $chart[12] ?? '' ?></div>
 </td>
 
 <td class="<?= ($lagnaHouse==1)?'highlight':'' ?>">
-    <?= $chart[1] ?? '' ?>
+    <div class="cell-content"><?= $chart[1] ?? '' ?></div>
 </td>
 
 <td class="<?= ($lagnaHouse==2)?'highlight':'' ?>">
-    <?= $chart[2] ?? '' ?>
+    <div class="cell-content"><?= $chart[2] ?? '' ?></div>
 </td>
 
 <td class="<?= ($lagnaHouse==3)?'highlight':'' ?>">
-    <?= $chart[3] ?? '' ?>
+    <div class="cell-content"><?= $chart[3] ?? '' ?></div>
 </td>
 </tr>
 
 <tr>
 <td class="<?= ($lagnaHouse==11)?'highlight':'' ?>">
-    <?= $chart[11] ?? '' ?>
+    <div class="cell-content"><?= $chart[11] ?? '' ?></div>
 </td>
 
 <td colspan="2" rowspan="2" class="center-box">
-    <?= $chartCenter ?>
+    <div class="cell-content"><?= $chartCenter ?></div>
 </td>
 
 <td class="<?= ($lagnaHouse==4)?'highlight':'' ?>">
-    <?= $chart[4] ?? '' ?>
+    <div class="cell-content"><?= $chart[4] ?? '' ?></div>
 </td>
 </tr>
 
 <tr>
 <td class="<?= ($lagnaHouse==10)?'highlight':'' ?>">
-    <?= $chart[10] ?? '' ?>
+    <div class="cell-content"><?= $chart[10] ?? '' ?></div>
 </td>
 
 <td class="<?= ($lagnaHouse==5)?'highlight':'' ?>">
-    <?= $chart[5] ?? '' ?>
+    <div class="cell-content"><?= $chart[5] ?? '' ?></div>
 </td>
 </tr>
 
 <tr>
 <td class="<?= ($lagnaHouse==9)?'highlight':'' ?>">
-    <?= $chart[9] ?? '' ?>
+    <div class="cell-content"><?= $chart[9] ?? '' ?></div>
 </td>
 
 <td class="<?= ($lagnaHouse==8)?'highlight':'' ?>">
-    <?= $chart[8] ?? '' ?>
+    <div class="cell-content"><?= $chart[8] ?? '' ?></div>
 </td>
 
 <td class="<?= ($lagnaHouse==7)?'highlight':'' ?>">
-    <?= $chart[7] ?? '' ?>
+    <div class="cell-content"><?= $chart[7] ?? '' ?></div>
 </td>
 
 <td class="<?= ($lagnaHouse==6)?'highlight':'' ?>">
-    <?= $chart[6] ?? '' ?>
+    <div class="cell-content"><?= $chart[6] ?? '' ?></div>
 </td>
 </tr>
 
