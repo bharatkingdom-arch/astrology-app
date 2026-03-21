@@ -407,61 +407,15 @@ $transitChartFinal = $transitChart;   // ✅ SAVE TRANSIT CHART
 
 
 <style>
-.chart-row{
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-    gap:40px;
-    margin:40px 0;
-    flex-wrap: wrap; 
-}
-
-.chart-box{
-    flex: 0 0 520px; /* Rigid width, no grow, no shrink */
-    max-width: 520px;
-    text-align:center;
-}
-
-/* Force the chart and table to strictly follow both width and height */
-.chart-box .south-chart {
-    width: 520px !important;
-    max-width: 520px !important;
-    margin: 10px auto !important;
-}
-
-.chart-box .south-chart table {
-    width: 100% !important;
-    table-layout: fixed !important;
-}
-
-/* Fixed height cells — prevents rows from stretching due to content */
-.chart-box .south-chart td {
-    height: 115px !important;
-    max-height: 115px !important;
-    overflow: hidden !important;
-    vertical-align: top !important;
-    font-size: 13px;
-}
-
-/* Center cell is taller since it spans 2 rows */
-.chart-box .south-chart td.center-box {
-    height: 230px !important;
-    max-height: 230px !important;
-    overflow: auto !important;
-    font-size: 12px;
-    word-break: break-word;
-    padding: 4px;
-}
-
 /* IMPORTANT: remove width forcing */
 .table-box{
     width:auto !important;
 }
 </style>
 
-<div class="chart-row">
+<div style="display:flex; justify-content:center; align-items:flex-start; gap:40px; margin:40px 0; flex-wrap:wrap;">
 
-    <div class="chart-box">
+    <div style="width:520px; min-width:520px; max-width:520px; text-align:center;">
     <h4>PR South Chart</h4>
 
     <?php
@@ -476,7 +430,7 @@ $transitChartFinal = $transitChart;   // ✅ SAVE TRANSIT CHART
     ?>
 </div>
 
-    <div class="chart-box">
+    <div style="width:520px; min-width:520px; max-width:520px; text-align:center;">
     <h4>Transit South Chart</h4>
 
     <?php
