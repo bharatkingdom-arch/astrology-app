@@ -40,6 +40,7 @@ if (!isset($chartCenter)) {
     padding: 0;
     font-size: 14px;
     background: #d6cdb9;
+    color: #2b2b2b !important; /* Dark text on light background */
 }
 
 /* Fixed height wrapper inside each cell */

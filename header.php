@@ -40,8 +40,15 @@ $BASE_URL = "/";
             <div class="logo-text">Astroloak</div>
         </div>
 
+        <!-- HAMBURGER BUTTON (mobile only) -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open Menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+
         <!-- MENU SECTION -->
-        <div class="menu-section">
+        <div class="menu-section" id="menuSection">
 
             <!-- TOP MENU -->
             <div class="top-menu">
@@ -81,12 +88,29 @@ $BASE_URL = "/";
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Theme toggle
         const toggleBtn = document.getElementById('themeToggle');
-
         toggleBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('light-theme');
             const isLight = document.documentElement.classList.contains('light-theme');
             localStorage.setItem('astroTheme', isLight ? 'light' : 'dark');
+        });
+
+        // Hamburger menu toggle
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const menuSection = document.getElementById('menuSection');
+
+        hamburgerBtn.addEventListener('click', () => {
+            hamburgerBtn.classList.toggle('active');
+            menuSection.classList.toggle('menu-open');
+        });
+
+        // Close menu when a link is clicked (mobile)
+        menuSection.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburgerBtn.classList.remove('active');
+                menuSection.classList.remove('menu-open');
+            });
         });
     });
 </script>
