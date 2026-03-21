@@ -25,6 +25,7 @@ if (!isset($chartCenter)) {
 .south-chart {
     max-width: 520px;
     margin: 25px auto;
+    overflow-x: auto;
 }
 
 .south-chart table {
@@ -43,10 +44,9 @@ if (!isset($chartCenter)) {
     color: #2b2b2b !important; /* Dark text on light background */
 }
 
-/* Fixed height wrapper inside each cell */
+/* Flexible minimum height wrapper inside each cell */
 .south-chart td .cell-content {
-    height: 110px;
-    overflow: hidden;
+    min-height: 110px;
     padding: 6px;
 }
 
@@ -63,7 +63,7 @@ if (!isset($chartCenter)) {
 
 /* Center box content wrapper - taller since it spans 2 rows */
 .south-chart td.center-box .cell-content {
-    height: 220px;
+    min-height: 220px;
 }
 </style>
 <div class="south-chart">
