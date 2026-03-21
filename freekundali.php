@@ -18,12 +18,19 @@ $planets = [];
 
 if (isset($_POST['generate'])) {
 
-    $year   = intval($_POST['year'] ?? 0);
-    $month  = intval($_POST['month'] ?? 0);
-    $day    = intval($_POST['day'] ?? 0);
-    $hour   = intval($_POST['hour'] ?? 0);
-    $minute = intval($_POST['minute'] ?? 0);
-    $second = intval($_POST['second'] ?? 0);
+    /* Parse native date picker (YYYY-MM-DD) */
+    $birthDate = $_POST['birth_date'] ?? '';
+    $birthTime = $_POST['birth_time'] ?? '00:00:00';
+
+    $dateParts = explode('-', $birthDate);
+    $timeParts = explode(':', $birthTime);
+
+    $year   = intval($dateParts[0] ?? 0);
+    $month  = intval($dateParts[1] ?? 0);
+    $day    = intval($dateParts[2] ?? 0);
+    $hour   = intval($timeParts[0] ?? 0);
+    $minute = intval($timeParts[1] ?? 0);
+    $second = intval($timeParts[2] ?? 0);
 
     if ($year > 0 && $month > 0 && $day > 0) {
 
@@ -187,16 +194,11 @@ Logged in as: <?= htmlspecialchars($login_user) ?>
 <option>Female</option>
 </select>
 
-<label>Birth Details*</label>
+<label>Birth Date*</label>
+<input type="date" name="birth_date" required>
 
-<div class="birth-grid">
-<input type="number" name="day" placeholder="Day" min="1" max="31" required>
-<input type="number" name="month" placeholder="Month" min="1" max="12" required>
-<input type="number" name="year" placeholder="Year" required>
-<input type="number" name="hour" placeholder="Hour" min="0" max="23">
-<input type="number" name="minute" placeholder="Minute" min="0" max="59">
-<input type="number" name="second" placeholder="Second">
-</div>
+<label>Birth Time</label>
+<input type="time" name="birth_time" step="1" value="00:00:00">
 
 <label>Birth Place*</label>
 

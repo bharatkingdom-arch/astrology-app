@@ -504,10 +504,10 @@ html:not(.light-theme) .icon-moon { display: none; }
 .services {
     width: 90%;
     max-width: 1300px;
-    margin: -50px auto 0 auto;
+    margin: -30px auto 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
     position: relative;
     z-index: 2;
 }
@@ -517,7 +517,7 @@ html:not(.light-theme) .icon-moon { display: none; }
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     text-align: center;
-    padding: 32px 20px;
+    padding: 24px 16px;
     cursor: pointer;
     transition: all 0.4s var(--ease);
     position: relative;
@@ -554,25 +554,25 @@ html:not(.light-theme) .icon-moon { display: none; }
 .icon {
     position: relative;
     z-index: 1;
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    margin: 0 auto 16px auto;
+    margin: 0 auto 12px auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 28px;
+    font-size: 22px;
     transition: transform 0.3s var(--ease);
 }
 
 .service-card:hover .icon {
-    transform: scale(1.15);
+    transform: scale(1.1);
 }
 
-.pink   { background: linear-gradient(135deg, #ff7eb9, #ff4080); box-shadow: 0 8px 25px rgba(255,126,185,0.3); }
-.green  { background: linear-gradient(135deg, #3ddc97, #00b068); box-shadow: 0 8px 25px rgba(61,220,151,0.3); }
-.blue   { background: linear-gradient(135deg, #4a90e2, #2563eb); box-shadow: 0 8px 25px rgba(74,144,226,0.3); }
-.orange { background: linear-gradient(135deg, #ff9f43, #e67e22); box-shadow: 0 8px 25px rgba(255,159,67,0.3); }
+.pink   { background: linear-gradient(135deg, #f0a0b8, #d05080); box-shadow: 0 6px 18px rgba(208,80,128,0.25); }
+.green  { background: linear-gradient(135deg, #5ec6a0, #2a9d6e); box-shadow: 0 6px 18px rgba(42,157,110,0.25); }
+.blue   { background: linear-gradient(135deg, #7ba4e8, #3b6fd4); box-shadow: 0 6px 18px rgba(59,111,212,0.25); }
+.orange { background: linear-gradient(135deg, #f0b060, #d08830); box-shadow: 0 6px 18px rgba(208,136,48,0.25); }
 
 
 /* ===================================================== */
@@ -637,7 +637,7 @@ html:not(.light-theme) .icon-moon { display: none; }
 .comp-card {
     background: var(--grad-card);
     border: 1px solid var(--border);
-    padding: 40px 28px;
+    padding: 28px 22px;
     border-radius: var(--radius-md);
     text-align: center;
     transition: all 0.4s var(--ease);
@@ -680,16 +680,16 @@ html:not(.light-theme) .icon-moon { display: none; }
 }
 
 .comp-icon {
-    width: 80px;
-    height: 80px;
+    width: 56px;
+    height: 56px;
     background: rgba(244,196,48,0.1);
     border: 1px solid var(--border-accent);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 34px;
-    margin: 0 auto 24px auto;
+    font-size: 24px;
+    margin: 0 auto 18px auto;
     transition: all 0.3s var(--ease);
 }
 
