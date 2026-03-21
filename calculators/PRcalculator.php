@@ -413,21 +413,32 @@ $transitChartFinal = $transitChart;   // ✅ SAVE TRANSIT CHART
     align-items:flex-start;
     gap:40px;
     margin:40px 0;
-    flex-wrap: wrap; /* Ensure responsiveness */
+    flex-wrap: wrap; 
 }
 
 .chart-box{
-    flex: 1;
+    flex: 0 0 520px; /* Rigid width, no grow, no shrink */
     max-width: 520px;
-    min-width: 450px; /* Prevent it from getting too small */
     text-align:center;
 }
 
-/* Ensure the chart inside takes full width of the box */
+/* Force the chart and table to strictly follow the width */
 .chart-box .south-chart {
-    width: 100% !important;
+    width: 520px !important;
     max-width: 520px !important;
     margin: 10px auto !important;
+}
+
+.chart-box .south-chart table {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+/* Ensure center box content doesn't push width */
+.chart-box .center-box {
+    word-break: break-all;
+    font-size: 12px;
+    padding: 2px;
 }
 
 /* IMPORTANT: remove width forcing */
