@@ -1,6 +1,5 @@
 <?php
-// Since DocumentRoot is /var/www/html/astrolook
-// Base URL should always be root "/"
+// Base URL for routing
 $BASE_URL = "/";
 ?>
 <!DOCTYPE html>
@@ -9,6 +8,7 @@ $BASE_URL = "/";
     <meta charset="UTF-8">
     <title>Astroloak</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Astroloak — India's trusted astrology platform for Free Kundli, Horoscope, and Astrologer consultations.">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,96 +21,101 @@ $BASE_URL = "/";
     <!-- Places Autocomplete CSS -->
     <link rel="stylesheet" href="<?= $BASE_URL ?>css/places.css">
 
-    <!-- Theme Initialization Script (Prevents FOUC) -->
+    <!-- Theme initialization (prevents FOUC) -->
     <script>
         if (localStorage.getItem('astroTheme') === 'light') {
             document.documentElement.classList.add('light-theme');
         }
     </script>
-
 </head>
 <body>
 
+<!-- ==================== NAVBAR ==================== -->
 <header class="navbar">
-    <div class="nav-wrapper">
+    <nav class="nav-wrapper">
 
-        <!-- LOGO SECTION -->
-        <div class="logo-section">
-            <div class="logo-circle">☀</div>
+        <!-- Logo -->
+        <a href="<?= $BASE_URL ?>" class="logo-section">
+            <div class="logo-circle">✦</div>
             <div class="logo-text">Astroloak</div>
-        </div>
+        </a>
 
-        <!-- HAMBURGER BUTTON (mobile only) -->
-        <button class="hamburger" id="hamburgerBtn" aria-label="Open Menu">
+        <!-- Hamburger (mobile) -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false">
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
         </button>
 
-        <!-- MENU SECTION -->
-        <div class="menu-section" id="menuSection">
+        <!-- Menu -->
+        <div class="menu-section" id="menuSection" role="navigation">
 
-            <!-- TOP MENU -->
+            <!-- Primary nav -->
             <div class="top-menu">
                 <a href="<?= $BASE_URL ?>freekundali.php">Free Kundli</a>
                 <a href="#">Kundli Matching</a>
                 <a href="#">Compatibility</a>
                 <div class="dropdown">
-    <a href="#">Calculators ▼</a>
-    <div class="dropdown-content">
-        <a href="<?= $BASE_URL ?>calculators/PRcalculator.php">PR Calculator</a>
-        
-        <!-- Add more calculators here -->
-    </div>
-</div>
-                <a href="#">Horoscopes ▼</a>
-                <a href="#">Eng ▼</a>
-                <button class="theme-btn" id="themeToggle" aria-label="Toggle Theme">
+                    <a href="#">Calculators ▾</a>
+                    <div class="dropdown-content">
+                        <a href="<?= $BASE_URL ?>calculators/PRcalculator.php">PR Calculator</a>
+                    </div>
+                </div>
+                <a href="#">Horoscopes ▾</a>
+                <a href="#">Eng ▾</a>
+                <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
                     <span class="icon-moon">🌙</span>
                     <span class="icon-sun">☀️</span>
                 </button>
                 <button class="login-btn">Login</button>
             </div>
 
-            <!-- BOTTOM MENU -->
+            <!-- Secondary nav -->
             <div class="bottom-menu">
-                <a href="#">Best Astrologers ▼</a>
+                <a href="#">Best Astrologers ▾</a>
                 <a href="#">Chat with Astrologer</a>
                 <a href="#">Talk to Astrologer</a>
                 <a href="#">Astromall</a>
                 <a href="#">Astroloak Store</a>
-                <a href="#">Blogs ▼</a>
+                <a href="#">Blogs ▾</a>
             </div>
 
         </div>
-    </div>
+    </nav>
 </header>
 
+<!-- ==================== SCRIPTS ==================== -->
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Theme toggle
-        const toggleBtn = document.getElementById('themeToggle');
-        toggleBtn.addEventListener('click', () => {
+document.addEventListener('DOMContentLoaded', () => {
+    // Theme toggle
+    const themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('light-theme');
             const isLight = document.documentElement.classList.contains('light-theme');
             localStorage.setItem('astroTheme', isLight ? 'light' : 'dark');
         });
+    }
 
-        // Hamburger menu toggle
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const menuSection = document.getElementById('menuSection');
+    // Hamburger toggle
+    const hamburger = document.getElementById('hamburgerBtn');
+    const menu = document.getElementById('menuSection');
 
-        hamburgerBtn.addEventListener('click', () => {
-            hamburgerBtn.classList.toggle('active');
-            menuSection.classList.toggle('menu-open');
+    if (hamburger && menu) {
+        hamburger.addEventListener('click', () => {
+            const isOpen = hamburger.classList.toggle('active');
+            menu.classList.toggle('menu-open');
+            hamburger.setAttribute('aria-expanded', isOpen.toString());
         });
 
-        // Close menu when a link is clicked (mobile)
-        menuSection.querySelectorAll('a').forEach(link => {
+        // Close menu on link click
+        menu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
-                hamburgerBtn.classList.remove('active');
-                menuSection.classList.remove('menu-open');
+                hamburger.classList.remove('active');
+                menu.classList.remove('menu-open');
+                hamburger.setAttribute('aria-expanded', 'false');
             });
         });
-    });
+    }
+});
 </script>
