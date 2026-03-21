@@ -2,14 +2,12 @@
 
     <div class="hero-container">
 
-        <div class="hero-left">
-            <img src="assets/images/yourimage.jpg" alt="Astrologer">
-        </div>
-
         <div class="hero-right">
             <h4>200+ Celebs recommend Astroloak</h4>
             <h1>Chat With Astrologer</h1>
-            <a href="#" class="chat-btn">Chat Now</a>
+            <p class="hero-desc">Get instant astrology consultations from India's top verified astrologers. Available 24/7 via chat, call, or video.</p>
+            <a href="#" class="chat-btn">💬 Chat Now</a>
+            <a href="#" class="call-btn">📞 Talk Now</a>
         </div>
 
     </div>
