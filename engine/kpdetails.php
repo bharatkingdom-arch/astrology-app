@@ -113,7 +113,7 @@ $signPositions = [
 <div class="table-box" style="text-align:center">
 <h3>Bhava Chart (KP)</h3>
 
-<svg width="400" height="400" style="background:#e6e0cf">
+<svg viewBox="0 0 400 400" width="100%" style="background:#e6e0cf; max-width:400px; height:auto;">
 
 <!-- Outer Border -->
 <rect x="0" y="0" width="400" height="400" fill="none" stroke="#444" stroke-width="2"/>

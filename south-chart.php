@@ -234,7 +234,7 @@ $positions = [
     9 => [10,320], 8=>[110,320], 7=>[210,320], 6=>[310,320],
 ];
 
-echo '<svg width="400" height="400" style="background:#e6e0cf">';
+echo '<svg viewBox="0 0 400 400" width="100%" style="background:#e6e0cf; max-width:400px; height:auto;">';
 
 if ($lagnaRasi !== null && isset($positions[$lagnaRasi])) {
     $x = floor($positions[$lagnaRasi][0] / 100) * 100;
