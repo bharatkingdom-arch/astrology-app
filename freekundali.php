@@ -204,7 +204,7 @@ Logged in as: <?= htmlspecialchars($login_user) ?>
 
 <input type="text" id="birth_place" name="birthplace" placeholder="Enter a location" autocomplete="off" required>
 
-<div id="place_suggestions" class="place-suggestions"></div>
+<div id="place_suggestions" class="place-suggestions" style="display:none;"></div>
 
 <input type="hidden" id="latitude" name="latitude">
 <input type="hidden" id="longitude" name="longitude">
@@ -267,6 +267,7 @@ const text = this.value;
 
 if(text.length < 3){
 suggestions.innerHTML="";
+suggestions.style.display="none";
 return;
 }
 
@@ -278,6 +279,7 @@ let res = await fetch(url);
 let data = await res.json();
 
 suggestions.innerHTML = "";
+suggestions.style.display = "block";
 
 if(!data.features.length){
 suggestions.innerHTML = "<div class='place-empty'>No results</div>";
@@ -299,6 +301,7 @@ document.getElementById("latitude").value = place.properties.lat;
 document.getElementById("longitude").value = place.properties.lon;
 
 suggestions.innerHTML = "";
+suggestions.style.display = "none";
 
 };
 

@@ -26,9 +26,11 @@ if (!isset($chartCenter)) {
     max-width: 520px;
     margin: 25px auto;
     overflow-x: auto;
+    padding: 4px;
 }
 
 .south-chart table {
+    min-width: 440px;
     width: 100%;
     border-collapse: collapse; /* IMPORTANT */
     table-layout: fixed;
