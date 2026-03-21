@@ -411,12 +411,23 @@ $transitChartFinal = $transitChart;   // ✅ SAVE TRANSIT CHART
     display:flex;
     justify-content:center;
     align-items:flex-start;
-    gap:60px;
+    gap:40px;
     margin:40px 0;
+    flex-wrap: wrap; /* Ensure responsiveness */
 }
 
 .chart-box{
+    flex: 1;
+    max-width: 520px;
+    min-width: 450px; /* Prevent it from getting too small */
     text-align:center;
+}
+
+/* Ensure the chart inside takes full width of the box */
+.chart-box .south-chart {
+    width: 100% !important;
+    max-width: 520px !important;
+    margin: 10px auto !important;
 }
 
 /* IMPORTANT: remove width forcing */
