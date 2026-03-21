@@ -1,6 +1,7 @@
 <?php
 // Base URL for routing
 $BASE_URL = "/";
+$CSS_VER = "3.0." . time(); // Cache buster
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,11 +16,11 @@ $BASE_URL = "/";
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="<?= $BASE_URL ?>style.css">
+    <!-- Main CSS with Cache Buster -->
+    <link rel="stylesheet" href="<?= $BASE_URL ?>style.css?v=<?= $CSS_VER ?>">
 
     <!-- Places Autocomplete CSS -->
-    <link rel="stylesheet" href="<?= $BASE_URL ?>css/places.css">
+    <link rel="stylesheet" href="<?= $BASE_URL ?>css/places.css?v=<?= $CSS_VER ?>">
 
     <!-- Theme initialization (prevents FOUC) -->
     <script>
