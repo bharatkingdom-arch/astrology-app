@@ -24,14 +24,14 @@ if (!isset($chartCenter)) {
 <style>
 .south-chart {
     width: 100%;
-    max-width: 100%;
+    max-width: 400px;
     margin: 25px auto;
     overflow-x: auto;
     padding: 4px;
 }
 
 .south-chart table {
-    min-width: 440px;
+    min-width: 360px;
     width: 100%;
     border-collapse: collapse; /* IMPORTANT */
     table-layout: fixed;
@@ -49,7 +49,7 @@ if (!isset($chartCenter)) {
 
 /* Flexible minimum height wrapper inside each cell */
 .south-chart td .cell-content {
-    min-height: 110px;
+    min-height: 90px;
     padding: 6px;
 }
 
@@ -66,7 +66,7 @@ if (!isset($chartCenter)) {
 
 /* Center box content wrapper - taller since it spans 2 rows */
 .south-chart td.center-box .cell-content {
-    min-height: 220px;
+    min-height: 180px;
 }
 </style>
 <div class="south-chart">
