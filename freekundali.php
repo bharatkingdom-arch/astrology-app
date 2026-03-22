@@ -195,10 +195,10 @@ Logged in as: <?= htmlspecialchars($login_user) ?>
 </select>
 
 <label>Birth Date*</label>
-<input type="date" name="birth_date" required>
+<input type="text" id="birth_date" name="birth_date" placeholder="Select Date" required>
 
 <label>Birth Time</label>
-<input type="time" name="birth_time" step="1" value="00:00:00">
+<input type="text" id="birth_time" name="birth_time" placeholder="Select Time" required>
 
 <label>Birth Place*</label>
 
@@ -311,6 +311,24 @@ suggestions.appendChild(item);
 
 },300);
 
+});
+
+/* ================= FLATPICKR INITIALIZATION ================= */
+flatpickr("#birth_date", {
+    altInput: true,
+    altFormat: "F j, Y",
+    dateFormat: "Y-m-d",
+    defaultDate: "1990-01-01",
+    maxDate: "today"
+});
+
+flatpickr("#birth_time", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i:S",
+    time_24hr: true,
+    enableSeconds: true,
+    defaultDate: "00:00:00"
 });
 
 </script>

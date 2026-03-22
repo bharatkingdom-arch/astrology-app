@@ -22,6 +22,10 @@ $CSS_VER = "3.2." . time(); // Cache buster
     <!-- Places Autocomplete CSS -->
     <link rel="stylesheet" href="<?= $BASE_URL ?>css/places.css?v=<?= $CSS_VER ?>">
 
+    <!-- Flatpickr Date/Time Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <!-- Theme initialization (prevents FOUC) -->
     <script>
         if (localStorage.getItem('astroTheme') === 'light') {
