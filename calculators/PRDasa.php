@@ -209,12 +209,12 @@ require '../header.php';
 ?>
 
 <style>
-.pr-container{max-width:1200px;margin:30px auto;font-family:Arial;}
-.pr-card{background:#fff;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:18px;border:1px solid #eee;}
-.pr-header{padding:15px 20px;cursor:pointer;font-weight:bold;background:#f7f7f7;}
-.pr-content{display:none;padding:15px;border-top:1px solid #eee;}
-.pr-pada{margin-top:14px;border:1px solid #ddd;border-radius:8px;}
-.pr-pada-header{padding:10px 15px;cursor:pointer;background:#fafafa;font-weight:600;}
+.pr-container{max-width:1200px;margin:30px auto;font-family:inherit;}
+.pr-card{background:var(--bg-tertiary);border-radius:var(--r-lg);box-shadow:var(--sh-md);margin-bottom:18px;border:1px solid var(--border);}
+.pr-header{padding:15px 20px;cursor:pointer;font-weight:bold;background:var(--bg-secondary);border-radius:var(--r-lg) var(--r-lg) 0 0;}
+.pr-content{display:none;padding:15px;border-top:1px solid var(--border);}
+.pr-pada{margin-top:14px;border:1px solid var(--border);border-radius:var(--r-md);}
+.pr-pada-header{padding:10px 15px;cursor:pointer;background:var(--bg-primary);font-weight:600;border-radius:var(--r-md) var(--r-md) 0 0;}
 .pr-pada-content{display:none;padding:12px 15px;}
 
 .pr-part-header,
@@ -224,18 +224,20 @@ grid-template-columns:60px 190px 190px 120px 120px 120px;
 gap:20px;
 align-items:center;
 font-size:13px;
+color:var(--text-1);
 }
 
 .pr-part-header{
 font-weight:bold;
-border-bottom:2px solid #ddd;
+color:var(--amber);
+border-bottom:2px solid var(--border);
 padding-bottom:6px;
 margin-bottom:6px;
 }
 
 .pr-part{
 padding:6px 0;
-border-bottom:1px dashed #eee;
+border-bottom:1px dashed var(--border);
 }
 </style>
 

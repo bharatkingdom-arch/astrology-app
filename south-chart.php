@@ -181,7 +181,7 @@ if ($lagna !== null):
     list($nak, $pada) = getNakshatraPada($lagna);
 ?>
 
-<tr style="background:#fff6b3; font-weight:bold;">
+<tr style="background:var(--amber-subtle); color:var(--amber); font-weight:bold;">
     <td>Lagna</td>
     <td><?= $sign ?></td>
     <td><?= $dms ?></td>
