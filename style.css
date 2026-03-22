@@ -488,7 +488,11 @@ html:not(.light-theme) .icon-moon{display:none}
 .details-container{max-width:1000px;margin:var(--s7) auto}
 .details-row{display:flex;gap:var(--s6);margin-bottom:var(--s6)}
 .details-box{flex:1;background:var(--bg-tertiary);border:1px solid var(--border);padding:var(--s5);border-radius:var(--r-lg)}
-.details-box h4{color:var(--amber);font-size:13px;margin-bottom:var(--s3)}
+.details-box h4, .details-box h3{color:var(--amber);font-size:15px;margin-bottom:var(--s4)}
+.detail-item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px}
+.detail-item:last-child{border-bottom:none}
+.detail-item span:first-child{color:var(--text-2);font-weight:600}
+.detail-item span:last-child{text-align:right;color:var(--text-1)}
 
 
 /* ============================================================

@@ -27,7 +27,8 @@ if (!isset($chartCenter)) {
     max-width: 400px;
     margin: 25px auto;
     aspect-ratio: 1 / 1;
-    padding: 0;
+    padding: 2px; /* Prevent outer border from clipping */
+    box-sizing: border-box;
 }
 
 .south-chart table {
@@ -36,6 +37,7 @@ if (!isset($chartCenter)) {
     border-collapse: collapse; /* IMPORTANT */
     table-layout: fixed;
     background: #e6e0cf;
+    border: 2px solid #444; /* Force explicit outer boundary */
 }
 
 .south-chart td {

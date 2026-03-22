@@ -15,88 +15,7 @@ $houses    = $data['houses'] ?? [];   // ADD THIS
 
 <?php require 'header.php'; ?>
 
-<style>
 
-/* ================= TABS ================= */
-.kundli-tabs {
-    display:flex;
-    justify-content:space-between;
-    background:#f3f3f3;
-    border-radius:40px;
-    padding:6px;
-    margin:20px 0;
-}
-
-.kundli-tabs a {
-    flex:1;
-    text-align:center;
-    padding:10px 0;
-    text-decoration:none;
-    color:#333;
-    font-weight:500;
-    border-radius:30px;
-    transition:0.3s;
-}
-
-.kundli-tabs a:hover {
-    background:#eaeaea;
-}
-
-.kundli-tabs .active {
-    background:#f4c400;
-    font-weight:600;
-}
-
-/* ================= NORTH/SOUTH TOGGLE ================= */
-.chart-toggle {
-    text-align:center;
-    margin:15px 0 25px 0;
-}
-
-.chart-toggle a {
-    display:inline-block;
-    padding:8px 25px;
-    border-radius:25px;
-    text-decoration:none;
-    border:1px solid #ccc;
-    color:#333;
-    margin:0 8px;
-    transition:0.3s;
-}
-
-.chart-toggle .active-toggle {
-    background:#f4c400;
-    border:none;
-}
-
-/* ================= TABLE STYLING ================= */
-.table-box {
-    margin-top:30px;
-    padding:20px;
-    background:#f4f4f4;
-    border-radius:10px;
-}
-
-.table-box h4 {
-    margin-bottom:15px;
-}
-
-.table-box table {
-    width:100%;
-    border-collapse: collapse;
-}
-
-.table-box th {
-    background:#ddd;
-}
-
-.table-box th,
-.table-box td {
-    padding:8px;
-    border:1px solid #ccc;
-}
-
-</style>
 
 <section class="kundli-section">
 <div class="kundli-container">
@@ -163,7 +82,7 @@ if (isset($data['combust']) && $data['combust']) {
 
 <?php if (!empty($houses)): ?>
 
-<div class="table-box" style="background:#fdf7e6;">
+<div class="table-box">
 
 <h4>House Cusps (Placidus)</h4>
 
@@ -201,7 +120,7 @@ if (isset($data['combust']) && $data['combust']) {
 
 <?php if (!empty($panchanga)): ?>
 
-<div class="table-box" style="background:#f9f9f9;">
+<div class="table-box">
 
 <h4>Panchanga Details</h4>
 
