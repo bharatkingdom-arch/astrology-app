@@ -7,15 +7,38 @@ ini_set('display_errors', 1);
 ?>
 
 <style>
-.container { 
-    width: 1200px; 
-    margin: 30px auto; 
+.kundli-section { 
+    padding: 60px 0; 
+    min-height: 80vh;
 }
 
-.title { 
+.kundli-container { 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 0 20px;
+}
+
+.title-v3 { 
     text-align: center; 
-    font-size: 30px; 
-    margin-bottom: 30px; 
+    margin-bottom: 40px; 
+}
+
+.title-v3 h1 {
+    font-size: clamp(24px, 4vw, 34px);
+    margin-bottom: 10px;
+    font-family: 'Outfit', sans-serif;
+}
+
+.title-v3 p {
+    color: #666;
+    font-size: 15px;
+}
+
+.divider {
+    width: 36px;
+    height: 2px;
+    background: #f0a030;
+    margin: 15px auto;
 }
 
 .flex { 
@@ -77,20 +100,23 @@ input:focus {
     outline: none;
 }
 
-button {
+.submit-btn {
     margin-top: 30px;
     width: 100%;
     padding: 16px;
-    background: black;
-    color: yellow;
+    background: #000;
+    color: #f0a030;
     border: none;
     border-radius: 40px;
     font-size: 18px;
+    font-weight: 700;
     cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
 }
 
-button:hover { 
-    background: #222; 
+.submit-btn:hover { 
+    opacity: 0.9;
+    transform: translateY(-1px);
 }
 
 .result {
@@ -180,9 +206,14 @@ button:hover {
 }
 </style>
 
-<div class="container">
+<section class="kundli-section">
+<div class="kundli-container">
 
-<div class="title">Kundali Matching</div>
+<div class="title-v3">
+    <h1>Kundali Matching</h1>
+    <p>Check Vedic compatibility between Boy & Girl</p>
+    <div class="divider"></div>
+</div>
 
 <form method="GET">
 
@@ -246,7 +277,7 @@ button:hover {
 
 </div>
 
-<button type="submit">Generate Horoscope & Match</button>
+<button type="submit" class="submit-btn">Generate Horoscope & Match</button>
 
 </form>
 
@@ -355,9 +386,9 @@ if(isset($_GET['b_day'])){
         $mahendraResult = "Average Mahendra";
     }
 
-    echo "<div style='text-align:right; margin-bottom:10px;'>
-    <a href='kundali_matching.php'>
-    <button style='padding:8px 15px; background:#f1f5f9; color:#333; width:auto;'>🔄 New Match</button>
+    echo "<div style='text-align:right; margin-bottom:20px;'>
+    <a href='kundali_matching.php' class='new-match-btn'>
+    🔄 New Match
     </a></div>";
 
     echo "<div class='result'>";
@@ -397,5 +428,6 @@ if(isset($_GET['b_day'])){
 ?>
 
 </div>
+</section>
 
 <?php require __DIR__ . '/../bottom.php'; ?>
