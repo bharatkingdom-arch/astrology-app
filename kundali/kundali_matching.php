@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'header.php';
+require __DIR__ . '/../header.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -228,4 +228,4 @@ if(isset($_GET['b_day'])){
 
 </div>
 
-<?php require 'bottom.php'; ?>
+<?php require __DIR__ . '/../bottom.php'; ?>
