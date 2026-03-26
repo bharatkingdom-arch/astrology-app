@@ -56,20 +56,6 @@ th {background:#333; color:#fff;}
 
 <h2>Mahendra Matching</h2>
 
-<!-- ================= FORM ================= -->
-<form method="GET">
-<select name="boy">
-<option value="">Select Boy Nakshatra</option>
-<?php foreach($nak_order as $n) echo "<option value='$n'>$n</option>"; ?>
-</select>
-
-<select name="girl">
-<option value="">Select Girl Nakshatra</option>
-<?php foreach($nak_order as $n) echo "<option value='$n'>$n</option>"; ?>
-</select>
-
-<button>Check</button>
-</form>
 
 <?php
 if($boy && $girl){
