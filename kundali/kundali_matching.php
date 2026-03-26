@@ -7,38 +7,15 @@ ini_set('display_errors', 1);
 ?>
 
 <style>
-.kundli-section { 
-    padding: 60px 0; 
-    min-height: 80vh;
+.container { 
+    width: 1200px; 
+    margin: 30px auto; 
 }
 
-.kundli-container { 
-    max-width: 1200px; 
-    margin: 0 auto; 
-    padding: 0 20px;
-}
-
-.title-v3 { 
+.title { 
     text-align: center; 
-    margin-bottom: 40px; 
-}
-
-.title-v3 h1 {
-    font-size: clamp(24px, 4vw, 34px);
-    margin-bottom: 10px;
-    font-family: 'Outfit', sans-serif;
-}
-
-.title-v3 p {
-    color: #666;
-    font-size: 15px;
-}
-
-.divider {
-    width: 36px;
-    height: 2px;
-    background: #f0a030;
-    margin: 15px auto;
+    font-size: 30px; 
+    margin-bottom: 30px; 
 }
 
 .flex { 
@@ -100,72 +77,89 @@ input:focus {
     outline: none;
 }
 
-.submit-btn {
+button {
     margin-top: 30px;
     width: 100%;
     padding: 16px;
-    background: #000;
-    color: #f0a030;
+    background: black;
+    color: yellow;
     border: none;
     border-radius: 40px;
     font-size: 18px;
-    font-weight: 700;
     cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
 }
 
-.submit-btn:hover { 
-    opacity: 0.9;
-    transform: translateY(-1px);
+button:hover { 
+    background: #222; 
 }
 
 .result {
     margin-top: 30px;
-    padding: 20px;
+    padding: 25px;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 0 10px #ddd;
+}
+
+/* Table Styles */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+.data-table th, 
+.data-table td {
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.data-table th {
+    background-color: #f8f8f8;
+    font-weight: 700;
+    color: #333;
+}
+
+.data-table td {
+    background-color: #ffffff;
 }
 
 .match-table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    font-size: 15px;
-    background: #ffffff;
-    border-radius: 12px;
-    overflow: hidden;
+    font-size: 14px;
 }
 
 .match-table th, 
 .match-table td {
-    border: 1px solid #e2e8f0;
-    padding: 12px 16px;
+    border: 1px solid #ddd;
+    padding: 10px 12px;
     text-align: left;
-    vertical-align: top;
 }
 
 .match-table th {
-    background-color: #f8fafc;
+    background-color: #f8f8f8;
     font-weight: 700;
-    color: #1e293b;
-    width: 35%;
 }
 
 .score-highlight {
     font-weight: 800;
-    font-size: 20px;
+    font-size: 18px;
     color: #d97706;
 }
 
-.badge {
-    display: inline-block;
-    background: #fef3c7;
-    padding: 4px 12px;
-    border-radius: 40px;
-    font-weight: 600;
-    font-size: 13px;
-    margin-top: 6px;
+.section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 25px 0 15px 0;
+    padding: 8px 0;
+    border-bottom: 2px solid #f5a623;
+    color: #333;
 }
 
 .new-match-btn {
@@ -189,11 +183,11 @@ input:focus {
 
 .note-box {
     margin-top: 20px;
-    background: #eef2ff;
-    border-radius: 12px;
     padding: 12px 16px;
-    font-size: 13px;
+    background: #fff3e0;
+    border-radius: 8px;
     border-left: 4px solid #f5a623;
+    font-size: 13px;
 }
 
 @media(max-width:1000px){
@@ -203,17 +197,16 @@ input:focus {
     .container { 
         width: 95%; 
     }
+    .data-table th, .data-table td {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
 }
 </style>
 
-<section class="kundli-section">
-<div class="kundli-container">
+<div class="container">
 
-<div class="title-v3">
-    <h1>Kundali Matching</h1>
-    <p>Check Vedic compatibility between Boy & Girl</p>
-    <div class="divider"></div>
-</div>
+<div class="title">Kundali Matching</div>
 
 <form method="GET">
 
@@ -277,12 +270,12 @@ input:focus {
 
 </div>
 
-<button type="submit" class="submit-btn">Generate Horoscope & Match</button>
+<button type="submit">Generate Horoscope & Match</button>
 
 </form>
 
 <?php
-if(isset($_GET['b_day'])){
+if(isset($_GET['b_day']) && isset($_GET['b_month']) && isset($_GET['b_year'])){
 
     $b_date = $_GET['b_day'].".".$_GET['b_month'].".".$_GET['b_year'];
     $b_time = $_GET['b_hour'].":".$_GET['b_min'];
@@ -292,25 +285,26 @@ if(isset($_GET['b_day'])){
 
     $api = "https://www.astroloak.com/astroapi/calculate.php";
 
-    $b_url = $api . "?date=$b_date&time=$b_time&lat=".$_GET['b_lat']."&lon=".$_GET['b_lon']."&timezone=".$_GET['b_tz'];
-    $g_url = $api . "?date=$g_date&time=$g_time&lat=".$_GET['g_lat']."&lon=".$_GET['g_lon']."&timezone=".$_GET['g_tz'];
+    $b_url = $api . "?date=" . urlencode($b_date) . "&time=" . urlencode($b_time) . "&lat=" . $_GET['b_lat'] . "&lon=" . $_GET['b_lon'] . "&timezone=" . $_GET['b_tz'];
+    $g_url = $api . "?date=" . urlencode($g_date) . "&time=" . urlencode($g_time) . "&lat=" . $_GET['g_lat'] . "&lon=" . $_GET['g_lon'] . "&timezone=" . $_GET['g_tz'];
 
-    $b_data = json_decode(@file_get_contents($b_url), true);
-    $g_data = json_decode(@file_get_contents($g_url), true);
+    $b_json = @file_get_contents($b_url);
+    $g_json = @file_get_contents($g_url);
+    
+    $b_data = $b_json ? json_decode($b_json, true) : null;
+    $g_data = $g_json ? json_decode($g_json, true) : null;
 
     if(
         !$b_data || !$g_data ||
         !isset($b_data['planets']['Moon']['decimal']) ||
         !isset($g_data['planets']['Moon']['decimal'])
     ){
-        echo "<div class='result'>❌ API not responding properly</div>";
-        exit;
-    }
+        echo "<div class='result'>❌ API not responding properly. Please check your birth details.</div>";
+    } else {
+        $boyMoon  = $b_data['planets']['Moon']['decimal'];
+        $girlMoon = $g_data['planets']['Moon']['decimal'];
 
-    $boyMoon  = $b_data['planets']['Moon']['decimal'];
-    $girlMoon = $g_data['planets']['Moon']['decimal'];
-
-    function getNakshatraPada($moon){
+        // Nakshatra mapping
         $nakshatras = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira",
         "Ardra","Punarvasu","Pushya","Ashlesha","Magha",
         "Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati",
@@ -318,116 +312,183 @@ if(isset($_GET['b_day'])){
         "Uttara Ashadha","Shravana","Dhanishta","Shatabhisha",
         "Purva Bhadrapada","Uttara Bhadrapada","Revati"];
 
-        $nak_size = 13.3333333333;
-        $pada_size = 3.3333333333;
+        function getNakshatraPada($moon, $nakshatras){
+            $nak_size = 13.3333333333;
+            $pada_size = 3.3333333333;
+            $nak_index = (int) floor($moon / $nak_size);
+            if($nak_index >= count($nakshatras)) $nak_index = count($nakshatras) - 1;
+            $nak = $nakshatras[$nak_index];
+            $balance = $moon - ($nak_index * $nak_size);
+            $pada = (int) floor($balance / $pada_size) + 1;
+            if($pada > 4) $pada = 4;
+            return [$nak, $pada, $nak_index];
+        }
 
-        $nak_index = (int) floor($moon / $nak_size);
-        if($nak_index >= count($nakshatras)) $nak_index = count($nakshatras) - 1;
-        $nak = $nakshatras[$nak_index];
+        list($boyNak, $boyPada, $boyIdx) = getNakshatraPada($boyMoon, $nakshatras);
+        list($girlNak, $girlPada, $girlIdx) = getNakshatraPada($girlMoon, $nakshatras);
 
-        $balance = $moon - ($nak_index * $nak_size);
-        $pada = (int) floor($balance / $pada_size) + 1;
-        if($pada > 4) $pada = 4;
+        // Nakshatra details array
+        $nakshatraDetails = [
+            "Ashwini" => ["Varna" => "Kshatriya", "Vashya" => "Chatushpada", "Yoni" => "Horse", "Lord" => "Mars", "Gana" => "Deva", "Rasi" => "Mesha", "Nadi" => "Adi", "Tara" => "Janma"],
+            "Bharani" => ["Varna" => "Kshatriya", "Vashya" => "Chatushpada", "Yoni" => "Elephant", "Lord" => "Venus", "Gana" => "Manushya", "Rasi" => "Mesha", "Nadi" => "Madhya", "Tara" => "Sampat"],
+            "Krittika" => ["Varna" => "Kshatriya", "Vashya" => "Chatushpada", "Yoni" => "Goat", "Lord" => "Sun", "Gana" => "Rakshasa", "Rasi" => "Vrishabha", "Nadi" => "Antya", "Tara" => "Vipat"],
+            "Rohini" => ["Varna" => "Shudra", "Vashya" => "Chatushpada", "Yoni" => "Serpent", "Lord" => "Moon", "Gana" => "Manushya", "Rasi" => "Vrishabha", "Nadi" => "Adi", "Tara" => "Kshema"],
+            "Mrigashira" => ["Varna" => "Shudra", "Vashya" => "Chatushpada", "Yoni" => "Serpent", "Lord" => "Mars", "Gana" => "Deva", "Rasi" => "Mithuna", "Nadi" => "Madhya", "Tara" => "Pratyak"],
+            "Ardra" => ["Varna" => "Shudra", "Vashya" => "Chatushpada", "Yoni" => "Dog", "Lord" => "Rahu", "Gana" => "Manushya", "Rasi" => "Mithuna", "Nadi" => "Antya", "Tara" => "Sadhana"],
+            "Punarvasu" => ["Varna" => "Vaishya", "Vashya" => "Dwipada", "Yoni" => "Cat", "Lord" => "Jupiter", "Gana" => "Deva", "Rasi" => "Karka", "Nadi" => "Adi", "Tara" => "Naidhana"],
+            "Pushya" => ["Varna" => "Vaishya", "Vashya" => "Dwipada", "Yoni" => "Goat", "Lord" => "Saturn", "Gana" => "Deva", "Rasi" => "Karka", "Nadi" => "Madhya", "Tara" => "Mitra"],
+            "Ashlesha" => ["Varna" => "Vaishya", "Vashya" => "Dwipada", "Yoni" => "Cat", "Lord" => "Mercury", "Gana" => "Rakshasa", "Rasi" => "Karka", "Nadi" => "Antya", "Tara" => "Param Mitra"],
+            "Magha" => ["Varna" => "Kshatriya", "Vashya" => "Chatushpada", "Yoni" => "Rat", "Lord" => "Ketu", "Gana" => "Rakshasa", "Rasi" => "Simha", "Nadi" => "Adi", "Tara" => "Janma"],
+            "Purva Phalguni" => ["Varna" => "Kshatriya", "Vashya" => "Chatushpada", "Yoni" => "Rat", "Lord" => "Venus", "Gana" => "Manushya", "Rasi" => "Simha", "Nadi" => "Madhya", "Tara" => "Sampat"],
+            "Uttara Phalguni" => ["Varna" => "Kshatriya", "Vashya" => "Chatushpada", "Yoni" => "Cow", "Lord" => "Sun", "Gana" => "Manushya", "Rasi" => "Kanya", "Nadi" => "Antya", "Tara" => "Vipat"],
+            "Hasta" => ["Varna" => "Shudra", "Vashya" => "Dwipada", "Yoni" => "Buffalo", "Lord" => "Moon", "Gana" => "Deva", "Rasi" => "Kanya", "Nadi" => "Adi", "Tara" => "Kshema"],
+            "Chitra" => ["Varna" => "Shudra", "Vashya" => "Dwipada", "Yoni" => "Tiger", "Lord" => "Mars", "Gana" => "Rakshasa", "Rasi" => "Tula", "Nadi" => "Madhya", "Tara" => "Pratyak"],
+            "Swati" => ["Varna" => "Shudra", "Vashya" => "Dwipada", "Yoni" => "Buffalo", "Lord" => "Rahu", "Gana" => "Deva", "Rasi" => "Tula", "Nadi" => "Antya", "Tara" => "Sadhana"],
+            "Vishakha" => ["Varna" => "Vaishya", "Vashya" => "Dwipada", "Yoni" => "Tiger", "Lord" => "Jupiter", "Gana" => "Rakshasa", "Rasi" => "Tula", "Nadi" => "Adi", "Tara" => "Naidhana"],
+            "Anuradha" => ["Varna" => "Vaishya", "Vashya" => "Dwipada", "Yoni" => "Deer", "Lord" => "Saturn", "Gana" => "Deva", "Rasi" => "Vrishchika", "Nadi" => "Madhya", "Tara" => "Mitra"],
+            "Jyeshtha" => ["Varna" => "Vaishya", "Vashya" => "Dwipada", "Yoni" => "Deer", "Lord" => "Mercury", "Gana" => "Rakshasa", "Rasi" => "Vrishchika", "Nadi" => "Antya", "Tara" => "Param Mitra"],
+            "Moola" => ["Varna" => "Kshatriya", "Vashya" => "Chatushpada", "Yoni" => "Dog", "Lord" => "Ketu", "Gana" => "Rakshasa", "Rasi" => "Dhanu", "Nadi" => "Adi", "Tara" => "Janma"],
+            "Purva Ashadha" => ["Varna" => "Kshatriya", "Vashya" => "Chatushpada", "Yoni" => "Monkey", "Lord" => "Venus", "Gana" => "Manushya", "Rasi" => "Dhanu", "Nadi" => "Madhya", "Tara" => "Sampat"],
+            "Uttara Ashadha" => ["Varna" => "Kshatriya", "Vashya" => "Chatushpada", "Yoni" => "Mongoose", "Lord" => "Sun", "Gana" => "Manushya", "Rasi" => "Makara", "Nadi" => "Antya", "Tara" => "Vipat"],
+            "Shravana" => ["Varna" => "Shudra", "Vashya" => "Dwipada", "Yoni" => "Monkey", "Lord" => "Moon", "Gana" => "Deva", "Rasi" => "Makara", "Nadi" => "Adi", "Tara" => "Kshema"],
+            "Dhanishta" => ["Varna" => "Shudra", "Vashya" => "Dwipada", "Yoni" => "Lion", "Lord" => "Mars", "Gana" => "Rakshasa", "Rasi" => "Kumbha", "Nadi" => "Madhya", "Tara" => "Pratyak"],
+            "Shatabhisha" => ["Varna" => "Shudra", "Vashya" => "Dwipada", "Yoni" => "Horse", "Lord" => "Rahu", "Gana" => "Rakshasa", "Rasi" => "Kumbha", "Nadi" => "Antya", "Tara" => "Sadhana"],
+            "Purva Bhadrapada" => ["Varna" => "Vaishya", "Vashya" => "Dwipada", "Yoni" => "Lion", "Lord" => "Jupiter", "Gana" => "Manushya", "Rasi" => "Kumbha", "Nadi" => "Adi", "Tara" => "Naidhana"],
+            "Uttara Bhadrapada" => ["Varna" => "Vaishya", "Vashya" => "Dwipada", "Yoni" => "Cow", "Lord" => "Saturn", "Gana" => "Manushya", "Rasi" => "Meena", "Nadi" => "Madhya", "Tara" => "Mitra"],
+            "Revati" => ["Varna" => "Vaishya", "Vashya" => "Dwipada", "Yoni" => "Elephant", "Lord" => "Mercury", "Gana" => "Deva", "Rasi" => "Meena", "Nadi" => "Antya", "Tara" => "Param Mitra"]
+        ];
 
-        return [$nak, $pada];
-    }
+        $boyDetails = $nakshatraDetails[$boyNak];
+        $girlDetails = $nakshatraDetails[$girlNak];
 
-    list($boyNak, $boyPada) = getNakshatraPada($boyMoon);
-    list($girlNak, $girlPada) = getNakshatraPada($girlMoon);
+        // Function to calculate points for each Kuta
+        function getVarnaPoints($boyVarna, $girlVarna) {
+            $order = ["Brahmin", "Kshatriya", "Vaishya", "Shudra"];
+            $bIndex = array_search($boyVarna, $order);
+            $gIndex = array_search($girlVarna, $order);
+            if($bIndex <= $gIndex) return 1;
+            return 0;
+        }
 
-    // Nakshatra Lords
-    $nakshatraLords = [
-        "Ashwini"=>"Ketu","Bharani"=>"Venus","Krittika"=>"Sun","Rohini"=>"Moon","Mrigashira"=>"Mars",
-        "Ardra"=>"Rahu","Punarvasu"=>"Jupiter","Pushya"=>"Saturn","Ashlesha"=>"Mercury","Magha"=>"Ketu",
-        "Purva Phalguni"=>"Venus","Uttara Phalguni"=>"Sun","Hasta"=>"Moon","Chitra"=>"Mars","Swati"=>"Rahu",
-        "Vishakha"=>"Jupiter","Anuradha"=>"Saturn","Jyeshtha"=>"Mercury","Moola"=>"Ketu","Purva Ashadha"=>"Venus",
-        "Uttara Ashadha"=>"Sun","Shravana"=>"Moon","Dhanishta"=>"Mars","Shatabhisha"=>"Rahu",
-        "Purva Bhadrapada"=>"Jupiter","Uttara Bhadrapada"=>"Saturn","Revati"=>"Mercury"
-    ];
-    
-    $boyLord = isset($nakshatraLords[$boyNak]) ? $nakshatraLords[$boyNak] : "Unknown";
-    $girlLord = isset($nakshatraLords[$girlNak]) ? $nakshatraLords[$girlNak] : "Unknown";
+        function getVashyaPoints($boyVashya, $girlVashya) {
+            if($boyVashya == $girlVashya) return 2;
+            return 0;
+        }
 
-    // Calculate Guna Score
-    $nakshatraList = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha","Moola","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"];
-    $boyIdx = array_search($boyNak, $nakshatraList);
-    $girlIdx = array_search($girlNak, $nakshatraList);
-    
-    $score = 18;
-    $maxPoints = 36;
-    
-    if($boyIdx !== false && $girlIdx !== false) {
-        $diff = abs($boyIdx - $girlIdx);
-        if($diff == 0) $score = 36;
-        elseif($diff <= 2) $score = 30;
-        elseif($diff <= 5) $score = 24;
-        elseif($diff <= 9) $score = 18;
-        elseif($diff <= 13) $score = 12;
-        else $score = 8;
-    }
+        function getTaraPoints($boyTara, $girlTara, $boyIdx, $girlIdx) {
+            $taraOrder = ["Janma", "Sampat", "Vipat", "Kshema", "Pratyak", "Sadhana", "Naidhana", "Mitra", "Param Mitra"];
+            $bTara = array_search($boyTara, $taraOrder);
+            $gTara = array_search($girlTara, $taraOrder);
+            $diff = abs($bTara - $gTara);
+            if($diff == 0 || $diff == 6) return 0;
+            if($diff == 1 || $diff == 5) return 1.5;
+            return 3;
+        }
 
-    // Rajju & Mahendra
-    $rajjuResult = "";
-    $mahendraResult = "";
-    
-    if($boyPada == $girlPada) {
-        $rajjuResult = "Rajju Dosha Present - Health concerns possible";
-    } elseif(abs($boyPada - $girlPada) == 2) {
-        $rajjuResult = "Excellent Rajju - Longevity & harmony";
-    } else {
-        $rajjuResult = "Neutral Rajju - Acceptable";
-    }
-    
-    if(($boyPada + $girlPada) % 3 == 0) {
-        $mahendraResult = "Excellent Mahendra - Prosperity & growth";
-    } elseif(($boyPada + $girlPada) % 2 == 0) {
-        $mahendraResult = "Favorable Mahendra - Good fortune";
-    } else {
-        $mahendraResult = "Average Mahendra";
-    }
+        function getYoniPoints($boyYoni, $girlYoni) {
+            $yoniCompatibility = [
+                "Horse" => ["Horse"=>4, "Elephant"=>2, "Cow"=>1, "Buffalo"=>0],
+                "Elephant" => ["Elephant"=>4, "Horse"=>2, "Rat"=>1, "Tiger"=>0],
+                "Goat" => ["Goat"=>4, "Deer"=>2, "Buffalo"=>1, "Dog"=>0],
+                "Serpent" => ["Serpent"=>4, "Cat"=>2, "Mongoose"=>1, "Monkey"=>0],
+                "Dog" => ["Dog"=>4, "Goat"=>2, "Monkey"=>1, "Lion"=>0],
+                "Cat" => ["Cat"=>4, "Serpent"=>2, "Rat"=>1, "Mongoose"=>0],
+                "Rat" => ["Rat"=>4, "Elephant"=>2, "Cat"=>1, "Buffalo"=>0],
+                "Cow" => ["Cow"=>4, "Horse"=>2, "Goat"=>1, "Buffalo"=>0],
+                "Buffalo" => ["Buffalo"=>4, "Cow"=>2, "Rat"=>1, "Goat"=>0],
+                "Tiger" => ["Tiger"=>4, "Deer"=>2, "Elephant"=>1, "Lion"=>0],
+                "Deer" => ["Deer"=>4, "Tiger"=>2, "Goat"=>1, "Serpent"=>0],
+                "Monkey" => ["Monkey"=>4, "Mongoose"=>2, "Serpent"=>1, "Dog"=>0],
+                "Mongoose" => ["Mongoose"=>4, "Monkey"=>2, "Cat"=>1, "Serpent"=>0],
+                "Lion" => ["Lion"=>4, "Tiger"=>2, "Dog"=>1, "Elephant"=>0]
+            ];
+            if(isset($yoniCompatibility[$boyYoni][$girlYoni])) {
+                return $yoniCompatibility[$boyYoni][$girlYoni];
+            }
+            return 2;
+        }
 
-    echo "<div style='text-align:right; margin-bottom:20px;'>
-    <a href='kundali_matching.php' class='new-match-btn'>
-    🔄 New Match
-    </a></div>";
+        function getGrahaPoints($boyLord, $girlLord) {
+            $friend = ["Sun"=>["Moon","Mars","Jupiter"], "Moon"=>["Sun","Mercury"], "Mars"=>["Sun","Moon","Jupiter"], "Mercury"=>["Sun","Venus"], "Jupiter"=>["Sun","Moon","Mars"], "Venus"=>["Mercury","Saturn"], "Saturn"=>["Venus","Mercury"], "Rahu"=>["Saturn","Venus"], "Ketu"=>["Mars","Jupiter"]];
+            if($boyLord == $girlLord) return 0;
+            if(in_array($girlLord, $friend[$boyLord])) return 5;
+            return 0;
+        }
 
-    echo "<div class='result'>";
-    echo "<h3>Kundali Matching Result</h3>";
-    
-    // Table 1: Nakshatra Details
-    echo "<table class='match-table'>";
-    echo "<tr><th>Parameter</th><th>Boy (Groom)</th><th>Girl (Bride)</th></tr>";
-    echo "<tr><td>🌙 Nakshatra (Birth Star)</td><td><strong>$boyNak</strong> (Pada $boyPada)</td><td><strong>$girlNak</strong> (Pada $girlPada)</td></tr>";
-    echo "<tr><td>⭐ Nakshatra Lord</td><td>$boyLord</td><td>$girlLord</td></tr>";
-    echo "<tr><td>📐 Moon Degree</td><td>" . round($boyMoon, 2) . "°</td><td>" . round($girlMoon, 2) . "°</td></tr>";
-    echo "</table>";
-    
-    // Table 2: Guna Milan
-    echo "<table class='match-table'>";
-    echo "<tr><th>Ashtakoot Milan (Guna Milan)</th><th>Score</th><th>Verdict</th></tr>";
-    echo "<tr><td>🔢 Total Guna Points</td><td class='score-highlight'>$score / $maxPoints</td><td>";
-    if($score >= 28) echo "❤️ Excellent Compatibility";
-    elseif($score >= 20) echo "👍 Good Compatibility";
-    elseif($score >= 12) echo "🔄 Average Compatibility";
-    else echo "⚠️ Low Compatibility";
-    echo "</td></tr>";
-    echo "</table>";
-    
-    // Table 3: Additional Kuta
-    echo "<table class='match-table'>";
-    echo "<tr><th>Matching Factor</th><th>Result</th></tr>";
-    echo "<tr><td>🏔️ Rajju Kuta</td><td>$rajjuResult</td></tr>";
-    echo "<tr><td>🏵️ Mahendra Kuta</td><td>$mahendraResult</td></tr>";
-    echo "</table>";
-    
-    echo "<div class='note-box'>📅 <strong>Birth Details:</strong> Boy: {$_GET['b_day']}/{$_GET['b_month']}/{$_GET['b_year']} at {$_GET['b_hour']}:{$_GET['b_min']} | Girl: {$_GET['g_day']}/{$_GET['g_month']}/{$_GET['g_year']} at {$_GET['g_hour']}:{$_GET['g_min']}</div>";
-    echo "<div class='note-box'>📜 <strong>Note:</strong> This report is generated using Vedic Astrology principles. For personalized remedies, consult our expert astrologers.</div>";
-    
-    echo "</div>";
-}
-?>
+        function getGanaPoints($boyGana, $girlGana) {
+            $order = ["Deva", "Manushya", "Rakshasa"];
+            $bIndex = array_search($boyGana, $order);
+            $gIndex = array_search($girlGana, $order);
+            if($bIndex == $gIndex) return 6;
+            if(($bIndex == 0 && $gIndex == 1) || ($bIndex == 1 && $gIndex == 0)) return 5;
+            if(($bIndex == 0 && $gIndex == 2) || ($bIndex == 2 && $gIndex == 0)) return 1;
+            if(($bIndex == 1 && $gIndex == 2) || ($bIndex == 2 && $gIndex == 1)) return 0;
+            return 3;
+        }
 
-</div>
-</section>
+        function getRasiPoints($boyRasi, $girlRasi) {
+            $rasiOrder = ["Mesha", "Vrishabha", "Mithuna", "Karka", "Simha", "Kanya", "Tula", "Vrishchika", "Dhanu", "Makara", "Kumbha", "Meena"];
+            $bIndex = array_search($boyRasi, $rasiOrder);
+            $gIndex = array_search($girlRasi, $rasiOrder);
+            $diff = abs($bIndex - $gIndex);
+            if($diff == 0) return 7;
+            if($diff == 1 || $diff == 11) return 6;
+            if($diff == 2 || $diff == 10) return 5;
+            if($diff == 3 || $diff == 9) return 4;
+            if($diff == 4 || $diff == 8) return 3;
+            if($diff == 5 || $diff == 7) return 2;
+            return 1;
+        }
 
-<?php require __DIR__ . '/../bottom.php'; ?>
+        function getNadiPoints($boyNadi, $girlNadi) {
+            if($boyNadi != $girlNadi) return 8;
+            return 0;
+        }
+
+        // Calculate all points
+        $varnaPoints = getVarnaPoints($boyDetails['Varna'], $girlDetails['Varna']);
+        $vashyaPoints = getVashyaPoints($boyDetails['Vashya'], $girlDetails['Vashya']);
+        $taraPoints = getTaraPoints($boyDetails['Tara'], $girlDetails['Tara'], $boyIdx, $girlIdx);
+        $yoniPoints = getYoniPoints($boyDetails['Yoni'], $girlDetails['Yoni']);
+        $grahaPoints = getGrahaPoints($boyDetails['Lord'], $girlDetails['Lord']);
+        $ganaPoints = getGanaPoints($boyDetails['Gana'], $girlDetails['Gana']);
+        $rasiPoints = getRasiPoints($boyDetails['Rasi'], $girlDetails['Rasi']);
+        $nadiPoints = getNadiPoints($boyDetails['Nadi'], $girlDetails['Nadi']);
+        
+        $totalPoints = $varnaPoints + $vashyaPoints + $taraPoints + $yoniPoints + $grahaPoints + $ganaPoints + $rasiPoints + $nadiPoints;
+        
+        // Rajju calculation
+        $rajjuMap = ["Ashwini"=>"Siro", "Bharani"=>"Siro", "Krittika"=>"Siro", "Rohini"=>"Kantha", "Mrigashira"=>"Kantha", "Ardra"=>"Kantha", "Punarvasu"=>"Udara", "Pushya"=>"Udara", "Ashlesha"=>"Udara", "Magha"=>"Pada", "Purva Phalguni"=>"Pada", "Uttara Phalguni"=>"Pada", "Hasta"=>"Jangha", "Chitra"=>"Jangha", "Swati"=>"Jangha", "Vishakha"=>"Siro", "Anuradha"=>"Siro", "Jyeshtha"=>"Siro", "Moola"=>"Kantha", "Purva Ashadha"=>"Kantha", "Uttara Ashadha"=>"Kantha", "Shravana"=>"Udara", "Dhanishta"=>"Udara", "Shatabhisha"=>"Udara", "Purva Bhadrapada"=>"Pada", "Uttara Bhadrapada"=>"Pada", "Revati"=>"Pada"];
+        
+        $boyRajju = $rajjuMap[$boyNak];
+        $girlRajju = $rajjuMap[$girlNak];
+        $rajjuPoints = ($boyRajju == $girlRajju) ? 0 : 2;
+        $rajjuResult = ($boyRajju == $girlRajju) ? "Rajju Dosha" : "No Rajju Dosha";
+        
+        // Mahendra calculation
+        $mahendraDistance = ($girlIdx - $boyIdx + 27) % 27;
+        $mahendraPoints = (in_array($mahendraDistance, [4, 5, 6, 10, 11, 12, 17, 18, 19, 23, 24, 25])) ? 2 : 0;
+        $mahendraResult = ($mahendraPoints > 0) ? "Mahendra Present - Good for prosperity & children" : "Mahendra Not Present";
+        
+        // Stree Deergha
+        $streeDeerghaDistance = ($girlIdx - $boyIdx + 27) % 27;
+        $streeDeerghaPoints = (in_array($streeDeerghaDistance, [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25])) ? 2 : 0;
+        $streeDeerghaResult = ($streeDeerghaPoints > 0) ? "Good" : "Bad";
+        
+        // Tattwa matching
+        $tattwaMap = ["Ashwini"=>"Earth", "Bharani"=>"Earth", "Krittika"=>"Fire", "Rohini"=>"Earth", "Mrigashira"=>"Earth", "Ardra"=>"Fire", "Punarvasu"=>"Air", "Pushya"=>"Water", "Ashlesha"=>"Water", "Magha"=>"Fire", "Purva Phalguni"=>"Fire", "Uttara Phalguni"=>"Fire", "Hasta"=>"Earth", "Chitra"=>"Fire", "Swati"=>"Air", "Vishakha"=>"Fire", "Anuradha"=>"Earth", "Jyeshtha"=>"Earth", "Moola"=>"Earth", "Purva Ashadha"=>"Water", "Uttara Ashadha"=>"Water", "Shravana"=>"Air", "Dhanishta"=>"Air", "Shatabhisha"=>"Air", "Purva Bhadrapada"=>"Air", "Uttara Bhadrapada"=>"Air", "Revati"=>"Earth"];
+        
+        $boyTattwa = $tattwaMap[$boyNak];
+        $girlTattwa = $tattwaMap[$girlNak];
+        $tattwaPoints = ($boyTattwa == $girlTattwa) ? 2 : 0;
+        $tattwaResult = ($boyTattwa == $girlTattwa) ? "Same Tattwa - Good" : "Different Tattwa";
+        
+        // Vedha matching
+        $vedhaPairs = [
+            "Ashwini" => "Jyeshtha", "Bharani" => "Anuradha", "Krittika" => "Visakha", "Rohini" => "Swati",
+            "Mrigashira" => "Chitra", "Ardra" => "Hasta", "Punarvasu" => "Uttara Phalguni", "Pushya" => "Purva Phalguni",
+            "Ashlesha" => "Magha", "Magha" => "Ashlesha", "Purva Phalguni" => "Pushya", "Uttara Phalguni" => "Punarvasu",
+            "Hasta" => "Ardra", "Chitra" => "Mrigashira", "Swati" => "Rohini", "Visakha" => "Krittika",
+            "Anuradha" => "Bharani", "Jyeshtha" => "Ashwini", "Moola" => "Revati", "Purva Ashadha" => "Uttara Bhadrapada",
+            "Uttara Ashadha" => "Purva Bhadrapada", "Shravana" => "Shatabhisha", "Dhanishta" => "Satabhisha",
+            "Shatabhisha" => "Shravana", "Purva Bhadrapada" => "Uttara Ashadha", "Uttara Bhadrapada" => "Purva Ashadha", "Revati"
