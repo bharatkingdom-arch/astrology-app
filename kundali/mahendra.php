@@ -36,8 +36,8 @@ function mahendraScore($boy, $girl, $nak_order){
 }
 
 // ================= INPUT =================
-$boy = $_GET['boy'] ?? '';
-$girl = $_GET['girl'] ?? '';
+$boy = $boy ?? '';
+$girl = $girl ?? '';
 ?>
 
 <!DOCTYPE html>
