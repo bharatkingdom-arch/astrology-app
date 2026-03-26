@@ -491,4 +491,91 @@ if(isset($_GET['b_day']) && isset($_GET['b_month']) && isset($_GET['b_year'])){
             "Hasta" => "Ardra", "Chitra" => "Mrigashira", "Swati" => "Rohini", "Visakha" => "Krittika",
             "Anuradha" => "Bharani", "Jyeshtha" => "Ashwini", "Moola" => "Revati", "Purva Ashadha" => "Uttara Bhadrapada",
             "Uttara Ashadha" => "Purva Bhadrapada", "Shravana" => "Shatabhisha", "Dhanishta" => "Satabhisha",
-            "Shatabhisha" => "Shravana", "Purva Bhadrapada" => "Uttara Ashadha", "Uttara Bhadrapada" => "Purva Ashadha", "Revati"
+            "Shatabhisha" => "Shravana", "Purva Bhadrapada" => "Uttara Ashadha", "Uttara Bhadrapada" => "Purva Ashadha", "Revati" => "Moola"
+        ];
+        
+        $vedhaPoints = (isset($vedhaPairs[$boyNak]) && $vedhaPairs[$boyNak] == $girlNak) ? 0 : 2;
+        $vedhaResult = ($vedhaPoints > 0) ? "No Vedha - Good Match" : "Vedha Present - Avoid Match";
+
+        echo "<div style='text-align:right; margin-bottom:10px;'>
+        <a href='kundali_matching.php'>
+        <button style='padding:8px 15px; background:#f1f5f9; color:#333; width:auto;'>🔄 New Match</button>
+        </a></div>";
+
+        echo "<div class='result'>";
+        echo "<h3>Result</h3>";
+        echo "<p><b>Boy:</b> $boyNak (Pada $boyPada)</p>";
+        echo "<p><b>Girl:</b> $girlNak (Pada $girlPada)</p>";
+        
+        // Table 1: Nakshatra Details
+        echo "<table class='data-table'>";
+        echo "<tr><th>Parameter</th><th>Boy ($boyNak)</th><th>Girl ($girlNak)</th></tr>";
+        echo "<tr><td>Varna</td><td>{$boyDetails['Varna']}</td><td>{$girlDetails['Varna']}</td></tr>";
+        echo "<tr><td>Vashya</td><td>{$boyDetails['Vashya']}</td><td>{$girlDetails['Vashya']}</td></tr>";
+        echo "<tr><td>Tara</td><td>{$boyDetails['Tara']}</td><td>{$girlDetails['Tara']}</td></tr>";
+        echo "<tr><td>Yoni</td><td>{$boyDetails['Yoni']}</td><td>{$girlDetails['Yoni']}</td></tr>";
+        echo "<tr><td>Graha (Lord)</td><td>{$boyDetails['Lord']}</td><td>{$girlDetails['Lord']}</td></tr>";
+        echo "<tr><td>Gana</td><td>{$boyDetails['Gana']}</td><td>{$girlDetails['Gana']}</td></tr>";
+        echo "<tr><td>Rasi</td><td>{$boyDetails['Rasi']}</td><td>{$girlDetails['Rasi']}</td></tr>";
+        echo "<tr><td>Nadi</td><td>{$boyDetails['Nadi']}</td><td>{$girlDetails['Nadi']}</td></tr>";
+        echo "</table>";
+        
+        // Table 2: Ashtakoot Points
+        echo "<table class='data-table'>";
+        echo "<tr><th>Kuta</th><th>Boy</th><th>Girl</th><th>Points</th></tr>";
+        echo "<tr><td>Varna</td><td>{$boyDetails['Varna']}</td><td>{$girlDetails['Varna']}</td><td>$varnaPoints</td></tr>";
+        echo "<tr><td>Vashya</td><td>{$boyDetails['Vashya']}</td><td>{$girlDetails['Vashya']}</td><td>$vashyaPoints</td></tr>";
+        echo "<tr><td>Tara</td><td>{$boyDetails['Tara']}</td><td>{$girlDetails['Tara']}</td><td>$taraPoints</td></tr>";
+        echo "<tr><td>Yoni</td><td>{$boyDetails['Yoni']}</td><td>{$girlDetails['Yoni']}</td><td>$yoniPoints</td></tr>";
+        echo "<tr><td>Graha Maitri</td><td>{$boyDetails['Lord']}</td><td>{$girlDetails['Lord']}</td><td>$grahaPoints</td></tr>";
+        echo "<tr><td>Gana</td><td>{$boyDetails['Gana']}</td><td>{$girlDetails['Gana']}</td><td>$ganaPoints</td></tr>";
+        echo "<tr><td>Rasi</td><td>{$boyDetails['Rasi']}</td><td>{$girlDetails['Rasi']}</td><td>$rasiPoints</td></tr>";
+        echo "<tr><td>Nadi</td><td>{$boyDetails['Nadi']}</td><td>{$girlDetails['Nadi']}</td><td>$nadiPoints</td></tr>";
+        echo "<tr style='background:#f0f0f0; font-weight:bold;'><td colspan='3' style='text-align:right'>Total:</td><td class='score-highlight'>$totalPoints / 36</td></tr>";
+        echo "</table>";
+        
+        // Table 3: Rajju Matching
+        echo "<h3>Rajju Matching</h3>";
+        echo "<table class='data-table'>";
+        echo "<tr><th>Factor</th><th>Boy</th><th>Girl</th><th>Result</th></tr>";
+        echo "<tr><td>Rajju</td><td>$boyRajju</td><td>$girlRajju</td><td>" . ($rajjuPoints == 0 ? "Rajju Dosha" : "Good") . "</td></tr>";
+        echo "</table>";
+        
+        // Table 4: Mahendra Matching
+        echo "<h3>Mahendra Matching</h3>";
+        echo "<table class='data-table'>";
+        echo "<tr><th>Girl Nakshatra</th><th>Boy Nakshatra</th><th>Distance</th><th>Result</th><th>Points</th></tr>";
+        echo "<tr><td>$girlNak</td><td>$boyNak</td><td>$mahendraDistance</td><td>$mahendraResult</td><td>$mahendraPoints / 2</td></tr>";
+        echo "</table>";
+        
+        // Table 5: Stree Deergha Matching
+        echo "<h3>Stree Deergha Matching</h3>";
+        echo "<table class='data-table'>";
+        echo "<tr><th>Girl Nakshatra</th><th>Boy Nakshatra</th><th>Distance</th><th>Result</th><th>Points</th></tr>";
+        echo "<tr><td>$girlNak</td><td>$boyNak</td><td>$streeDeerghaDistance</td><td>$streeDeerghaResult</td><td>$streeDeerghaPoints / 2</td></tr>";
+        echo "</table>";
+        
+        // Table 6: Tattwa Matching
+        echo "<h3>Tattwa Matching</h3>";
+        echo "<table class='data-table'>";
+        echo "<tr><th>Boy Tattwa</th><th>Girl Tattwa</th><th>Result</th><th>Points</th></tr>";
+        echo "<tr><td>$boyTattwa</td><td>$girlTattwa</td><td>$tattwaResult</td><td>$tattwaPoints / 2</td></tr>";
+        echo "</table>";
+        
+        // Table 7: Vedha Matching
+        echo "<h3>Vedha Matching</h3>";
+        echo "<table class='data-table'>";
+        echo "<tr><th>Girl Nakshatra</th><th>Boy Nakshatra</th><th>Result</th><th>Points</th></tr>";
+        echo "<tr><td>$girlNak</td><td>$boyNak</td><td>$vedhaResult</td><td>$vedhaPoints / 2</td></tr>";
+        echo "</table>";
+        
+        echo "<div class='note-box'>📜 <strong>Note:</strong> This report is generated using Vedic Astrology principles. For personalized remedies and detailed analysis, consult our expert astrologers.</div>";
+        
+        echo "</div>";
+    }
+}
+?>
+
+</div>
+
+<?php require __DIR__ . '/../bottom.php'; ?>
