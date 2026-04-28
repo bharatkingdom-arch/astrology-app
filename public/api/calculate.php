@@ -1,9 +1,9 @@
 <?php
-header("Content-Type: application/json");
+header("Content-Type: application/json; charset=utf-8");
 header("Access-Control-Allow-Origin: *");
 
 /* ==========================
-INPUT
+INPUT VALIDATION
 ========================== */
 
 $date     = $_GET['date']     ?? null;
@@ -16,12 +16,19 @@ if (!$date || !$time || !$lat || !$lon) {
     echo json_encode([
         "status" => "error",
         "message" => "Missing date, time, latitude or longitude"
-    ]);
+    ], JSON_PRETTY_PRINT);
     exit;
 }
 
+// Sanitize inputs
+$date = preg_replace('/[^0-9.]/', '', $date);
+$time = preg_replace('/[^0-9:]/', '', $time);
+$lat = floatval($lat);
+$lon = floatval($lon);
+$timezone = floatval($timezone);
+
 /* ==========================
-CONVERT LOCAL TIME → UT
+CONVERT LOCAL TIME → UTC (FIXED)
 ========================== */
 
 $dt = DateTime::createFromFormat("d.m.Y H:i", "$date $time");
@@ -29,18 +36,30 @@ $dt = DateTime::createFromFormat("d.m.Y H:i", "$date $time");
 if (!$dt) {
     echo json_encode([
         "status" => "error",
-        "message" => "Invalid date/time format"
-    ]);
+        "message" => "Invalid date/time format. Use DD.MM.YYYY HH:MM"
+    ], JSON_PRETTY_PRINT);
     exit;
 }
 
-$hours = floor($timezone);
-$minutes = ($timezone - $hours) * 60;
+// Store original for response
+$originalDate = $date;
+$originalTime = $time;
 
-$dt->modify("-{$hours} hours");
-$dt->modify("-{$minutes} minutes");
+// Convert to UTC - handles date change when time < timezone offset
+$hours = floor(abs($timezone));
+$minutes = abs($timezone - floor($timezone)) * 60;
 
-$utTime = $dt->format("H:i");
+if ($timezone >= 0) {
+    $dt->modify("-{$hours} hours");
+    $dt->modify("-{$minutes} minutes");
+} else {
+    $dt->modify("+{$hours} hours");
+    $dt->modify("+{$minutes} minutes");
+}
+
+// Get UTC date AND time (BOTH are critical for Swiss Ephemeris!)
+$utDate = $dt->format("d.m.Y");  // ← FIXED: UTC date (may be previous/next day)
+$utTime = $dt->format("H:i");     // ← UTC time
 
 /* ==========================
 SWISS EPHEMERIS PATH
@@ -50,18 +69,17 @@ $swetestPath = "/app/swisseph/swetest";
 $ephePath    = "/app/ephemeris";
 
 /* ==========================
-PLANETS COMMAND
+PLANETS COMMAND - USING UTC DATE!
 ========================== */
 
-$planetCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -p0123456789t -fPls";
-
+$planetCommand = "$swetestPath -edir$ephePath -sid1 -b$utDate -ut$utTime -p0123456789t -fPls";
 $planetOutput = shell_exec($planetCommand);
 
-if (!$planetOutput) {
+if (!$planetOutput || trim($planetOutput) === '') {
     echo json_encode([
         "status" => "error",
-        "message" => "Swiss Ephemeris failed"
-    ]);
+        "message" => "Swiss Ephemeris failed to return planetary data"
+    ], JSON_PRETTY_PRINT);
     exit;
 }
 
@@ -87,6 +105,10 @@ function decimalToDMS($decimal)
     if ($min == 60) {
         $min = 0;
         $deg++;
+    }
+    
+    if ($deg == 360) {
+        $deg = 0;
     }
 
     return sprintf("%d° %02d′ %02d″", $deg, $min, $sec);
@@ -125,7 +147,6 @@ $lines = explode("\n", trim($planetOutput));
 $planets = [];
 
 foreach ($lines as $line) {
-
     $line = trim($line);
 
     if (preg_match('/^(Sun|Moon|Mercury|Venus|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto|true Node|True Node)\s+([\d\.]+)\s+([-\d\.]+)/', $line, $matches)) {
@@ -141,9 +162,9 @@ foreach ($lines as $line) {
         }
 
         $planets[$planetName] = [
-            "decimal" => $value,
+            "decimal" => round($value, 6),
             "dms" => decimalToDMS($value),
-            "speed" => $speed,
+            "speed" => round($speed, 6),
             "retrograde" => ($speed < 0)
         ];
     }
@@ -154,14 +175,12 @@ ADD KETU
 ========================== */
 
 if (isset($planets['Rahu'])) {
-
     $rahuDecimal = $planets['Rahu']['decimal'];
-
     $ketuDecimal = fmod($rahuDecimal + 180, 360);
     if ($ketuDecimal < 0) $ketuDecimal += 360;
 
     $planets['Ketu'] = [
-        "decimal" => $ketuDecimal,
+        "decimal" => round($ketuDecimal, 6),
         "dms" => decimalToDMS($ketuDecimal),
         "speed" => 0,
         "retrograde" => true
@@ -173,68 +192,54 @@ COMBUST CHECK
 ========================== */
 
 if (isset($planets["Sun"])) {
-
     $sunLongitude = $planets["Sun"]["decimal"];
 
     foreach ($planets as $planet => $data) {
-
-    $planets[$planet]["combust"] = isCombust($planet, $data["decimal"], $sunLongitude);
-
-}
+        $planets[$planet]["combust"] = isCombust($planet, $data["decimal"], $sunLongitude);
+    }
 }
 
 /* ==========================
-HOUSES
+HOUSES - USING UTC DATE!
 ========================== */
 
-$houseCommand = "$swetestPath -edir$ephePath -sid1 -b$date -ut$utTime -house$lon,$lat,P -fPl";
-
+$houseCommand = "$swetestPath -edir$ephePath -sid1 -b$utDate -ut$utTime -house$lon,$lat,P -fPl";
 $houseOutput = shell_exec($houseCommand);
 
 $houses = [];
 
-if ($houseOutput) {
-
+if ($houseOutput && trim($houseOutput) !== '') {
     $houseLines = explode("\n", trim($houseOutput));
 
     foreach ($houseLines as $line) {
-
         $line = trim($line);
 
         if (strpos($line, 'house') === 0) {
-
             $parts = preg_split('/\s+/', $line);
-
             if (count($parts) >= 3) {
-
                 $houseNumber = $parts[1];
                 $value = floatval($parts[2]);
-
                 $houses["House $houseNumber"] = [
-                    "decimal" => $value,
+                    "decimal" => round($value, 6),
                     "dms" => decimalToDMS($value)
                 ];
             }
         }
 
         if (strpos($line, 'Ascendant') === 0) {
-
             $parts = preg_split('/\s+/', $line);
             $asc = floatval($parts[1]);
-
             $houses["Ascendant"] = [
-                "decimal" => $asc,
+                "decimal" => round($asc, 6),
                 "dms" => decimalToDMS($asc)
             ];
         }
 
         if (strpos($line, 'MC') === 0) {
-
             $parts = preg_split('/\s+/', $line);
             $mc = floatval($parts[1]);
-
             $houses["MC"] = [
-                "decimal" => $mc,
+                "decimal" => round($mc, 6),
                 "dms" => decimalToDMS($mc)
             ];
         }
@@ -246,13 +251,15 @@ FINAL JSON
 ========================== */
 
 echo json_encode([
-    "status"    => "success",
-    "date"      => $date,
-    "time"      => $time,
-    "ut_time"   => $utTime,
-    "latitude"  => $lat,
-    "longitude" => $lon,
-    "ayanamsa"  => "Lahiri",
-    "planets"   => $planets,
-    "houses"    => $houses
-], JSON_PRETTY_PRINT);
+    "status"         => "success",
+    "local_date"     => $originalDate,
+    "local_time"     => $originalTime,
+    "utc_date"       => $utDate,      // ← ADDED: Shows actual UTC date used
+    "utc_time"       => $utTime,
+    "timezone"       => $timezone,
+    "latitude"       => $lat,
+    "longitude"      => $lon,
+    "ayanamsa"       => "Lahiri",
+    "planets"        => $planets,
+    "houses"         => $houses
+], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
