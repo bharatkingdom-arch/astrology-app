@@ -36,11 +36,13 @@ ini_set('display_errors', 1);
 <input name="b_sec" placeholder="Second">
 </div>
 
-<label>Latitude / Longitude</label>
-<div style="display:flex;gap:10px;">
-<input name="b_lat" placeholder="Latitude" required>
-<input name="b_lon" placeholder="Longitude" required>
+<label>Birth Place*</label>
+<div style="position:relative;">
+<input type="text" id="b_birth_place" name="b_birthplace" placeholder="Enter a location" autocomplete="off" required>
+<div id="b_place_suggestions" class="place-suggestions" style="display:none; position:absolute; width:100%; top:100%;"></div>
 </div>
+<input type="hidden" id="b_lat" name="b_lat">
+<input type="hidden" id="b_lon" name="b_lon">
 
 <label>Timezone</label>
 <input name="b_tz" value="5.5">
@@ -65,11 +67,13 @@ ini_set('display_errors', 1);
 <input name="g_sec" placeholder="Second">
 </div>
 
-<label>Latitude / Longitude</label>
-<div style="display:flex;gap:10px;">
-<input name="g_lat" placeholder="Latitude" required>
-<input name="g_lon" placeholder="Longitude" required>
+<label>Birth Place*</label>
+<div style="position:relative;">
+<input type="text" id="g_birth_place" name="g_birthplace" placeholder="Enter a location" autocomplete="off" required>
+<div id="g_place_suggestions" class="place-suggestions" style="display:none; position:absolute; width:100%; top:100%;"></div>
 </div>
+<input type="hidden" id="g_lat" name="g_lat">
+<input type="hidden" id="g_lon" name="g_lon">
 
 <label>Timezone</label>
 <input name="g_tz" value="5.5">
@@ -91,6 +95,13 @@ if(isset($_GET['b_day'])){
 
     $g_date = $_GET['g_day'].".".$_GET['g_month'].".".$_GET['g_year'];
     $g_time = $_GET['g_hour'].":".$_GET['g_min'];
+
+    if(empty($_GET['b_lat']) || empty($_GET['b_lon']) || empty($_GET['g_lat']) || empty($_GET['g_lon'])) {
+        echo "<div class='kundli-saved-box' style='margin-top:30px;color:red;'>❌ Please ensure you select Birth Places from the autocomplete suggestions.</div>";
+        echo "</div></div></section>";
+        require __DIR__ . '/../bottom.php';
+        exit;
+    }
 
     // ===== API =====
     $api = "https://www.astroloak.com/astroapi/calculate.php";
@@ -163,5 +174,63 @@ if(isset($_GET['b_day'])){
 </div>
 </div>
 </section>
+
+<script>
+function setupPlacesAutocomplete(inputId, suggestionsId, latId, lonId) {
+    const input = document.getElementById(inputId);
+    const suggestions = document.getElementById(suggestionsId);
+    let timeout = null;
+    const apiKey = "fce70220d8a54a3b898d9363403bcae1";
+
+    input.addEventListener("input", function(){
+        clearTimeout(timeout);
+        const text = this.value;
+        if(text.length < 3){
+            suggestions.innerHTML="";
+            suggestions.style.display="none";
+            return;
+        }
+
+        timeout = setTimeout(async () => {
+            let url = "https://api.geoapify.com/v1/geocode/autocomplete?text="+text+"&limit=5&apiKey="+apiKey;
+            let res = await fetch(url);
+            let data = await res.json();
+            
+            suggestions.innerHTML = "";
+            suggestions.style.display = "block";
+            
+            if(!data.features.length){
+                suggestions.innerHTML = "<div class='place-empty'>No results</div>";
+                return;
+            }
+            
+            data.features.forEach(place => {
+                let item = document.createElement("div");
+                item.className = "place-item";
+                item.innerText = place.properties.formatted;
+                
+                item.onclick = function(){
+                    input.value = place.properties.formatted;
+                    document.getElementById(latId).value = place.properties.lat;
+                    document.getElementById(lonId).value = place.properties.lon;
+                    suggestions.innerHTML = "";
+                    suggestions.style.display = "none";
+                };
+                
+                suggestions.appendChild(item);
+            });
+        }, 300);
+    });
+    
+    document.addEventListener("click", function(e) {
+        if (e.target !== input && e.target !== suggestions) {
+            suggestions.style.display = "none";
+        }
+    });
+}
+
+setupPlacesAutocomplete("b_birth_place", "b_place_suggestions", "b_lat", "b_lon");
+setupPlacesAutocomplete("g_birth_place", "g_place_suggestions", "g_lat", "g_lon");
+</script>
 
 <?php require __DIR__ . '/../bottom.php'; ?>
