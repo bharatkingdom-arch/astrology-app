@@ -44,8 +44,7 @@ ini_set('display_errors', 1);
 <input type="hidden" id="b_lat" name="b_lat">
 <input type="hidden" id="b_lon" name="b_lon">
 
-<label>Timezone</label>
-<input name="b_tz" value="5.5">
+<input type="hidden" name="b_tz" id="b_tz" value="5.5">
 
 </div>
 
@@ -75,8 +74,7 @@ ini_set('display_errors', 1);
 <input type="hidden" id="g_lat" name="g_lat">
 <input type="hidden" id="g_lon" name="g_lon">
 
-<label>Timezone</label>
-<input name="g_tz" value="5.5">
+<input type="hidden" name="g_tz" id="g_tz" value="5.5">
 
 </div>
 
