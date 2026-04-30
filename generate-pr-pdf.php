@@ -214,7 +214,7 @@ $html.="<tr>
 
 $html.='</table>';
 
-$pdf->writeHTML($html,true,false,true,false,'');
+$pdf->writeHtml($html,true,false,true,false,'');
 
 /* ================= PAGE 3 : PR DASA TREE ================= */
 
@@ -225,80 +225,87 @@ require_once __DIR__.'/engine/PRDasaEngine.php';
 $tree = $_SESSION['pr_dasa_tree'] ?? [];
 
 if(empty($tree)){
-$data = $_SESSION['kundli_data'] ?? [];
-$tree = buildPRDasaTree($data);
-$_SESSION['pr_dasa_tree']=$tree;
+    $data = $_SESSION['kundli_data'] ?? [];
+    $tree = buildPRDasaTree($data);
+    $_SESSION['pr_dasa_tree']=$tree;
 }
 
 $pdf->SetFont('helvetica','B',16);
 $pdf->Cell(0,10,'PR Dasa Tree (120 Years)',0,1,'L');
 $pdf->Ln(5);
 
-foreach($tree as $nakName=>$nakData){
-
-$pdf->SetFont('helvetica','B',12);
-
-$pdf->Cell(
-0,
-8,
-$nakName.' ['.
-$nakData['start']->format('Y-m-d H:i:s').
-' — '.
-$nakData['end']->format('Y-m-d H:i:s').']',
-0,
-1
-);
-
-foreach($nakData['padas'] as $pada=>$padaData){
-
-$pdf->SetFont('helvetica','B',11);
-
-$pdf->Cell(
-0,
-7,
-'Pada '.$pada.' ['.
-$padaData['start']->format('Y-m-d H:i:s').
-' — '.
-$padaData['end']->format('Y-m-d H:i:s').']',
-0,
-1
-);
-
-$html='
-<table border="1" cellpadding="4">
-<tr>
-<th width="10%">Part</th>
-<th width="25%">Start</th>
-<th width="25%">End</th>
-<th width="13%">Main</th>
-<th width="13%">Sub</th>
-<th width="14%">SubSub</th>
-</tr>
-';
-
-foreach($padaData['parts'] as $row){
-
-$html.='<tr>
-<td>'.$row['part'].'</td>
-<td>'.$row['start']->format('Y-m-d H:i:s').'</td>
-<td>'.$row['end']->format('Y-m-d H:i:s').'</td>
-<td>'.$row['lords']['main'].'</td>
-<td>'.$row['lords']['sub'].'</td>
-<td>'.$row['lords']['subsub'].'</td>
-</tr>';
-
-}
-
-$html.='</table><br>';
-
-$pdf->writeHTML($html,true,false,true,false,'');
-
-unset($html);
-
-}
-
-$pdf->Ln(4);
-
+// ========== FIXED LOOP - SORTED PADAS AND PARTS ==========
+foreach($tree as $nakName => $nakData){
+    
+    $pdf->SetFont('helvetica','B',12);
+    
+    $pdf->Cell(
+        0,
+        8,
+        $nakName.' ['.
+        $nakData['start']->format('Y-m-d H:i:s').
+        ' — '.
+        $nakData['end']->format('Y-m-d H:i:s').']',
+        0,
+        1
+    );
+    
+    // ===== CRITICAL FIX 1: Sort padas by index (1,2,3,4) =====
+    $padas = $nakData['padas'];
+    ksort($padas);
+    
+    foreach($padas as $pada => $padaData){
+        
+        $pdf->SetFont('helvetica','B',11);
+        
+        $pdf->Cell(
+            0,
+            7,
+            'Pada '.$pada.' ['.
+            $padaData['start']->format('Y-m-d H:i:s').
+            ' — '.
+            $padaData['end']->format('Y-m-d H:i:s').']',
+            0,
+            1
+        );
+        
+        // ===== CRITICAL FIX 2: Sort parts by part number (1 to 81) =====
+        $parts = $padaData['parts'];
+        usort($parts, function($a, $b) {
+            return $a['part'] - $b['part'];
+        });
+        
+        $html = '
+        <table border="1" cellpadding="4">
+        <tr>
+            <th width="10%">Part</th>
+            <th width="25%">Start</th>
+            <th width="25%">End</th>
+            <th width="13%">Main</th>
+            <th width="13%">Sub</th>
+            <th width="14%">SubSub</th>
+        </tr>';
+        
+        foreach($parts as $row){
+            $html.='
+            <tr>
+                <td>'.$row['part'].'</td>
+                <td>'.$row['start']->format('Y-m-d H:i:s').'</td>
+                <td>'.$row['end']->format('Y-m-d H:i:s').'</td>
+                <td>'.$row['lords']['main'].'</td>
+                <td>'.$row['lords']['sub'].'</td>
+                <td>'.$row['lords']['subsub'].'</td>
+            </tr>';
+        }
+        
+        $html.='</table><br>';
+        
+        $pdf->writeHtml($html, true, false, true, false, '');
+        
+        unset($html);
+    }
+    
+    $pdf->Ln(4);
 }
 
 ob_end_clean();
