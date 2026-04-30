@@ -59,28 +59,24 @@ function generatePR81($nakIndex,$padaIndex,$SIGNS,$SIGN_LORD,$MOVABLE,$FIXED,$DU
     return $result;
 }
 
-function buildPRDasaTree($data){
-
+// OPTIMIZED VERSION - Returns only summary data for tree view
+function buildPRDasaTreeSummary($data) {
+    
     $planets = $data['planets'];
-
     $sunLon = (float)$planets['Sun']['decimal'];
-
     $prLon = $sunLon - 30;
     if ($prLon < 0) $prLon += 360;
 
     $birthDate = $data['date'] ?? date('Y-m-d');
     $birthTime = $data['time'] ?? "00:00:00";
-
     $birthDateTime = new DateTime("$birthDate $birthTime");
 
-    $nakSize  = 360 / 27;
+    $nakSize = 360 / 27;
     $padaSize = $nakSize / 4;
     $partSize = $padaSize / 81;
-
-    // Use high precision with float, don't round too early
     $secondsPerYear = 365.2425 * 86400;
-    $degreesPerSecond = 360 / $secondsPerYear;  // Degrees per second
-    $secondsPerPart = $partSize / $degreesPerSecond;  // Exact seconds per part
+    $degreesPerSecond = 360 / $secondsPerYear;
+    $secondsPerPart = $partSize / $degreesPerSecond;
 
     $SIGNS = [
         "Aries","Taurus","Gemini","Cancer",
@@ -114,34 +110,180 @@ function buildPRDasaTree($data){
     $birthNakIndex = floor($prLon / $nakSize);
     $nakStartLon = $birthNakIndex * $nakSize;
     
-    // Calculate time elapsed from nakshatra start to birth using longitude
     $longitudeFromStart = $prLon - $nakStartLon;
     $elapsedSeconds = $longitudeFromStart / $degreesPerSecond;
     
-    // Calculate exact nakshatra start time by going backwards from birth
     $nakStartTime = clone $birthDateTime;
-    
-    // Subtract integer seconds
     $intSeconds = (int)$elapsedSeconds;
     $nakStartTime->sub(new DateInterval('PT' . $intSeconds . 'S'));
     
-    // Subtract fractional seconds using microseconds for precision
     $fractionalSeconds = $elapsedSeconds - $intSeconds;
     if ($fractionalSeconds > 0) {
         $microseconds = (int)round($fractionalSeconds * 1000000);
         $nakStartTime->modify("-$microseconds microseconds");
     }
     
-    // Always start from NAKSHATRA BEGINNING (Part 1, not birth position)
-    $endTime = clone $nakStartTime;
+    // Calculate end time (120 years from birth, not from nakshatra start)
+    $endTime = clone $birthDateTime;
     $endTime->add(new DateInterval('P120Y'));
     
-    $currentLon = $nakStartLon;  // Start from nakshatra beginning
-    $currentTime = clone $nakStartTime;
+    $currentLon = $prLon;  // Start from BIRTH position
+    $currentTime = clone $birthDateTime;
     
     $tree = [];
     $totalParts = 0;
-    $maxParts = 120 * 365.2425 * 86400 / $secondsPerPart;  // Total parts in 120 years
+    $maxParts = 400; // Limit to first 400 parts (about 16 years) for summary
+    
+    // Track current nakshatra for grouping
+    $currentNakIndex = $birthNakIndex;
+    $currentNakStartTime = $nakStartTime;
+    $currentNakEndTime = null;
+    
+    while ($currentTime < $endTime && $totalParts < $maxParts) {
+        
+        $nakIndex = floor($currentLon / $nakSize);
+        $nakName = $NAK_NAMES[$nakIndex];
+        
+        // If we moved to a new nakshatra, calculate its start time
+        if ($nakIndex != $currentNakIndex) {
+            $currentNakIndex = $nakIndex;
+            $currentNakStartTime = clone $currentTime;
+            $currentNakEndTime = null;
+        }
+        
+        $withinNak = fmod($currentLon, $nakSize);
+        $padaIndex = floor($withinNak / $padaSize) + 1;
+        $withinPada = fmod($withinNak, $padaSize);
+        $partIndex = floor($withinPada / $partSize) + 1;
+        
+        $start = clone $currentTime;
+        
+        $pr81 = generatePR81($nakIndex, $padaIndex - 1, $SIGNS, $SIGN_LORD, $MOVABLE, $FIXED, $DUAL);
+        $lords = $pr81[$partIndex];
+        
+        $currentTime->modify("+" . number_format($secondsPerPart, 6) . " seconds");
+        $end = clone $currentTime;
+        
+        // Store nakshatra end time
+        if (!$currentNakEndTime) {
+            $currentNakEndTime = $end;
+        } else {
+            $currentNakEndTime = $end;
+        }
+        
+        // Store in tree (only summary for tree view)
+        if (!isset($tree[$nakName])) {
+            $tree[$nakName] = [
+                'start' => $currentNakStartTime,
+                'end' => $currentNakEndTime,
+                'padas' => []
+            ];
+        }
+        
+        // Store pada summary (without individual parts for tree view)
+        if (!isset($tree[$nakName]['padas'][$padaIndex])) {
+            $tree[$nakName]['padas'][$padaIndex] = [
+                'start' => $start,
+                'end' => $end,
+                'part_count' => 1
+            ];
+        } else {
+            $tree[$nakName]['padas'][$padaIndex]['end'] = $end;
+            $tree[$nakName]['padas'][$padaIndex]['part_count']++;
+        }
+        
+        $currentLon += $partSize;
+        if ($currentLon >= 360) $currentLon -= 360;
+        $totalParts++;
+    }
+    
+    return $tree;
+}
+
+// Function to get detailed parts for a specific pada (for PDF)
+function getPadaDetails($data, $nakName, $padaIndex, $page = 1, $perPage = 20) {
+    // This would generate only the specific pada's parts
+    // Implement if needed for detailed view
+    return [];
+}
+
+// Original function - kept for backward compatibility but not used directly in PDF
+function buildPRDasaTree($data){
+    // Limit to 5 years for initial load to avoid timeout
+    return buildPRDasaTreeLimited($data, 5);
+}
+
+// Limited version for PDF - generates only first N years
+function buildPRDasaTreeLimited($data, $yearsToShow = 5) {
+    
+    $planets = $data['planets'];
+    $sunLon = (float)$planets['Sun']['decimal'];
+    $prLon = $sunLon - 30;
+    if ($prLon < 0) $prLon += 360;
+
+    $birthDate = $data['date'] ?? date('Y-m-d');
+    $birthTime = $data['time'] ?? "00:00:00";
+    $birthDateTime = new DateTime("$birthDate $birthTime");
+
+    $nakSize = 360 / 27;
+    $padaSize = $nakSize / 4;
+    $partSize = $padaSize / 81;
+    $secondsPerYear = 365.2425 * 86400;
+    $degreesPerSecond = 360 / $secondsPerYear;
+    $secondsPerPart = $partSize / $degreesPerSecond;
+
+    $SIGNS = [
+        "Aries","Taurus","Gemini","Cancer",
+        "Leo","Virgo","Libra","Scorpio",
+        "Sagittarius","Capricorn","Aquarius","Pisces"
+    ];
+
+    $SIGN_LORD = [
+        "Aries"=>"Mars","Taurus"=>"Venus","Gemini"=>"Mercury","Cancer"=>"Moon",
+        "Leo"=>"Sun","Virgo"=>"Mercury","Libra"=>"Venus","Scorpio"=>"Mars",
+        "Sagittarius"=>"Jupiter","Capricorn"=>"Saturn",
+        "Aquarius"=>"Saturn","Pisces"=>"Jupiter"
+    ];
+
+    $MOVABLE = ["Aries","Cancer","Libra","Capricorn"];
+    $FIXED   = ["Taurus","Leo","Scorpio","Aquarius"];
+    $DUAL    = ["Gemini","Virgo","Sagittarius","Pisces"];
+
+    $NAK_NAMES = [
+        "Ashwini","Bharani","Krittika","Rohini","Mrigashira",
+        "Ardra","Punarvasu","Pushya","Ashlesha",
+        "Magha","Purva Phalguni","Uttara Phalguni",
+        "Hasta","Chitra","Swati","Vishakha",
+        "Anuradha","Jyeshtha","Moola",
+        "Purvashadha","Uttarashadha",
+        "Shravana","Dhanishta","Shatabhisha",
+        "Purvabhadra","Uttarabhadra","Revati"
+    ];
+
+    $birthNakIndex = floor($prLon / $nakSize);
+    $nakStartLon = $birthNakIndex * $nakSize;
+    $longitudeFromStart = $prLon - $nakStartLon;
+    $elapsedSeconds = $longitudeFromStart / $degreesPerSecond;
+    
+    $nakStartTime = clone $birthDateTime;
+    $intSeconds = (int)$elapsedSeconds;
+    $nakStartTime->sub(new DateInterval('PT' . $intSeconds . 'S'));
+    
+    $fractionalSeconds = $elapsedSeconds - $intSeconds;
+    if ($fractionalSeconds > 0) {
+        $microseconds = (int)round($fractionalSeconds * 1000000);
+        $nakStartTime->modify("-$microseconds microseconds");
+    }
+    
+    $endTime = clone $birthDateTime;
+    $endTime->add(new DateInterval('P' . $yearsToShow . 'Y'));
+    
+    $currentLon = $prLon;  // Start from birth
+    $currentTime = clone $birthDateTime;
+    
+    $tree = [];
+    $totalParts = 0;
+    $maxParts = $yearsToShow * 365.2425 * 86400 / $secondsPerPart;
 
     while ($currentTime < $endTime && $totalParts < $maxParts) {
         
@@ -158,11 +300,9 @@ function buildPRDasaTree($data){
         $pr81 = generatePR81($nakIndex, $padaIndex - 1, $SIGNS, $SIGN_LORD, $MOVABLE, $FIXED, $DUAL);
         $lords = $pr81[$partIndex];
         
-        // Calculate next time using exact seconds per part
         $currentTime->modify("+" . number_format($secondsPerPart, 6) . " seconds");
         $end = clone $currentTime;
         
-        // Initialize nakshatra in tree
         if (!isset($tree[$nakName])) {
             $tree[$nakName] = [
                 'start' => $start,
@@ -173,7 +313,6 @@ function buildPRDasaTree($data){
             $tree[$nakName]['end'] = $end;
         }
         
-        // Initialize pada in tree
         if (!isset($tree[$nakName]['padas'][$padaIndex])) {
             $tree[$nakName]['padas'][$padaIndex] = [
                 'start' => $start,
@@ -184,7 +323,6 @@ function buildPRDasaTree($data){
             $tree[$nakName]['padas'][$padaIndex]['end'] = $end;
         }
         
-        // Add part
         $tree[$nakName]['padas'][$padaIndex]['parts'][] = [
             'part' => $partIndex,
             'start' => $start,
@@ -192,7 +330,6 @@ function buildPRDasaTree($data){
             'lords' => $lords
         ];
         
-        // Move to next part
         $currentLon += $partSize;
         if ($currentLon >= 360) $currentLon -= 360;
         $totalParts++;

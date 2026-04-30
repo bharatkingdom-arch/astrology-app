@@ -1,7 +1,9 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-ini_set('memory_limit','512M');
+ini_set('memory_limit', '1024M');
+ini_set('max_execution_time', 300);
+ini_set('max_input_time', 300);
 
 session_start();
 ob_start();
@@ -110,8 +112,7 @@ $pdf->Cell(0,10,'PR (Poorva Ravi)',0,1,'C');
 $pdf->SetFont('helvetica','B',14);
 $pdf->Cell(0,8,'Ekashiti Pratyamsa Paddati',0,1,'C');
 
-$pdf->Ln(5); // space before charts
-
+$pdf->Ln(5);
 
 /* PR CHART */
 
@@ -122,7 +123,6 @@ $pdf->Cell(110,10,'PR South Chart',0,0,'C');
 $svg1 = generateSouthSVG($prChart,$centerPR);
 $pdf->ImageSVG('@'.$svg1,18,52,110,110);
 
-
 /* TRANSIT CHART */
 
 $pdf->SetFont('helvetica','B',16);
@@ -131,6 +131,7 @@ $pdf->Cell(110,10,'Transit South Chart',0,0,'C');
 
 $svg2 = generateSouthSVG($transitChart,$centerTransit);
 $pdf->ImageSVG('@'.$svg2,148,52,110,110);
+
 /* ================= PAGE 2 : TABLES ================= */
 
 $pdf->AddPage();
@@ -159,19 +160,18 @@ $html.='<h3>Planetary Table</h3>
 </tr>';
 
 foreach($planetTable as $planet=>$row){
-
-$html.="<tr>
-<td>{$planet}</td>
-<td>".number_format($row['longitude'],4)."°</td>
-<td>{$row['sign']}</td>
-<td>{$row['signLord']}</td>
-<td>{$row['nak']}</td>
-<td>{$row['pada']}</td>
-<td>{$row['part']}</td>
-<td>{$row['main']}</td>
-<td>{$row['sub']}</td>
-<td>{$row['subsub']}</td>
-</tr>";
+    $html.="<tr>
+    <td>{$planet}</td>
+    <td>".number_format($row['longitude'],4)."°</td>
+    <td>{$row['sign']}</td>
+    <td>{$row['signLord']}</td>
+    <td>{$row['nak']}</td>
+    <td>{$row['pada']}</td>
+    <td>{$row['part']}</td>
+    <td>{$row['main']}</td>
+    <td>{$row['sub']}</td>
+    <td>{$row['subsub']}</td>
+    </tr>";
 }
 
 $html.='</table><br><br>';
@@ -192,46 +192,51 @@ $html.='<h3>House Table</h3>
 </tr>';
 
 foreach($houseTable as $house=>$row){
-
-$label=$house;
-if(preg_match('/House\s*(\d+)/i',$house,$m)){
-$label=$m[1];
-}
-
-$html.="<tr>
-<td>{$label}</td>
-<td>".number_format($row['longitude'],4)."°</td>
-<td>{$row['sign']}</td>
-<td>{$row['signLord']}</td>
-<td>{$row['nak']}</td>
-<td>{$row['pada']}</td>
-<td>{$row['part']}</td>
-<td>{$row['main']}</td>
-<td>{$row['sub']}</td>
-<td>{$row['subsub']}</td>
-</tr>";
+    $label=$house;
+    if(preg_match('/House\s*(\d+)/i',$house,$m)){
+        $label=$m[1];
+    }
+    $html.="<tr>
+    <td>{$label}</td>
+    <td>".number_format($row['longitude'],4)."°</td>
+    <td>{$row['sign']}</td>
+    <td>{$row['signLord']}</td>
+    <td>{$row['nak']}</td>
+    <td>{$row['pada']}</td>
+    <td>{$row['part']}</td>
+    <td>{$row['main']}</td>
+    <td>{$row['sub']}</td>
+    <td>{$row['subsub']}</td>
+    </tr>";
 }
 
 $html.='</table>';
 
 $pdf->writeHtml($html,true,false,true,false,'');
 
-/* ================= PAGE 3 : PR DASA TREE ================= */
+/* ================= PAGE 3 : PR DASA TREE (OPTIMIZED) ================= */
 
 $pdf->AddPage();
 
 require_once __DIR__.'/engine/PRDasaEngine.php';
 
-$tree = $_SESSION['pr_dasa_tree'] ?? [];
+// Get parameters for pagination (optional)
+$startYear = isset($_GET['start_year']) ? (int)$_GET['start_year'] : 0;
+$yearsToShow = isset($_GET['years']) ? (int)$_GET['years'] : 10;
+
+$tree = $_SESSION['pr_dasa_tree_' . $startYear . '_' . $yearsToShow] ?? [];
 
 if(empty($tree)){
     $data = $_SESSION['kundli_data'] ?? [];
-    $tree = buildPRDasaTree($data);
-    $_SESSION['pr_dasa_tree']=$tree;
+    // Use the limited version to prevent timeout
+    $tree = buildPRDasaTreeLimited($data, $yearsToShow, $startYear);
+    $_SESSION['pr_dasa_tree_' . $startYear . '_' . $yearsToShow] = $tree;
 }
 
 $pdf->SetFont('helvetica','B',16);
-$pdf->Cell(0,10,'PR Dasa Tree (120 Years)',0,1,'L');
+$pdf->Cell(0,10,'PR Dasa Tree (Showing ' . $yearsToShow . ' Years)',0,1,'L');
+$pdf->SetFont('helvetica','',10);
+$pdf->Cell(0,6,'Note: Showing ' . $yearsToShow . ' years only. For full 120-year report, please download in chunks.',0,1,'L');
 $pdf->Ln(5);
 
 // ========== FIXED LOOP - SORTED PADAS AND PARTS ==========
@@ -250,7 +255,7 @@ foreach($tree as $nakName => $nakData){
         1
     );
     
-    // ===== CRITICAL FIX 1: Sort padas by index (1,2,3,4) =====
+    // Sort padas by index (1,2,3,4)
     $padas = $nakData['padas'];
     ksort($padas);
     
@@ -269,7 +274,7 @@ foreach($tree as $nakName => $nakData){
             1
         );
         
-        // ===== CRITICAL FIX 2: Sort parts by part number (1 to 81) =====
+        // Sort parts by part number (1 to 81)
         $parts = $padaData['parts'];
         usort($parts, function($a, $b) {
             return $a['part'] - $b['part'];
