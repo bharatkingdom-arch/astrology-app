@@ -222,16 +222,12 @@ $pdf->AddPage();
 
 require_once __DIR__.'/engine/PRDasaEngine.php';
 
-$tree = $_SESSION['pr_dasa_tree'] ?? [];
-
-if(empty($tree)){
 $data = $_SESSION['kundli_data'] ?? [];
-$tree = buildPRDasaTree($data);
-$_SESSION['pr_dasa_tree']=$tree;
-}
+// Force a 5-year tree for PDF to avoid memory/timeout issues
+$tree = buildPRDasaTreeLimited($data, 5);
 
 $pdf->SetFont('helvetica','B',16);
-$pdf->Cell(0,10,'PR Dasa Tree (120 Years)',0,1,'L');
+$pdf->Cell(0,10,'PR Dasa Tree (First 5 Years)',0,1,'L');
 $pdf->Ln(5);
 
 foreach($tree as $nakName=>$nakData){
@@ -264,36 +260,26 @@ $padaData['end']->format('Y-m-d H:i:s').']',
 1
 );
 
-$html='
-<table border="1" cellpadding="4">
-<tr>
-<th width="10%">Part</th>
-<th width="25%">Start</th>
-<th width="25%">End</th>
-<th width="13%">Main</th>
-<th width="13%">Sub</th>
-<th width="14%">SubSub</th>
-</tr>
-';
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->Cell(20, 7, 'Part', 1, 0, 'C');
+$pdf->Cell(60, 7, 'Start', 1, 0, 'C');
+$pdf->Cell(60, 7, 'End', 1, 0, 'C');
+$pdf->Cell(45, 7, 'Main', 1, 0, 'C');
+$pdf->Cell(45, 7, 'Sub', 1, 0, 'C');
+$pdf->Cell(47, 7, 'SubSub', 1, 1, 'C');
 
-foreach($padaData['parts'] as $row){
-
-$html.='<tr>
-<td>'.$row['part'].'</td>
-<td>'.$row['start']->format('Y-m-d H:i:s').'</td>
-<td>'.$row['end']->format('Y-m-d H:i:s').'</td>
-<td>'.$row['lords']['main'].'</td>
-<td>'.$row['lords']['sub'].'</td>
-<td>'.$row['lords']['subsub'].'</td>
-</tr>';
-
+$pdf->SetFont('helvetica', '', 9);
+if (!empty($padaData['parts'])) {
+    foreach($padaData['parts'] as $row){
+        $pdf->Cell(20, 6, $row['part'], 1, 0, 'C');
+        $pdf->Cell(60, 6, $row['start']->format('Y-m-d H:i:s'), 1, 0, 'C');
+        $pdf->Cell(60, 6, $row['end']->format('Y-m-d H:i:s'), 1, 0, 'C');
+        $pdf->Cell(45, 6, $row['lords']['main'], 1, 0, 'C');
+        $pdf->Cell(45, 6, $row['lords']['sub'], 1, 0, 'C');
+        $pdf->Cell(47, 6, $row['lords']['subsub'], 1, 1, 'C');
+    }
 }
-
-$html.='</table><br>';
-
-$pdf->writeHTML($html,true,false,true,false,'');
-
-unset($html);
+$pdf->Ln(4);
 
 }
 

@@ -161,7 +161,7 @@ function buildPRDasaTreeSummary($data) {
         $pr81 = generatePR81($nakIndex, $padaIndex - 1, $SIGNS, $SIGN_LORD, $MOVABLE, $FIXED, $DUAL);
         $lords = $pr81[$partIndex];
         
-        $currentTime->modify("+" . number_format($secondsPerPart, 6) . " seconds");
+        $currentTime->modify("+" . number_format($secondsPerPart, 6, '.', '') . " seconds");
         $end = clone $currentTime;
         
         // Store nakshatra end time
@@ -300,7 +300,7 @@ function buildPRDasaTreeLimited($data, $yearsToShow = 5) {
         $pr81 = generatePR81($nakIndex, $padaIndex - 1, $SIGNS, $SIGN_LORD, $MOVABLE, $FIXED, $DUAL);
         $lords = $pr81[$partIndex];
         
-        $currentTime->modify("+" . number_format($secondsPerPart, 6) . " seconds");
+        $currentTime->modify("+" . number_format($secondsPerPart, 6, '.', '') . " seconds");
         $end = clone $currentTime;
         
         if (!isset($tree[$nakName])) {
