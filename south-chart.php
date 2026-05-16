@@ -85,18 +85,22 @@ foreach ($planets as $planet => $planetData) {
     if (!isset($planetData['decimal'])) continue;
 
     $degree = floatval($planetData['decimal']);
+    
+    $pLabel = $short[$planet] ?? $planet;
+    if (!empty($planetData['retrograde'])) $pLabel .= '(R)';
+    if (!empty($planetData['combust'])) $pLabel .= '(C)';
 
     // D1
     $rasi1 = getRasi($degree);
     $d1[$rasi1][] = [
-        "short" => $short[$planet] ?? $planet,
+        "short" => $pLabel,
         "deg"   => degreeInSign($degree)
     ];
 
     // D9
     $rasi9 = Navamsha::calculate($degree);
     $d9[$rasi9][] = [
-        "short" => $short[$planet] ?? $planet
+        "short" => $pLabel
     ];
 }
 
@@ -203,10 +207,14 @@ foreach ($planets as $planet => $planetData):
     $sign = getSignName($rasi);
     $dms  = degreeInSign($deg);
     list($nak, $pada) = getNakshatraPada($deg);
+    
+    $pLabel = $planet;
+    if (!empty($planetData['retrograde'])) $pLabel .= ' (R)';
+    if (!empty($planetData['combust'])) $pLabel .= ' (C)';
 ?>
 
 <tr>
-    <td><?= htmlspecialchars($planet) ?></td>
+    <td><?= htmlspecialchars($pLabel) ?></td>
     <td><?= $sign ?></td>
     <td><?= $dms ?></td>
     <td><?= $nak ?></td>

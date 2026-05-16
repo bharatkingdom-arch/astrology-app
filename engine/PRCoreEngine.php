@@ -103,8 +103,10 @@ class PRCoreEngine
 
         /* ================= FULL PR ANALYSIS ================= */
 
-        $getFullPR = function($lon)
+        $getFullPR = function($info)
             use ($SIGNS,$SIGN_LORD,$NAK_NAMES,$NAK_LORDS,$generatePR81) {
+
+            $lon = is_array($info) ? (float)($info['decimal'] ?? 0) : (float)$info;
 
             $signIndex = floor($lon/30);
             $signName  = $SIGNS[$signIndex];
@@ -136,7 +138,9 @@ class PRCoreEngine
                 "part"=>$partIndex,
                 "main"=>$pr81[$partIndex]["main"] ?? '',
                 "sub"=>$pr81[$partIndex]["sub"] ?? '',
-                "subsub"=>$pr81[$partIndex]["subsub"] ?? ''
+                "subsub"=>$pr81[$partIndex]["subsub"] ?? '',
+                "retrograde"=> is_array($info) && !empty($info['retrograde']),
+                "combust"=> is_array($info) && !empty($info['combust'])
             ];
         };
 
@@ -159,7 +163,7 @@ class PRCoreEngine
             if (!isset($info['decimal'])) continue;
 
             $planetTable[$planet] =
-                $getFullPR((float)$info['decimal']);
+                $getFullPR($info);
         }
 
         /* ================= BUILD HOUSE TABLE ================= */

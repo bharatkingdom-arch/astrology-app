@@ -326,9 +326,13 @@ foreach ($planets as $planet => $info) {
     $house = floor($info['decimal'] / 30) + 1;
     if ($house > 12) $house = 12;
 
+    $pLabel = $planet;
+    if (!empty($info['retrograde'])) $pLabel .= '(R)';
+    if (!empty($info['combust'])) $pLabel .= '(C)';
+
     $chart[$house] =
         ($chart[$house] ?? '') .
-        $planet . "<br>";
+        $pLabel . "<br>";
 }
 
 /* Step 3: Insert Lagna */
@@ -386,9 +390,13 @@ foreach ($transitPlanets as $planet => $info) {
     $color = "blue";
     if ($planet == 'T-PR') $color = "purple";
 
+    $pLabel = $planet;
+    if (!empty($info['retrograde'])) $pLabel .= '(R)';
+    if (!empty($info['combust'])) $pLabel .= '(C)';
+
     $transitChart[$house] =
         ($transitChart[$house] ?? '') .
-        "<span style='color:$color;'>$planet</span><br>";
+        "<span style='color:$color;'>$pLabel</span><br>";
 }
 
 $transitChartFinal = $transitChart;   // ✅ SAVE TRANSIT CHART
@@ -464,8 +472,13 @@ $pr=getFullPR(
 );
 ?>
 
+<?php
+$pLabel = $planet;
+if (!empty($info['retrograde'])) $pLabel .= ' (R)';
+if (!empty($info['combust'])) $pLabel .= ' (C)';
+?>
 <tr>
-<td><?= $planet ?></td>
+<td><?= $pLabel ?></td>
 <td><?= $pr["longitude"] ?>°</td>
 <td><?= $pr["sign"] ?></td>
 <td><?= $pr["signLord"] ?></td>

@@ -160,8 +160,12 @@ $html.='<h3>Planetary Table</h3>
 
 foreach($planetTable as $planet=>$row){
 
+$pLabel = $planet;
+if (!empty($row['retrograde'])) $pLabel .= ' (R)';
+if (!empty($row['combust'])) $pLabel .= ' (C)';
+
 $html.="<tr>
-<td>{$planet}</td>
+<td>{$pLabel}</td>
 <td>".number_format($row['longitude'],4)."°</td>
 <td>{$row['sign']}</td>
 <td>{$row['signLord']}</td>

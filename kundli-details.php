@@ -70,8 +70,8 @@ if (isset($data['combust']) && $data['combust']) {
 ?>
 
 <tr>
-<td><?php echo htmlspecialchars($planet); ?></td>
-<td><?php echo htmlspecialchars($data['dms']) . $status; ?></td>
+<td><?php echo htmlspecialchars($planet) . $status; ?></td>
+<td><?php echo htmlspecialchars($data['dms']); ?></td>
 </tr>
 
 <?php endforeach; ?>
