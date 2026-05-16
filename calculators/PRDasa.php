@@ -168,11 +168,18 @@ while ($currentTime < $endTime) {
     $nakIndex = floor($currentLon / $nakSize);
     $nakName  = $NAK_NAMES[$nakIndex];
 
-    $withinNak = fmod($currentLon, $nakSize);
-    $padaIndex = floor($withinNak / $padaSize) + 1;
-
-    $withinPada = fmod($withinNak, $padaSize);
-    $partIndex  = floor($withinPada / $partSize) + 1;
+    $nakIndexCalc = floor(round($currentLon, 6) / round($nakSize, 6));
+    $longitudeFromNakStart = $currentLon - ($nakIndexCalc * $nakSize);
+    if ($longitudeFromNakStart < 0) $longitudeFromNakStart = 0;
+    
+    $padaIndex = floor(round($longitudeFromNakStart, 6) / round($padaSize, 6)) + 1;
+    if ($padaIndex > 4) $padaIndex = 4;
+    
+    $longitudeFromPadaStart = $longitudeFromNakStart - (($padaIndex - 1) * $padaSize);
+    if ($longitudeFromPadaStart < 0) $longitudeFromPadaStart = 0;
+    
+    $partIndex = floor(round($longitudeFromPadaStart, 6) / round($partSize, 6)) + 1;
+    if ($partIndex > 81) $partIndex = 81;
 
     $start = clone $currentTime;
 
