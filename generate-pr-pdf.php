@@ -223,11 +223,10 @@ $pdf->AddPage();
 require_once __DIR__.'/engine/PRDasaEngine.php';
 
 $data = $_SESSION['kundli_data'] ?? [];
-// Force a 5-year tree for PDF to avoid memory/timeout issues
-$tree = buildPRDasaTreeLimited($data, 5);
+$tree = buildPRDasaTreeLimited($data, 120);
 
 $pdf->SetFont('helvetica','B',16);
-$pdf->Cell(0,10,'PR Dasa Tree (First 5 Years)',0,1,'L');
+$pdf->Cell(0,10,'PR Dasa Tree (120 Years)',0,1,'L');
 $pdf->Ln(5);
 
 foreach($tree as $nakName=>$nakData){
