@@ -209,7 +209,7 @@ class Panchanga {
         // Format dates
         date_default_timezone_set('Asia/Kolkata');
         $format_date = function($ts) {
-            return date("d-M-Y h:i A", $ts);
+            return date("d-M-Y h:i A", (int)$ts);
         };
 
         return [
@@ -236,7 +236,7 @@ class Panchanga {
             "Sun" => $sun_sign,
             "Amrithathi" => [
                 "name" => $amrithathi,
-                "end" => "(Till " . date("d-M-Y", $nak_end) . " Sunrise)" // Tamil yoga changes at sunrise usually
+                "end" => "(Till " . date("d-M-Y", (int)$nak_end) . " Sunrise)" // Tamil yoga changes at sunrise usually
             ],
             // keep old plain values for compatibility if needed elsewhere
             "Tithi_Plain" => $paksha . " " . $tithi_names[$name_key],
