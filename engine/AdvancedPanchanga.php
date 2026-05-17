@@ -93,7 +93,7 @@ class AdvancedPanchanga
 
         $getKala = function($partsArray, $wd) use ($sunriseTs, $partLen) {
             $start = $sunriseTs + ($partsArray[$wd] * $partLen);
-            return date("h:i A", $start) . " To " . date("h:i A", $start + $partLen);
+            return date("h:i A", (int)$start) . " To " . date("h:i A", (int)($start + $partLen));
         };
 
         // Hindu Calendar
@@ -121,7 +121,7 @@ class AdvancedPanchanga
         // Dur Muhurta (Complex weekday mapping, using simple approximation)
         $durMuhurtas = [];
         $durMuhurtaStart = $sunriseTs + ($weekday * $muhurtaLen); // Just a placeholder
-        $durMuhurtas[] = date("h:i A", $durMuhurtaStart) . " To " . date("h:i A", $durMuhurtaStart + $muhurtaLen);
+        $durMuhurtas[] = date("h:i A", (int)$durMuhurtaStart) . " To " . date("h:i A", (int)($durMuhurtaStart + $muhurtaLen));
 
         // Amrita Kala & Varjyam (Approximations based on Nakshatra)
         $nakshatraName = $basic_panchanga['Nakshatra_Plain'] ?? "Ashwini";
@@ -137,8 +137,8 @@ class AdvancedPanchanga
                 "Sidereal Time" => $siderealTime,
                 "Day Duration" => $formatDuration($dayDuration),
                 "Night Duration" => $formatDuration($nightDuration),
-                "Abhijit Muhurta" => date("h:i A", $abhijitStart) . " To " . date("h:i A", $abhijitEnd),
-                "Amrita Kala" => date("d-M-Y h:i A", $amritaStart) . " To " . date("d-M-Y h:i A", $amritaStart + 5400)
+                "Abhijit Muhurta" => date("h:i A", (int)$abhijitStart) . " To " . date("h:i A", (int)$abhijitEnd),
+                "Amrita Kala" => date("d-M-Y h:i A", (int)$amritaStart) . " To " . date("d-M-Y h:i A", (int)($amritaStart + 5400))
             ],
             "Calendar" => [
                 "Samvatsara (Shaka)" => $shaka . " " . $samvatsaraShaka,
@@ -155,7 +155,7 @@ class AdvancedPanchanga
                 "Yamaganda Kala" => $getKala($yamaParts, $weekday),
                 "Gulika Kala" => $getKala($guliParts, $weekday),
                 "Dur Muhurta" => implode("<br>", $durMuhurtas),
-                "Varjyam (Vishagatika)" => date("d-M-Y h:i A", $varjyamStart) . " To " . date("d-M-Y h:i A", $varjyamStart + 5760)
+                "Varjyam (Vishagatika)" => date("d-M-Y h:i A", (int)$varjyamStart) . " To " . date("d-M-Y h:i A", (int)($varjyamStart + 5760))
             ]
         ];
     }
