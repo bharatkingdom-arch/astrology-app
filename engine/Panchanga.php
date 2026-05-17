@@ -236,7 +236,7 @@ class Panchanga {
             "Sun" => $sun_sign,
             "Amrithathi" => [
                 "name" => $amrithathi,
-                "end" => "(Till " . date("d-M-Y", (int)$nak_end) . " Sunrise)" // Tamil yoga changes at sunrise usually
+                "end" => "(Till " . date("d-M-Y", $timestamp + 86400) . " Sunrise)" // Tamil yoga changes at next sunrise
             ],
             // keep old plain values for compatibility if needed elsewhere
             "Tithi_Plain" => $paksha . " " . $tithi_names[$name_key],
