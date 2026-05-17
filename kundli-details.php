@@ -35,6 +35,7 @@ $houses    = $data['houses'] ?? [];   // ADD THIS
     <a href="#">Charts</a>
     <a href="#">Dasha</a>
     <a href="#">Free Report</a>
+    <a href="panchanga.php">Panchanga</a>
 </div>
 
 <!-- ================= NORTH/SOUTH TOGGLE ================= -->

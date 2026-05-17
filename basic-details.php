@@ -57,6 +57,7 @@ function decimalToDMS($degree)
     <a href="#">Charts</a>
     <a href="#">Dasha</a>
     <a href="#">Free Report</a>
+    <a href="panchanga.php">Panchanga</a>
 </div>
 
 <div class="details-container">

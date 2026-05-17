@@ -85,12 +85,13 @@ if (isset($_POST['generate'])) {
 
                 $jd = $datetime->getTimestamp() / 86400 + 2440587.5;
 
-                /* ================= PANCHANGA ================= */
-
                 $panchanga = Panchanga::calculate(
                     $planets['Sun']['decimal'] ?? 0,
                     $planets['Moon']['decimal'] ?? 0,
-                    $jd
+                    $jd,
+                    $planets['Sun']['speed'] ?? 0.98,
+                    $planets['Moon']['speed'] ?? 13.1,
+                    $datetime->getTimestamp()
                 );
 
                 /* ================= STORE SESSION ================= */
