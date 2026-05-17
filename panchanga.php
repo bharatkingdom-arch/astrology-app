@@ -9,6 +9,7 @@ if (!$data) {
 }
 
 $panchanga = $data['panchanga'] ?? [];
+$advanced = $data['advanced_panchanga'] ?? [];
 ?>
 
 <?php require 'header.php'; ?>
@@ -174,6 +175,49 @@ body.dark-mode .panchanga-highlight {
 
     </ul>
 </div>
+
+<?php if (!empty($advanced)): ?>
+
+<!-- Timings Section -->
+<div class="panchanga-container" style="margin-top: 30px;">
+    <h3 style="padding: 15px 20px; margin: 0; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); color: var(--primary-color);">Timings</h3>
+    <ul class="panchanga-list">
+        <?php foreach (($advanced['Timings'] ?? []) as $label => $value): ?>
+        <li class="panchanga-item" style="flex-direction: row; justify-content: space-between; align-items: center;">
+            <span class="panchanga-label" style="margin-bottom: 0;"><?php echo htmlspecialchars($label); ?></span>
+            <span class="panchanga-value"><?php echo htmlspecialchars($value); ?></span>
+        </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+
+<!-- Hindu Calendar Section -->
+<div class="panchanga-container" style="margin-top: 30px;">
+    <h3 style="padding: 15px 20px; margin: 0; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); color: var(--primary-color);">Hindu Calendar</h3>
+    <ul class="panchanga-list">
+        <?php foreach (($advanced['Calendar'] ?? []) as $label => $value): ?>
+        <li class="panchanga-item" style="flex-direction: row; justify-content: space-between; align-items: center;">
+            <span class="panchanga-label" style="margin-bottom: 0;"><?php echo htmlspecialchars($label); ?></span>
+            <span class="panchanga-value"><?php echo htmlspecialchars($value); ?></span>
+        </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+
+<!-- Inauspicious Timings Section -->
+<div class="panchanga-container" style="margin-top: 30px;">
+    <h3 style="padding: 15px 20px; margin: 0; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); color: var(--primary-color);">Inauspicious Timings</h3>
+    <ul class="panchanga-list">
+        <?php foreach (($advanced['Inauspicious'] ?? []) as $label => $value): ?>
+        <li class="panchanga-item" style="flex-direction: row; justify-content: space-between; align-items: center;">
+            <span class="panchanga-label" style="margin-bottom: 0;"><?php echo htmlspecialchars($label); ?></span>
+            <span class="panchanga-value"><?php echo $value; /* allow HTML for Dur Muhurta breaks */ ?></span>
+        </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+
+<?php endif; ?>
 
 </div>
 </section>

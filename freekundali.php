@@ -94,6 +94,17 @@ if (isset($_POST['generate'])) {
                     $datetime->getTimestamp()
                 );
 
+                require_once __DIR__ . '/engine/AdvancedPanchanga.php';
+                $advanced_panchanga = AdvancedPanchanga::calculate(
+                    $datetime->getTimestamp(),
+                    $lat,
+                    $lon,
+                    $timezone,
+                    $planets['Sun']['decimal'] ?? 0,
+                    $planets['Moon']['decimal'] ?? 0,
+                    $panchanga
+                );
+
                 /* ================= STORE SESSION ================= */
 
                 $_SESSION['kundli_data'] = [
@@ -106,6 +117,7 @@ if (isset($_POST['generate'])) {
                     'planets' => $planets,
                     'houses' => $houses,
                     'panchanga' => $panchanga,
+                    'advanced_panchanga' => $advanced_panchanga,
                     'lagna' => $lagna
                 ];
 
