@@ -148,17 +148,17 @@ function decimalToDMS($degree)
 
     <div class="detail-item">
         <span>Tithi</span>
-        <span><?php echo $panchanga['Tithi'] ?? '--'; ?></span>
+        <span><?php echo $panchanga['Tithi_Plain'] ?? '--'; ?></span>
     </div>
 
     <div class="detail-item">
         <span>Karan</span>
-        <span><?php echo $panchanga['Karana'] ?? '--'; ?></span>
+        <span><?php echo $panchanga['Karana_Plain'] ?? '--'; ?></span>
     </div>
 
     <div class="detail-item">
         <span>Yog</span>
-        <span><?php echo $panchanga['Yoga'] ?? '--'; ?></span>
+        <span><?php echo $panchanga['Yoga_Plain'] ?? '--'; ?></span>
     </div>
 
     <div class="detail-item">

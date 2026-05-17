@@ -129,27 +129,27 @@ if (isset($data['combust']) && $data['combust']) {
 
 <tr>
 <td><strong>Tithi</strong></td>
-<td><?php echo htmlspecialchars($panchanga['Tithi'] ?? ''); ?></td>
+<td><?php echo htmlspecialchars($panchanga['Tithi_Plain'] ?? ''); ?></td>
 </tr>
 
 <tr>
 <td><strong>Nakshatra</strong></td>
-<td><?php echo htmlspecialchars($panchanga['Nakshatra'] ?? ''); ?></td>
+<td><?php echo htmlspecialchars($panchanga['Nakshatra_Plain'] ?? ''); ?></td>
 </tr>
 
 <tr>
 <td><strong>Yoga</strong></td>
-<td><?php echo htmlspecialchars($panchanga['Yoga'] ?? ''); ?></td>
+<td><?php echo htmlspecialchars($panchanga['Yoga_Plain'] ?? ''); ?></td>
 </tr>
 
 <tr>
 <td><strong>Karana</strong></td>
-<td><?php echo htmlspecialchars($panchanga['Karana'] ?? ''); ?></td>
+<td><?php echo htmlspecialchars($panchanga['Karana_Plain'] ?? ''); ?></td>
 </tr>
 
 <tr>
 <td><strong>Vara</strong></td>
-<td><?php echo htmlspecialchars($panchanga['Vara'] ?? ''); ?></td>
+<td><?php echo htmlspecialchars($panchanga['Vara_Plain'] ?? ''); ?></td>
 </tr>
 
 </table>
