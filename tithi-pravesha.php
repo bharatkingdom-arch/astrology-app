@@ -20,6 +20,7 @@ $birthTime = sprintf("%02d:%02d:%02d", $timeParts[0], $timeParts[1], $timeParts[
 $timezone  = 5.5; // Defaulting to IST as in freekundali.php
 
 require_once 'engine/TithiPraveshaEngine.php';
+require_once 'engine/Navamsha.php';
 
 $birthYear = (int)$dateParts[2];
 $selectedYear = isset($_GET['year']) ? (int)$_GET['year'] : (int)date('Y');
@@ -68,7 +69,11 @@ $short = [
 ];
 
 $d1 = [];
-for ($i=1; $i<=12; $i++) { $d1[$i] = []; }
+$d9 = [];
+for ($i=1; $i<=12; $i++) { 
+    $d1[$i] = []; 
+    $d9[$i] = [];
+}
 
 foreach ($tpPlanets as $planet => $pData) {
     if (!isset($pData['decimal'])) continue;
@@ -77,16 +82,31 @@ foreach ($tpPlanets as $planet => $pData) {
     $pLabel = $short[$planet] ?? substr($planet, 0, 2);
     if (!empty($pData['retrograde'])) $pLabel .= '(R)';
     
+    // D1
     $rasi1 = floor($degree / 30) + 1;
     $d1[$rasi1][] = [
+        "short" => $pLabel
+    ];
+
+    // D9
+    $rasi9 = Navamsha::calculate($degree);
+    $d9[$rasi9][] = [
         "short" => $pLabel
     ];
 }
 
 $lagnaRasiD1 = null;
+$lagnaRasiD9 = null;
 if ($tpLagna !== null) {
+    // D1
     $lagnaRasiD1 = floor($tpLagna / 30) + 1;
     $d1[$lagnaRasiD1][] = [
+        "short" => "Lagna"
+    ];
+
+    // D9
+    $lagnaRasiD9 = Navamsha::calculate($tpLagna);
+    $d9[$lagnaRasiD9][] = [
         "short" => "Lagna"
     ];
 }
@@ -159,9 +179,15 @@ if ($tpLagna !== null) {
 
             <?php if (!empty($tpPlanets)): ?>
             <div style="margin-top: 30px; text-align: center;">
-                <h4>Tithi Pravesha Chart (Rasi D1)</h4>
-                <div style="display: flex; justify-content: center; margin-top: 15px;">
-                    <?php renderSouthChart($d1, false, $lagnaRasiD1); ?>
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top: 15px;">
+                    <div>
+                        <h4>Rasi (D1)</h4>
+                        <?php renderSouthChart($d1, false, $lagnaRasiD1); ?>
+                    </div>
+                    <div>
+                        <h4>Navamsa (D9)</h4>
+                        <?php renderSouthChart($d9, false, $lagnaRasiD9); ?>
+                    </div>
                 </div>
             </div>
 
