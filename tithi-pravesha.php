@@ -53,8 +53,42 @@ if ($tpData) {
         $apiDecoded = json_decode($apiResponse, true);
         if ($apiDecoded && isset($apiDecoded['planets'])) {
             $tpPlanets = $apiDecoded['planets'];
+            $tpHouses = $apiDecoded['houses'] ?? [];
+            $tpLagna = $tpHouses['Ascendant']['decimal'] ?? null;
         }
     }
+}
+
+/* ================= CHART MAPPING ================= */
+$short = [
+    "Sun"=>"Su","Moon"=>"Mo","Mercury"=>"Me","Venus"=>"Ve",
+    "Mars"=>"Ma","Jupiter"=>"Ju","Saturn"=>"Sa",
+    "Rahu"=>"Ra","Ketu"=>"Ke",
+    "Uranus"=>"Ur","Neptune"=>"Ne","Pluto"=>"Pl"
+];
+
+$d1 = [];
+for ($i=1; $i<=12; $i++) { $d1[$i] = []; }
+
+foreach ($tpPlanets as $planet => $pData) {
+    if (!isset($pData['decimal'])) continue;
+    $degree = floatval($pData['decimal']);
+    
+    $pLabel = $short[$planet] ?? substr($planet, 0, 2);
+    if (!empty($pData['retrograde'])) $pLabel .= '(R)';
+    
+    $rasi1 = floor($degree / 30) + 1;
+    $d1[$rasi1][] = [
+        "short" => $pLabel
+    ];
+}
+
+$lagnaRasiD1 = null;
+if ($tpLagna !== null) {
+    $lagnaRasiD1 = floor($tpLagna / 30) + 1;
+    $d1[$lagnaRasiD1][] = [
+        "short" => "Lagna"
+    ];
 }
 
 ?>
@@ -124,6 +158,13 @@ if ($tpData) {
             </div>
 
             <?php if (!empty($tpPlanets)): ?>
+            <div style="margin-top: 30px; text-align: center;">
+                <h4>Tithi Pravesha Chart (Rasi D1)</h4>
+                <div style="display: flex; justify-content: center; margin-top: 15px;">
+                    <?php renderSouthChart($d1, false, $lagnaRasiD1); ?>
+                </div>
+            </div>
+
             <div style="margin-top: 30px;">
                 <h4>Planetary Positions at Tithi Pravesha</h4>
                 <table class="data-table" style="width: 100%; border-collapse: collapse; margin-top: 15px;">
@@ -154,3 +195,60 @@ if ($tpData) {
 </section>
 
 <?php require 'bottom.php'; ?>
+
+<?php
+/* ================= SOUTH CHART RENDER ================= */
+
+function renderSouthChart($data, $showDegree = false, $lagnaRasi = null) {
+
+$positions = [
+    12 => [10,20], 1=>[110,20], 2=>[210,20], 3=>[310,20],
+    11 => [10,120], 4=>[310,120],
+    10 => [10,220], 5=>[310,220],
+    9 => [10,320], 8=>[110,320], 7=>[210,320], 6=>[310,320],
+];
+
+echo '<svg viewBox="0 0 400 400" width="100%" style="background:#e6e0cf; max-width:400px; height:auto;">';
+
+if ($lagnaRasi !== null && isset($positions[$lagnaRasi])) {
+    $x = floor($positions[$lagnaRasi][0] / 100) * 100;
+    $y = floor($positions[$lagnaRasi][1] / 100) * 100;
+    echo '<rect x="'.$x.'" y="'.$y.'" width="100" height="100" fill="#fff6b3"/>';
+}
+
+echo '<rect x="0" y="0" width="400" height="400" fill="none" stroke="#444" stroke-width="2"/>';
+
+echo '<line x1="100" y1="0" x2="100" y2="400" stroke="#444"/>';
+echo '<line x1="200" y1="0" x2="200" y2="100" stroke="#444"/>';
+echo '<line x1="200" y1="300" x2="200" y2="400" stroke="#444"/>';
+echo '<line x1="300" y1="0" x2="300" y2="400" stroke="#444"/>';
+
+echo '<line x1="0" y1="100" x2="400" y2="100" stroke="#444"/>';
+echo '<line x1="0" y1="200" x2="100" y2="200" stroke="#444"/>';
+echo '<line x1="300" y1="200" x2="400" y2="200" stroke="#444"/>';
+echo '<line x1="0" y1="300" x2="400" y2="300" stroke="#444"/>';
+
+foreach ($positions as $rasi => $pos) {
+
+    if (!empty($data[$rasi])) {
+
+        $y = $pos[1];
+
+        foreach ($data[$rasi] as $p) {
+
+            echo '<text x="'.$pos[0].'" y="'.$y.'" font-size="12" fill="#000">';
+            echo $p['short'];
+
+            if ($showDegree && isset($p['deg'])) {
+                echo ' '.$p['deg'];
+            }
+
+            echo '</text>';
+            $y += 15;
+        }
+    }
+}
+
+echo '</svg>';
+}
+?>
