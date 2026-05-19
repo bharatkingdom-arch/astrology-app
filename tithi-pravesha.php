@@ -48,7 +48,7 @@ if ($tpData) {
         ob_start();
         require __DIR__ . '/public/api/calculate.php';
         $apiResponse = ob_get_clean();
-        header_remove('Content-Type'); // Prevent the JSON header from ruining the page
+        header('Content-Type: text/html; charset=utf-8'); // Restore HTML header
         
         $apiDecoded = json_decode($apiResponse, true);
         if ($apiDecoded && isset($apiDecoded['planets'])) {
