@@ -108,6 +108,7 @@ $signPositions = [
 <a href="kpdetails.php" class="active">KP</a>
 <a href="#">Dasha</a>
 <a href="../panchanga.php">Panchanga</a>
+<a href="../tithi-pravesha.php">Tithi Pravesha</a>
 </div>
 
 <div class="table-box" style="text-align:center">

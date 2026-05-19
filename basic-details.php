@@ -58,6 +58,7 @@ function decimalToDMS($degree)
     <a href="#">Dasha</a>
     <a href="#">Free Report</a>
     <a href="panchanga.php">Panchanga</a>
+    <a href="tithi-pravesha.php">Tithi Pravesha</a>
 </div>
 
 <div class="details-container">
