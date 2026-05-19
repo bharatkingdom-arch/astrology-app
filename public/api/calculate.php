@@ -68,6 +68,11 @@ SWISS EPHEMERIS PATH
 $swetestPath = "/app/swisseph/swetest";
 $ephePath    = "/app/ephemeris";
 
+if (!file_exists($swetestPath)) {
+    $swetestPath = __DIR__ . '/../../swisseph/swetest';
+    $ephePath = __DIR__ . '/../../ephemeris';
+}
+
 /* ==========================
 PLANETS COMMAND - USING UTC DATE!
 ========================== */
