@@ -5,7 +5,7 @@ require __DIR__ . '/header.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$sign = $_GET['sign'] ?? 'aries';
+$sign = $_GET['sign'] ?? 'mesha';
 $sign = strtolower(trim($sign));
 
 $lang = $_GET['lang'] ?? 'en';
@@ -14,22 +14,22 @@ if ($lang !== 'en' && $lang !== 'te') {
 }
 
 $zodiac_data = [
-    'aries' => ['name_en' => 'Aries (Mesha)', 'name_te' => 'మేష రాశి (Aries)', 'symbol' => '♈'],
-    'taurus' => ['name_en' => 'Taurus (Vrishabha)', 'name_te' => 'వృషభ రాశి (Taurus)', 'symbol' => '♉'],
-    'gemini' => ['name_en' => 'Gemini (Mithuna)', 'name_te' => 'మిథున రాశి (Gemini)', 'symbol' => '♊'],
-    'cancer' => ['name_en' => 'Cancer (Karka)', 'name_te' => 'కర్కాటక రాశి (Cancer)', 'symbol' => '♋'],
-    'leo' => ['name_en' => 'Leo (Simha)', 'name_te' => 'సింహ రాశి (Leo)', 'symbol' => '♌'],
-    'virgo' => ['name_en' => 'Virgo (Kanya)', 'name_te' => 'కన్య రాశి (Virgo)', 'symbol' => '♍'],
-    'libra' => ['name_en' => 'Libra (Tula)', 'name_te' => 'తులా రాశి (Libra)', 'symbol' => '♎'],
-    'scorpio' => ['name_en' => 'Scorpio (Vrischika)', 'name_te' => 'వృశ్చిక రాశి (Scorpio)', 'symbol' => '♏'],
-    'sagittarius' => ['name_en' => 'Sagittarius (Dhanu)', 'name_te' => 'ధనుస్సు రాశి (Sagittarius)', 'symbol' => '♐'],
-    'capricorn' => ['name_en' => 'Capricorn (Makara)', 'name_te' => 'మకర రాశి (Capricorn)', 'symbol' => '♑'],
-    'aquarius' => ['name_en' => 'Aquarius (Kumbha)', 'name_te' => 'కుంభ రాశి (Aquarius)', 'symbol' => '♒'],
-    'pisces' => ['name_en' => 'Pisces (Meena)', 'name_te' => 'మీన రాశి (Pisces)', 'symbol' => '♓']
+    'mesha' => ['name_en' => 'Mesha (Aries)', 'name_te' => 'మేష రాశి (Mesha)', 'symbol' => '🐏'],
+    'vrishabha' => ['name_en' => 'Vrishabha (Taurus)', 'name_te' => 'వృషభ రాశి (Vrishabha)', 'symbol' => '🐂'],
+    'mithuna' => ['name_en' => 'Mithuna (Gemini)', 'name_te' => 'మిథున రాశి (Mithuna)', 'symbol' => '👫'],
+    'karka' => ['name_en' => 'Karka (Cancer)', 'name_te' => 'కర్కాటక రాశి (Karka)', 'symbol' => '🦀'],
+    'simha' => ['name_en' => 'Simha (Leo)', 'name_te' => 'సింహ రాశి (Simha)', 'symbol' => '🦁'],
+    'kanya' => ['name_en' => 'Kanya (Virgo)', 'name_te' => 'కన్య రాశి (Kanya)', 'symbol' => '👧'],
+    'tula' => ['name_en' => 'Tula (Libra)', 'name_te' => 'తులా రాశి (Tula)', 'symbol' => '⚖️'],
+    'vrischika' => ['name_en' => 'Vrischika (Scorpio)', 'name_te' => 'వృశ్చిక రాశి (Vrischika)', 'symbol' => '🦂'],
+    'dhanu' => ['name_en' => 'Dhanu (Sagittarius)', 'name_te' => 'ధనుస్సు రాశి (Dhanu)', 'symbol' => '🏹'],
+    'makara' => ['name_en' => 'Makara (Capricorn)', 'name_te' => 'మకర రాశి (Makara)', 'symbol' => '🐊'],
+    'kumbha' => ['name_en' => 'Kumbha (Aquarius)', 'name_te' => 'కుంభ రాశి (Kumbha)', 'symbol' => '🏺'],
+    'meena' => ['name_en' => 'Meena (Pisces)', 'name_te' => 'మీన రాశి (Meena)', 'symbol' => '🐟']
 ];
 
 if (!array_key_exists($sign, $zodiac_data)) {
-    $sign = 'aries';
+    $sign = 'mesha';
 }
 
 $current_sign = $zodiac_data[$sign];
@@ -40,7 +40,7 @@ $display_name = ($lang === 'te') ? $current_sign['name_te'] : $current_sign['nam
  * English and Telugu Translations
  */
 $all_predictions = [
-    'aries' => [
+    'mesha' => [
         'en' => [
             'Personal' => 'With Mars in your ascendant, you are full of energy and confidence. Communication with siblings and neighbors brings joy as the Moon, Venus, and Jupiter align in your 3rd house.',
             'Profession' => 'Short travels for work are highly favored today. Your ideas will be well received in meetings. Watch your speech as Sun and Mercury sit in your 2nd house of communication.',
@@ -56,7 +56,7 @@ $all_predictions = [
             'అదృష్టం' => 'మీ ధైర్యం మరియు చొరవే నేడు మీ అదృష్టం.'
         ]
     ],
-    'taurus' => [
+    'vrishabha' => [
         'en' => [
             'Personal' => 'Your focus is on wealth and family harmony. The conjunction in your 2nd house brings sweet speech and enjoyment of good food. You radiate confidence with Sun in your ascendant.',
             'Profession' => 'A wonderful day for financial gains. Investments made today might show positive trends. You have strong authority at your workplace today.',
@@ -72,7 +72,7 @@ $all_predictions = [
             'అదృష్టం' => 'ఆర్థిక అదృష్టం చాలా ఎక్కువగా ఉంది.'
         ]
     ],
-    'gemini' => [
+    'mithuna' => [
         'en' => [
             'Personal' => 'A fantastic day for you! With the Moon, Venus, and Jupiter in your sign, you exude charm, wisdom, and emotional intelligence. People are naturally drawn to you.',
             'Profession' => 'Your creativity is at an all-time high. Networking and social connections (Mars in 11th) bring excellent professional gains.',
@@ -88,7 +88,7 @@ $all_predictions = [
             'అదృష్టం' => 'మీరు మంచి అదృష్టంతో ఉన్నారు. మీ అంతర్గత గొంతును నమ్మండి.'
         ]
     ],
-    'cancer' => [
+    'karka' => [
         'en' => [
             'Personal' => 'You may feel a strong urge to withdraw and seek spiritual or quiet time. The 12th house focus encourages meditation and inner reflection.',
             'Profession' => 'Excellent career drive with Mars in your 10th house. You can push through obstacles, though you might prefer to work behind the scenes today.',
@@ -104,7 +104,7 @@ $all_predictions = [
             'అదృష్టం' => 'ఈ రోజు ఒంటరితనం మరియు దానధర్మాలు చేయడం వల్ల మీకు అదృష్టం కలుగుతుంది.'
         ]
     ],
-    'leo' => [
+    'simha' => [
         'en' => [
             'Personal' => 'Your social life is buzzing! The 11th house stellium brings joy through friends, elder siblings, and group activities. You feel supported and loved.',
             'Profession' => 'Fantastic visibility in your career (Sun in 10th). You are likely to receive recognition, a promotion, or new leadership responsibilities.',
@@ -120,7 +120,7 @@ $all_predictions = [
             'అదృష్టం' => 'కోరికలు నెరవేరుతాయి. మీరు ఎప్పటినుంచో కోరుకున్నది జరగవచ్చు.'
         ]
     ],
-    'virgo' => [
+    'kanya' => [
         'en' => [
             'Personal' => 'Your focus is entirely on your public image and duties. You may feel a bit detached from domestic matters but highly engaged with the world.',
             'Profession' => 'Tremendous success in your profession. The Moon, Venus, and Jupiter in your 10th house bring grace and wisdom to your work. You are admired by colleagues.',
@@ -136,7 +136,7 @@ $all_predictions = [
             'అదృష్టం' => 'వృత్తిపరమైన అదృష్టం గరిష్ట స్థాయికి చేరుకుంటుంది.'
         ]
     ],
-    'libra' => [
+    'tula' => [
         'en' => [
             'Personal' => 'A day for higher wisdom, philosophy, and spiritual pursuits. You may feel deeply connected to a guru or father figure. Relationships need careful handling (Mars in 7th).',
             'Profession' => 'Publishing, teaching, or legal matters are highly favored. Avoid aggressive arguments with business partners.',
@@ -152,7 +152,7 @@ $all_predictions = [
             'అదృష్టం' => 'దైవానుగ్రహం మరియు గత జన్మ పుణ్యం మిమ్మల్ని కాపాడుతాయి.'
         ]
     ],
-    'scorpio' => [
+    'vrischika' => [
         'en' => [
             'Personal' => 'A day of intense transformation and deep research. You may uncover hidden truths or experience sudden changes in your emotional state.',
             'Profession' => 'High competitive energy (Mars in 6th) allows you to defeat competitors and overcome obstacles easily. Sudden financial gains from joint resources are possible.',
@@ -168,7 +168,7 @@ $all_predictions = [
             'అదృష్టం' => 'పరిశోధన మరియు పాత బకాయిలు తీర్చడం ద్వారా అదృష్టం వరిస్తుంది.'
         ]
     ],
-    'sagittarius' => [
+    'dhanu' => [
         'en' => [
             'Personal' => 'Relationships are in the spotlight! With Jupiter, Venus, and Moon in your 7th house, interactions with your partner are filled with love, wisdom, and harmony.',
             'Profession' => 'Excellent day for business partnerships and negotiations. You communicate effectively, though you should avoid workplace disputes (Sun in 6th).',
@@ -184,7 +184,7 @@ $all_predictions = [
             'అదృష్టం' => 'ఇతరులతో కలిసి చేసే పనుల వల్ల మీకు అదృష్టం కలిసివస్తుంది.'
         ]
     ],
-    'capricorn' => [
+    'makara' => [
         'en' => [
             'Personal' => 'Your focus shifts to overcoming daily challenges and improving your routines. Domestic peace requires attention (Mars in 4th).',
             'Profession' => 'You tackle work with immense wisdom and creativity. Subordinates and colleagues are very supportive. Excellent day for problem-solving.',
@@ -200,7 +200,7 @@ $all_predictions = [
             'అదృష్టం' => 'కష్టపడి పనిచేయడం వల్ల అదృష్టం కలుగుతుంది. మీ సృజనాత్మక తెలివితేటలు మార్గనిర్దేశం చేస్తాయి.'
         ]
     ],
-    'aquarius' => [
+    'kumbha' => [
         'en' => [
             'Personal' => 'A highly creative and romantic day! The 5th house focus brings joy through children, arts, and self-expression. You feel deeply inspired.',
             'Profession' => 'Great courage and initiative (Mars in 3rd). You can successfully launch new ideas or projects. Your mind is sharp and innovative.',
@@ -216,7 +216,7 @@ $all_predictions = [
             'అదృష్టం' => 'మీ సృజనాత్మక పనులలో మరియు ప్రేమ జీవితంలో అదృష్టం మెరుస్తుంది.'
         ]
     ],
-    'pisces' => [
+    'meena' => [
         'en' => [
             'Personal' => 'You find immense peace and joy at home. Spending time with family, mother, or redecorating your living space brings happiness.',
             'Profession' => 'Success in real estate, education, or home-based businesses. Watch your tone when communicating (Mars in 2nd).',

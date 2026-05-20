@@ -7,18 +7,18 @@ ini_set('display_errors', 1);
 
 // Zodiac signs array with names and symbols
 $zodiac_signs = [
-    ['name' => 'Aries', 'symbol' => '♈'],
-    ['name' => 'Taurus', 'symbol' => '♉'],
-    ['name' => 'Gemini', 'symbol' => '♊'],
-    ['name' => 'Cancer', 'symbol' => '♋'],
-    ['name' => 'Leo', 'symbol' => '♌'],
-    ['name' => 'Virgo', 'symbol' => '♍'],
-    ['name' => 'Libra', 'symbol' => '♎'],
-    ['name' => 'Scorpio', 'symbol' => '♏'],
-    ['name' => 'Sagittarius', 'symbol' => '♐'],
-    ['name' => 'Capricorn', 'symbol' => '♑'],
-    ['name' => 'Aquarius', 'symbol' => '♒'],
-    ['name' => 'Pisces', 'symbol' => '♓']
+    ['name' => 'Mesha', 'symbol' => '🐏'],
+    ['name' => 'Vrishabha', 'symbol' => '🐂'],
+    ['name' => 'Mithuna', 'symbol' => '👫'],
+    ['name' => 'Karka', 'symbol' => '🦀'],
+    ['name' => 'Simha', 'symbol' => '🦁'],
+    ['name' => 'Kanya', 'symbol' => '👧'],
+    ['name' => 'Tula', 'symbol' => '⚖️'],
+    ['name' => 'Vrischika', 'symbol' => '🦂'],
+    ['name' => 'Dhanu', 'symbol' => '🏹'],
+    ['name' => 'Makara', 'symbol' => '🐊'],
+    ['name' => 'Kumbha', 'symbol' => '🏺'],
+    ['name' => 'Meena', 'symbol' => '🐟']
 ];
 ?>
 
