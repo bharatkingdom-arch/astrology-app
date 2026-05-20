@@ -2,7 +2,13 @@
 session_start();
 
 $client_id = "720155568345-rpnbllbfe3vp6vlv821acvab7i742cti.apps.googleusercontent.com";
-$redirect_uri = "https://astrology-app-720155568345.asia-south1.run.app/google-callback.php";
+
+$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+    $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+}
+$host = $_SERVER['HTTP_HOST'];
+$redirect_uri = $protocol . "://" . $host . "/google-callback.php";
 
 $scope = "email profile";
 

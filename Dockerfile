@@ -4,7 +4,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN chmod +x swisseph/swetest
+RUN apt-get update && apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql \
+    && chmod +x swisseph/swetest
 
 ENV PORT=8080
 
