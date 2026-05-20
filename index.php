@@ -1,11 +1,7 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-?>
-
-
-
-<?php require 'header.php'; ?>
+require 'header.php'; ?>
 <?php require 'neck.php'; ?>
 <?php require 'chest.php'; ?>
 <?php require 'abdomen.php'; ?>
