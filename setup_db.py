@@ -7,23 +7,17 @@ try:
     cur = conn.cursor()
     
     cur.execute("""
-    CREATE TABLE IF NOT EXISTS kundlis (
+    CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
-        user_email VARCHAR(255) NOT NULL,
         name VARCHAR(255) NOT NULL,
-        gender VARCHAR(50),
-        birth_date DATE,
-        birth_time TIME,
-        latitude DECIMAL(10, 8),
-        longitude DECIMAL(11, 8),
-        planets JSONB,
-        houses JSONB,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """)
     
     conn.commit()
-    print("Table 'kundlis' created successfully.")
+    print("Table 'users' created successfully.")
     
     cur.close()
     conn.close()

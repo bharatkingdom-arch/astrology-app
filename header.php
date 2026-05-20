@@ -80,7 +80,11 @@ $CSS_VER = "3.2." . time(); // Cache buster
                     <span class="icon-sun">☀️</span>
                 </button>
                 <!-- Login on mobile moves inside menu, on desktop stays top right -->
-                <button class="login-btn">Login</button>
+                <?php if(isset($_SESSION['user_email'])): ?>
+                    <a href="<?= $BASE_URL ?>logout.php" class="login-btn" style="text-decoration:none;">Logout</a>
+                <?php else: ?>
+                    <a href="<?= $BASE_URL ?>login.php" class="login-btn" style="text-decoration:none;">Login / Signup</a>
+                <?php endif; ?>
             </div>
 
             <!-- Secondary nav -->

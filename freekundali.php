@@ -247,8 +247,8 @@ View Saved Kundlis
 
 <p>Please login to check your saved horoscope!</p>
 
-<a href="/google-login.php" class="login-btn-kundli">
-Login with Google
+<a href="/login.php" class="login-btn-kundli">
+Login to save Kundli
 </a>
 
 <?php endif; ?>
