@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 // Base URL for routing
 $BASE_URL = "/";
 $CSS_VER = "3.2." . time(); // Cache buster
@@ -81,7 +84,12 @@ $CSS_VER = "3.2." . time(); // Cache buster
                 </button>
                 <!-- Login on mobile moves inside menu, on desktop stays top right -->
                 <?php if(isset($_SESSION['user_email'])): ?>
-                    <a href="<?= $BASE_URL ?>logout.php" class="login-btn" style="text-decoration:none;">Logout</a>
+                    <div style="display:inline-flex; align-items:center;">
+                        <span style="font-weight:600; margin-right: 15px;">
+                            Hi, <?= htmlspecialchars($_SESSION['user_name'] ?: $_SESSION['user_email']) ?>
+                        </span>
+                        <a href="<?= $BASE_URL ?>logout.php" class="login-btn" style="text-decoration:none;">Logout</a>
+                    </div>
                 <?php else: ?>
                     <a href="<?= $BASE_URL ?>login.php" class="login-btn" style="text-decoration:none;">Login / Signup</a>
                 <?php endif; ?>

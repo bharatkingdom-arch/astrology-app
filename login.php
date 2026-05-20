@@ -4,7 +4,7 @@ require_once __DIR__ . '/engine/db.php';
 
 // Redirect if already logged in
 if (isset($_SESSION['user_email'])) {
-    header("Location: dashboard.php");
+    header("Location: index.php");
     exit;
 }
 
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_name'] = $user['name'];
             
-            header("Location: dashboard.php");
+            header("Location: index.php");
             exit;
         } else {
             $error = "Invalid email or password.";
