@@ -1,9 +1,17 @@
 <?php
 session_start();
 require __DIR__ . '/../header.php';
+require_once __DIR__ . '/../engine/db.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+$saved_kundlis = [];
+if (isset($_SESSION['user_email'])) {
+    $stmt = $conn->prepare("SELECT * FROM kundlis WHERE user_email=:email ORDER BY created_at DESC");
+    $stmt->execute(['email' => $_SESSION['user_email']]);
+    $saved_kundlis = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <section class="kundli-section">
@@ -21,6 +29,25 @@ ini_set('display_errors', 1);
 <!-- BOY -->
 <div class="kundli-form-box">
 <h3>Boy Details</h3>
+
+<?php if(!empty($saved_kundlis)): ?>
+<label>Select Saved Profile</label>
+<select onchange="fillSavedData(this, 'b_')" style="margin-bottom:15px; width:100%; padding:10px 14px; border-radius:var(--r-sm); border:1px solid var(--border-hover); background:transparent; color:var(--text-1); outline:none;">
+    <option value="">-- Select Saved Kundli --</option>
+    <?php foreach($saved_kundlis as $k): 
+        $dateParts = explode('-', $k['birth_date']);
+        $timeParts = explode(':', $k['birth_time']);
+        $dataStr = htmlspecialchars(json_encode([
+            'day' => $dateParts[2], 'month' => $dateParts[1], 'year' => $dateParts[0],
+            'hour' => $timeParts[0], 'min' => $timeParts[1], 'sec' => $timeParts[2] ?? '00',
+            'place' => $k['birth_place'], 'lat' => $k['latitude'], 'lon' => $k['longitude']
+        ]), ENT_QUOTES, 'UTF-8');
+    ?>
+    <option value="<?= $dataStr ?>"><?= htmlspecialchars($k['name']) ?> (<?= htmlspecialchars($k['birth_date']) ?>)</option>
+    <?php endforeach; ?>
+</select>
+<div style="text-align:center; margin-bottom:15px; font-size:12px; color:var(--text-3); font-weight:bold;">OR ENTER MANUALLY</div>
+<?php endif; ?>
 
 <label>Birth Date</label>
 <div style="display:flex;gap:10px;">
@@ -51,6 +78,25 @@ ini_set('display_errors', 1);
 <!-- GIRL -->
 <div class="kundli-form-box">
 <h3>Girl Details</h3>
+
+<?php if(!empty($saved_kundlis)): ?>
+<label>Select Saved Profile</label>
+<select onchange="fillSavedData(this, 'g_')" style="margin-bottom:15px; width:100%; padding:10px 14px; border-radius:var(--r-sm); border:1px solid var(--border-hover); background:transparent; color:var(--text-1); outline:none;">
+    <option value="">-- Select Saved Kundli --</option>
+    <?php foreach($saved_kundlis as $k): 
+        $dateParts = explode('-', $k['birth_date']);
+        $timeParts = explode(':', $k['birth_time']);
+        $dataStr = htmlspecialchars(json_encode([
+            'day' => $dateParts[2], 'month' => $dateParts[1], 'year' => $dateParts[0],
+            'hour' => $timeParts[0], 'min' => $timeParts[1], 'sec' => $timeParts[2] ?? '00',
+            'place' => $k['birth_place'], 'lat' => $k['latitude'], 'lon' => $k['longitude']
+        ]), ENT_QUOTES, 'UTF-8');
+    ?>
+    <option value="<?= $dataStr ?>"><?= htmlspecialchars($k['name']) ?> (<?= htmlspecialchars($k['birth_date']) ?>)</option>
+    <?php endforeach; ?>
+</select>
+<div style="text-align:center; margin-bottom:15px; font-size:12px; color:var(--text-3); font-weight:bold;">OR ENTER MANUALLY</div>
+<?php endif; ?>
 
 <label>Birth Date</label>
 <div style="display:flex;gap:10px;">
@@ -230,6 +276,26 @@ function setupPlacesAutocomplete(inputId, suggestionsId, latId, lonId) {
 
 setupPlacesAutocomplete("b_birth_place", "b_place_suggestions", "b_lat", "b_lon");
 setupPlacesAutocomplete("g_birth_place", "g_place_suggestions", "g_lat", "g_lon");
+
+function fillSavedData(select, prefix) {
+    if (!select.value) return;
+    try {
+        const data = JSON.parse(select.value);
+        document.querySelector(`input[name="${prefix}day"]`).value = data.day;
+        document.querySelector(`input[name="${prefix}month"]`).value = data.month;
+        document.querySelector(`input[name="${prefix}year"]`).value = data.year;
+        document.querySelector(`input[name="${prefix}hour"]`).value = data.hour;
+        document.querySelector(`input[name="${prefix}min"]`).value = data.min;
+        if(document.querySelector(`input[name="${prefix}sec"]`)) {
+            document.querySelector(`input[name="${prefix}sec"]`).value = data.sec;
+        }
+        document.querySelector(`input[name="${prefix}birthplace"]`).value = data.place;
+        document.getElementById(`${prefix}lat`).value = data.lat;
+        document.getElementById(`${prefix}lon`).value = data.lon;
+    } catch(e) {
+        console.error("Error parsing saved data", e);
+    }
+}
 </script>
 
 <?php require __DIR__ . '/../bottom.php'; ?>
