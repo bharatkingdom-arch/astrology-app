@@ -139,8 +139,7 @@ if (isset($_POST['generate'])) {
                     $birth_date = "{$year}-{$month}-{$day}";
                     $birth_time = "{$hour}:{$minute}:{$second}";
 
-                    $stmt->bind_param(
-                        "ssssddsss",
+                    $stmt->execute([
                         $user_email,
                         $_POST['name'],
                         $_POST['gender'],
@@ -150,9 +149,7 @@ if (isset($_POST['generate'])) {
                         $lon,
                         $planets_json,
                         $houses_json
-                    );
-
-                    $stmt->execute();
+                    ]);
                 }
 
                 header("Location: kundli-details.php");

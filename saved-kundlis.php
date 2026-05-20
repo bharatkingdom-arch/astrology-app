@@ -4,16 +4,17 @@ require 'engine/db.php';
 
 $email = $_SESSION['user_email'];
 
-$result = $conn->query("
+$stmt = $conn->prepare("
 SELECT * FROM kundlis
-WHERE user_email='$email'
+WHERE user_email=:email
 ORDER BY created_at DESC
 ");
+$stmt->execute(['email' => $email]);
 ?>
 
 <h2>Your Saved Kundlis</h2>
 
-<?php while($row = $result->fetch_assoc()): ?>
+<?php while($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
 
 <div>
 <?= $row['name'] ?> -
