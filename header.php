@@ -75,7 +75,7 @@ $CSS_VER = "3.2." . time(); // Cache buster
                         <a href="<?= $BASE_URL ?>calculators/PRcalculator.php">PR Calculator</a>
                     </div>
                 </div>
-                <a href="#">Horoscopes ▾</a>
+                <a href="<?= $BASE_URL ?>horoscope.php">Horoscopes</a>
                 <a href="#">Eng ▾</a>
                 <!-- Desktop Theme Toggle -->
                 <button class="theme-btn desk-theme-btn" aria-label="Toggle theme" style="margin-right: 15px;">

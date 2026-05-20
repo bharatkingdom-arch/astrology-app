@@ -9,14 +9,14 @@
         <div class="complimentary-cards">
 
             <!-- Card 1 -->
-            <div class="comp-card">
+            <a href="horoscope.php" class="comp-card" style="display:block;">
                 <div class="comp-icon">☀</div>
                 <h4>Today's Horoscope</h4>
                 <p>
                     Unsure about how your day will unfold? Get free Aries horoscope
                     online prediction from top astrologer.
                 </p>
-            </div>
+            </a>
 
             <!-- Card 2 -->
             <a href="freekundali.php" class="comp-card" style="display:block;">
