@@ -154,7 +154,7 @@ if (isset($_POST['generate'])) {
                     ]);
                 }
 
-                header("Location: kundli-details.php");
+                header("Location: south-chart.php");
                 exit;
             }
         }

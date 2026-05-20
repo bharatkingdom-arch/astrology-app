@@ -79,6 +79,6 @@ $_SESSION['kundli_data'] = [
     'lagna' => $lagna
 ];
 
-header("Location: kundli-details.php");
+header("Location: south-chart.php");
 exit;
 ?>
