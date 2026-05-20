@@ -29,14 +29,14 @@
             </a>
 
             <!-- Card 3 -->
-            <div class="comp-card">
+            <a href="kundali/kundali_matching.php" class="comp-card" style="display:block;">
                 <div class="comp-icon">❤</div>
                 <h4>Compatibility</h4>
                 <p>
                     Confused by love? Check compatibility with your partner
                     and ignite a love that lasts forever.
                 </p>
-            </div>
+            </a>
 
             <!-- Card 4 -->
             <a href="kundali/kundali_matching.php" class="comp-card" style="display:block;">
