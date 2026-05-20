@@ -16,10 +16,13 @@ $stmt->execute(['email' => $email]);
 
 <?php while($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
 
-<div>
-<?= $row['name'] ?> -
-<?= $row['birth_date'] ?> -
-<?= $row['birth_time'] ?>
+<div style="margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+    <a href="load-kundli.php?id=<?= $row['id'] ?>" style="text-decoration: none; color: #333; display: block;">
+        <strong><?= htmlspecialchars($row['name']) ?></strong><br>
+        <span style="color: #666; font-size: 0.9em;">
+            DOB: <?= htmlspecialchars($row['birth_date']) ?> | Time: <?= htmlspecialchars($row['birth_time']) ?>
+        </span>
+    </a>
 </div>
 
 <?php endwhile; ?>
