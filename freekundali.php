@@ -132,12 +132,13 @@ if (isset($_POST['generate'])) {
 
                     $stmt = $conn->prepare("
                         INSERT INTO kundlis
-                        (user_email,name,gender,birth_date,birth_time,latitude,longitude,planets,houses)
-                        VALUES (?,?,?,?,?,?,?,?,?)
+                        (user_email,name,gender,birth_date,birth_time,birth_place,latitude,longitude,planets,houses)
+                        VALUES (?,?,?,?,?,?,?,?,?,?)
                     ");
 
                     $birth_date = "{$year}-{$month}-{$day}";
                     $birth_time = "{$hour}:{$minute}:{$second}";
+                    $birth_place = $_POST['birthplace'] ?? 'Unknown';
 
                     $stmt->execute([
                         $user_email,
@@ -145,6 +146,7 @@ if (isset($_POST['generate'])) {
                         $_POST['gender'],
                         $birth_date,
                         $birth_time,
+                        $birth_place,
                         $lat,
                         $lon,
                         $planets_json,
