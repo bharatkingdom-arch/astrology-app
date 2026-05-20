@@ -19,14 +19,14 @@
             </div>
 
             <!-- Card 2 -->
-            <div class="comp-card">
+            <a href="freekundali.php" class="comp-card" style="display:block;">
                 <div class="comp-icon">⬜</div>
                 <h4>Free Kundli</h4>
                 <p>
                     Generate your free online kundli report. Our Kundli software
                     helps you predict your future.
                 </p>
-            </div>
+            </a>
 
             <!-- Card 3 -->
             <div class="comp-card">
@@ -39,14 +39,14 @@
             </div>
 
             <!-- Card 4 -->
-            <div class="comp-card">
+            <a href="kundali/kundali_matching.php" class="comp-card" style="display:block;">
                 <div class="comp-icon">💍</div>
                 <h4>Kundli Matching</h4>
                 <p>
                     Check Love Compatibility and Marriage Prediction online.
                     Get best horoscope and kundli matching today.
                 </p>
-            </div>
+            </a>
 
         </div>
 
