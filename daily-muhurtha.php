@@ -3,6 +3,7 @@ session_start();
 
 require_once __DIR__ . '/engine/SunriseSunset.php';
 require_once __DIR__ . '/engine/Panchanga.php';
+require_once __DIR__ . '/engine/AdvancedPanchanga.php';
 
 // Default Location (Tenali, Andhra Pradesh as per screenshot)
 $lat = 16.23;
@@ -73,6 +74,7 @@ $jd += $hourFrac;
 
 // Calculate Panchanga
 $panchanga = Panchanga::calculate($sunLon, $moonLon, $jd, 0.98, 13.1, $sunriseTs);
+$advancedPanchanga = AdvancedPanchanga::calculate($timestamp, $lat, $lon, $timezone, $sunLon, $moonLon, $panchanga);
 
 // ------------------------------------------------------------------
 // LAGNA CALCULATION (Approximate based on Sun at Sunrise)
@@ -312,6 +314,44 @@ require 'header.php';
                     <p style="color:var(--text-3); font-size:12px; margin-top: 6px;"><?= $panchanga['Karana']['end'] ?></p>
                 </div>
             </div>
+            
+            <?php if (!empty($advancedPanchanga)): ?>
+            <div class="table-box" style="margin-top:20px;">
+                <h4>Timings</h4>
+                <table>
+                    <?php foreach (($advancedPanchanga['Timings'] ?? []) as $label => $value): ?>
+                    <tr>
+                        <td style="font-weight:600; color:var(--text-1); width: 40%;"><?= $label ?></td>
+                        <td><?= $value ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+
+            <div class="table-box">
+                <h4>Hindu Calendar</h4>
+                <table>
+                    <?php foreach (($advancedPanchanga['Calendar'] ?? []) as $label => $value): ?>
+                    <tr>
+                        <td style="font-weight:600; color:var(--text-1); width: 40%;"><?= $label ?></td>
+                        <td><?= $value ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+
+            <div class="table-box">
+                <h4>Inauspicious Timings</h4>
+                <table>
+                    <?php foreach (($advancedPanchanga['Inauspicious'] ?? []) as $label => $value): ?>
+                    <tr>
+                        <td style="font-weight:600; color:var(--text-1); width: 40%;"><?= $label ?></td>
+                        <td class="evil-time"><?= $value ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 
