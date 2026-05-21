@@ -98,8 +98,8 @@ for ($i = 0; $i <= 12; $i++) {
     
     $lagnas[] = [
         "sign" => $signs[$idx],
-        "start" => date("h:i A", $currentLagTime),
-        "end" => date("h:i A", $endTime),
+        "start" => date("h:i A", (int)$currentLagTime),
+        "end" => date("h:i A", (int)$endTime),
         "is_next_day" => ($endTime > strtotime("midnight tomorrow", $sunriseTs))
     ];
     
