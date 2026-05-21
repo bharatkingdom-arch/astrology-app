@@ -29,12 +29,12 @@
             </a>
 
             <!-- Card 3 -->
-            <a href="kundali/kundali_matching.php" class="comp-card" style="display:block;">
-                <div class="comp-icon">❤</div>
-                <h4>Compatibility</h4>
+            <a href="daily-muhurtha.php" class="comp-card" style="display:block;">
+                <div class="comp-icon">✨</div>
+                <h4>Daily Muhurtha</h4>
                 <p>
-                    Confused by love? Check compatibility with your partner
-                    and ignite a love that lasts forever.
+                    Find the most auspicious times of the day for important activities 
+                    and events with our Daily Muhurtha guide.
                 </p>
             </a>
 

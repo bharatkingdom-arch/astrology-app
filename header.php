@@ -68,7 +68,7 @@ $CSS_VER = "3.2." . time(); // Cache buster
             <div class="top-menu">
                 <a href="<?= $BASE_URL ?>freekundali.php">Free Kundli</a>
                 <a href="#">Kundli Matching</a>
-                <a href="#">Compatibility</a>
+                <a href="<?= $BASE_URL ?>daily-muhurtha.php">Daily Muhurtha</a>
                 <div class="dropdown">
                     <a href="#">Calculators ▾</a>
                     <div class="dropdown-content">
