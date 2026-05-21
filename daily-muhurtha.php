@@ -229,348 +229,258 @@ for ($i = 0; $i < 8; $i++) {
 require 'header.php';
 ?>
 
-<style>
-/* PANCHANGA PAGE STYLES */
-.panchanga-header {
-    background-color: var(--primary-color, #1e5a8c);
-    color: white;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-}
-.panchanga-header h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+<section class="kundli-section">
+<div class="kundli-container">
 
-.muhurtha-nav {
-    display: flex;
-    background-color: var(--primary-color, #1e5a8c);
-    color: rgba(255,255,255,0.7);
-    overflow-x: auto;
-}
-.muhurtha-nav button {
-    background: none;
-    border: none;
-    color: inherit;
-    padding: 12px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    white-space: nowrap;
-}
-.muhurtha-nav button.active {
-    color: white;
-    border-bottom: 3px solid #66b2b2;
-}
-
-.meta-info {
-    background-color: #f4f6f8;
-    padding: 15px;
-    font-size: 0.9rem;
-    color: #444;
-    border-bottom: 1px solid #ddd;
-}
-.meta-info-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-}
-
-.tab-content {
-    display: none;
-}
-.tab-content.active {
-    display: block;
-}
-
-.panchanga-card {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    margin: 10px;
-    border-radius: 4px;
-}
-.panchanga-card-title {
-    font-weight: bold;
-    padding: 12px 15px;
-    border-bottom: 1px solid #e0e0e0;
-    background: #fafafa;
-    color: #333;
-}
-.panchanga-card-content {
-    padding: 12px 15px;
-}
-.highlight-green {
-    color: #27ae60;
-    font-weight: 500;
-}
-.highlight-red {
-    color: #c0392b;
-    font-weight: 500;
-}
-
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.data-table th, .data-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
-}
-.data-table th {
-    background: #f9f9f9;
-    font-weight: 600;
-    color: #555;
-}
-.section-title {
-    background: #f0f0f0;
-    padding: 10px 15px;
-    font-weight: bold;
-    color: #333;
-    margin: 0;
-}
-
-body.dark-mode .meta-info { background: #222; color: #ccc; border-color: #333; }
-body.dark-mode .panchanga-card { background: #1a1a1a; border-color: #333; }
-body.dark-mode .panchanga-card-title { background: #222; color: #eee; border-color: #333; }
-body.dark-mode .data-table th { background: #222; color: #ccc; border-color: #333; }
-body.dark-mode .data-table td { border-color: #333; color: #ddd; }
-body.dark-mode .section-title { background: #222; color: #eee; }
-</style>
-
-<div style="max-width: 600px; margin: 0 auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); background: var(--card-bg, #fff); min-height: 100vh;">
-
-    <div class="panchanga-header">
-        <a href="<?= $BASE_URL ?>" style="color:white; text-decoration:none; margin-right:15px;">&#8592;</a>
-        <h2>Panchanga & Muhurta</h2>
+    <div class="kundli-title">
+        <h1>Panchanga & Muhurta</h1>
+        <p>Discover the most auspicious times of the day based on Vedic Astrology.</p>
+        <div class="kundli-divider"></div>
     </div>
 
-    <div class="muhurtha-nav" id="tabs">
-        <button class="active" onclick="showTab('tab-panchanga', this)">Panchanga</button>
-        <button onclick="showTab('tab-lagna', this)">Lagna</button>
-        <button onclick="showTab('tab-hora', this)">Hora</button>
-        <button onclick="showTab('tab-choghadiya', this)">Choghadiya</button>
-        <button onclick="showTab('tab-gowri', this)">Gowri Panchanga</button>
+    <!-- TABS NAVIGATION -->
+    <div class="kundli-tabs">
+        <a href="javascript:void(0)" class="active" onclick="showTab('tab-panchanga', this)">Panchanga</a>
+        <a href="javascript:void(0)" onclick="showTab('tab-lagna', this)">Lagna</a>
+        <a href="javascript:void(0)" onclick="showTab('tab-hora', this)">Hora</a>
+        <a href="javascript:void(0)" onclick="showTab('tab-choghadiya', this)">Choghadiya</a>
+        <a href="javascript:void(0)" onclick="showTab('tab-gowri', this)">Gowri</a>
     </div>
 
-    <div class="meta-info">
-        <div class="meta-info-row">
-            <span>Date: <?= $currentDate ?> (Sunrise Time)</span>
-            <div><button style="border:none;background:#1e5a8c;color:#fff;padding:2px 8px;">&#8592;</button> <button style="border:none;background:#1e5a8c;color:#fff;padding:2px 8px;">&#8594;</button></div>
-        </div>
-        <div class="meta-info-row">
-            <span>Time Zone: <?= ($timezone > 0 ? "+" : "") . sprintf("%02d:%02d", floor($timezone), ($timezone - floor($timezone)) * 60) ?> | Place: <?= $place ?></span>
-        </div>
-        <div class="meta-info-row">
-            <span>Longitude: <?= $lon ?> | Latitude: <?= $lat ?></span>
+    <style>
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .good-time { color: #2ecc71; font-weight: bold; }
+    .evil-time { color: #e74c3c; font-weight: bold; }
+    </style>
+
+    <!-- META INFO -->
+    <div class="details-container" style="margin-top: 20px;">
+        <div class="details-row">
+            <div class="details-box">
+                <div class="detail-item">
+                    <span>Date (Sunrise Time)</span>
+                    <span><?= $currentDate ?></span>
+                </div>
+                <div class="detail-item">
+                    <span>Location</span>
+                    <span><?= $place ?></span>
+                </div>
+                <div class="detail-item">
+                    <span>Time Zone</span>
+                    <span><?= ($timezone > 0 ? "+" : "") . sprintf("%02d:%02d", floor($timezone), ($timezone - floor($timezone)) * 60) ?></span>
+                </div>
+                <div class="detail-item">
+                    <span>Coordinates</span>
+                    <span>Lat: <?= $lat ?>, Lon: <?= $lon ?></span>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- PANCHANGA TAB -->
     <div id="tab-panchanga" class="tab-content active">
-        <div class="panchanga-card">
-            <div class="panchanga-card-title">Vaara (Vedic Day)</div>
-            <div class="panchanga-card-content"><?= $panchanga['Vaara'] ?></div>
-        </div>
-        
-        <div class="panchanga-card">
-            <div class="panchanga-card-title">Tithi</div>
-            <div class="panchanga-card-content">
-                <div class="highlight-green"><?= $panchanga['Tithi']['name'] ?></div>
-                <div style="margin:5px 0;"><?= $panchanga['Tithi']['type'] ?></div>
-                <div style="color:#777; font-size:0.9rem;"><?= $panchanga['Tithi']['end'] ?></div>
+        <div class="details-container" style="margin-top: 0;">
+            <div class="details-row">
+                <div class="details-box">
+                    <h4>Vaara (Vedic Day)</h4>
+                    <p style="color:var(--text-1); font-size:15px; font-weight:600;"><?= $panchanga['Vaara'] ?></p>
+                </div>
+                <div class="details-box">
+                    <h4>Tithi</h4>
+                    <p class="good-time" style="font-size:15px;"><?= $panchanga['Tithi']['name'] ?></p>
+                    <p style="color:var(--text-2); font-size:13px; margin: 4px 0;"><?= $panchanga['Tithi']['type'] ?></p>
+                    <p style="color:var(--text-3); font-size:12px;"><?= $panchanga['Tithi']['end'] ?></p>
+                </div>
             </div>
-        </div>
-
-        <div class="panchanga-card">
-            <div class="panchanga-card-title">Nakshatra</div>
-            <div class="panchanga-card-content">
-                <div class="highlight-green"><?= $panchanga['Nakshatra']['name'] ?></div>
-                <div style="color:#777; font-size:0.9rem; margin-top:5px;"><?= $panchanga['Nakshatra']['end'] ?></div>
-            </div>
-        </div>
-
-        <div class="panchanga-card">
-            <div class="panchanga-card-title">Yoga</div>
-            <div class="panchanga-card-content">
-                <div class="highlight-green"><?= $panchanga['Yoga']['name'] ?></div>
-                <div style="color:#777; font-size:0.9rem; margin-top:5px;"><?= $panchanga['Yoga']['end'] ?></div>
-            </div>
-        </div>
-
-        <div class="panchanga-card">
-            <div class="panchanga-card-title">Karana</div>
-            <div class="panchanga-card-content">
-                <div class="highlight-green"><?= $panchanga['Karana']['name'] ?></div>
-                <div style="color:#777; font-size:0.9rem; margin-top:5px;"><?= $panchanga['Karana']['end'] ?></div>
+            
+            <div class="details-row">
+                <div class="details-box">
+                    <h4>Nakshatra</h4>
+                    <p class="good-time" style="font-size:15px;"><?= $panchanga['Nakshatra']['name'] ?></p>
+                    <p style="color:var(--text-3); font-size:12px; margin-top: 6px;"><?= $panchanga['Nakshatra']['end'] ?></p>
+                </div>
+                <div class="details-box">
+                    <h4>Yoga</h4>
+                    <p class="good-time" style="font-size:15px;"><?= $panchanga['Yoga']['name'] ?></p>
+                    <p style="color:var(--text-3); font-size:12px; margin-top: 6px;"><?= $panchanga['Yoga']['end'] ?></p>
+                </div>
+                <div class="details-box">
+                    <h4>Karana</h4>
+                    <p class="good-time" style="font-size:15px;"><?= $panchanga['Karana']['name'] ?></p>
+                    <p style="color:var(--text-3); font-size:12px; margin-top: 6px;"><?= $panchanga['Karana']['end'] ?></p>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- LAGNA TAB -->
     <div id="tab-lagna" class="tab-content">
-        <div class="panchanga-card" style="display:flex; justify-content:space-between; align-items:center;">
-            <div style="font-weight:600; padding:15px;">Vedic Sunrise<br><br>Lagna at Sunrise</div>
-            <div style="padding:15px; text-align:right;">
-                <?= $sunriseStr ?> AM<br><br>
-                <?= $sunriseStr ?><br>(<?= $lagnaAtSunrise ?>)
+        <div class="details-container" style="margin-top: 0; margin-bottom: 20px;">
+            <div class="details-row">
+                <div class="details-box" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h4 style="margin-bottom:5px;">Vedic Sunrise</h4>
+                        <p style="color:var(--text-1); font-weight:600; font-size: 16px;"><?= $sunriseStr ?> AM</p>
+                    </div>
+                    <div style="text-align:right;">
+                        <h4 style="margin-bottom:5px;">Lagna at Sunrise</h4>
+                        <p style="color:var(--text-1); font-weight:600; font-size: 16px;"><?= $lagnaAtSunrise ?></p>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <table class="data-table">
-            <thead>
+        <div class="table-box">
+            <h4>Lagna Timings</h4>
+            <table>
                 <tr>
                     <th>Lagna</th>
                     <th>Start Time - End Time</th>
                 </tr>
-            </thead>
-            <tbody>
                 <?php foreach($lagnas as $l): ?>
                 <tr>
-                    <td style="font-weight:600;"><?= $l['sign'] ?></td>
-                    <td><?= $l['start'] ?> - <?= $l['end'] ?> <?= $l['is_next_day'] ? '*' : '' ?></td>
+                    <td style="font-weight:600; color:var(--text-1);"><?= $l['sign'] ?></td>
+                    <td><?= $l['start'] ?> - <?= $l['end'] ?> <span style="color:var(--text-3);"><?= $l['is_next_day'] ? '*' : '' ?></span></td>
                 </tr>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
+            </table>
+        </div>
     </div>
 
     <!-- HORA TAB -->
     <div id="tab-hora" class="tab-content">
-        <div class="section-title">Day Hora</div>
-        <table class="data-table">
-            <thead>
+        <div class="table-box">
+            <h4>Day Hora</h4>
+            <table>
                 <tr>
                     <th>Hora</th>
                     <th>Start Time - End Time</th>
                 </tr>
-            </thead>
-            <tbody>
                 <?php foreach($horasDay as $h): ?>
                 <tr>
-                    <td style="font-weight:600;"><?= $h['lord'] ?></td>
+                    <td style="font-weight:600; color:var(--text-1);"><?= $h['lord'] ?></td>
                     <td><?= $h['start'] ?> - <?= $h['end'] ?></td>
                 </tr>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
+            </table>
+        </div>
 
-        <div class="section-title">Night Hora</div>
-        <table class="data-table">
-            <thead>
+        <div class="table-box">
+            <h4>Night Hora</h4>
+            <table>
                 <tr>
                     <th>Hora</th>
                     <th>Start Time - End Time</th>
                 </tr>
-            </thead>
-            <tbody>
                 <?php foreach($horasNight as $h): ?>
                 <tr>
-                    <td style="font-weight:600;"><?= $h['lord'] ?></td>
+                    <td style="font-weight:600; color:var(--text-1);"><?= $h['lord'] ?></td>
                     <td><?= $h['start'] ?> - <?= $h['end'] ?></td>
                 </tr>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
+            </table>
+        </div>
     </div>
 
     <!-- CHOGHADIYA TAB -->
     <div id="tab-choghadiya" class="tab-content">
-        <div class="section-title">Day Choghadiya</div>
-        <table class="data-table">
-            <thead>
+        <div class="table-box">
+            <h4>Day Choghadiya</h4>
+            <table>
                 <tr>
                     <th>Choghadiya</th>
                     <th>Start Time - End Time</th>
                 </tr>
-            </thead>
-            <tbody>
                 <?php foreach($chogDay as $c): ?>
                 <tr>
-                    <td class="<?= $c['type'] == 'Good' ? 'highlight-green' : ($c['type'] == 'Evil' ? 'highlight-red' : '') ?>" style="font-weight:600;"><?= $c['name'] ?></td>
+                    <td class="<?= $c['type'] == 'Good' ? 'good-time' : ($c['type'] == 'Evil' ? 'evil-time' : '') ?>" style="font-weight:600;">
+                        <?= $c['name'] ?>
+                    </td>
                     <td><?= $c['start'] ?> - <?= $c['end'] ?></td>
                 </tr>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
+            </table>
+        </div>
 
-        <div class="section-title">Night Choghadiya</div>
-        <table class="data-table">
-            <thead>
+        <div class="table-box">
+            <h4>Night Choghadiya</h4>
+            <table>
                 <tr>
                     <th>Choghadiya</th>
                     <th>Start Time - End Time</th>
                 </tr>
-            </thead>
-            <tbody>
                 <?php foreach($chogNight as $c): ?>
                 <tr>
-                    <td class="<?= $c['type'] == 'Good' ? 'highlight-green' : ($c['type'] == 'Evil' ? 'highlight-red' : '') ?>" style="font-weight:600;"><?= $c['name'] ?></td>
+                    <td class="<?= $c['type'] == 'Good' ? 'good-time' : ($c['type'] == 'Evil' ? 'evil-time' : '') ?>" style="font-weight:600;">
+                        <?= $c['name'] ?>
+                    </td>
                     <td><?= $c['start'] ?> - <?= $c['end'] ?></td>
                 </tr>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
+            </table>
+        </div>
     </div>
 
     <!-- GOWRI TAB -->
     <div id="tab-gowri" class="tab-content">
-        <div class="section-title">Day Gowri Panchanga</div>
-        <table class="data-table">
-            <thead>
+        <div class="table-box">
+            <h4>Day Gowri Panchanga</h4>
+            <table>
                 <tr>
                     <th>Gowri</th>
                     <th>Start Time - End Time</th>
                 </tr>
-            </thead>
-            <tbody>
                 <?php foreach($gowriDay as $g): ?>
                 <tr>
-                    <td class="<?= $g['type'] == 'Good' ? 'highlight-green' : ($g['type'] == 'Evil' ? 'highlight-red' : '') ?>" style="font-weight:600;"><?= $g['name'] ?></td>
+                    <td class="<?= $g['type'] == 'Good' ? 'good-time' : ($g['type'] == 'Evil' ? 'evil-time' : '') ?>" style="font-weight:600;">
+                        <?= $g['name'] ?>
+                    </td>
                     <td><?= $g['start'] ?> - <?= $g['end'] ?></td>
                 </tr>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
+            </table>
+        </div>
 
-        <div class="section-title">Night Gowri Panchanga</div>
-        <table class="data-table">
-            <thead>
+        <div class="table-box">
+            <h4>Night Gowri Panchanga</h4>
+            <table>
                 <tr>
                     <th>Gowri</th>
                     <th>Start Time - End Time</th>
                 </tr>
-            </thead>
-            <tbody>
                 <?php foreach($gowriNight as $g): ?>
                 <tr>
-                    <td class="<?= $g['type'] == 'Good' ? 'highlight-green' : ($g['type'] == 'Evil' ? 'highlight-red' : '') ?>" style="font-weight:600;"><?= $g['name'] ?></td>
+                    <td class="<?= $g['type'] == 'Good' ? 'good-time' : ($g['type'] == 'Evil' ? 'evil-time' : '') ?>" style="font-weight:600;">
+                        <?= $g['name'] ?>
+                    </td>
                     <td><?= $g['start'] ?> - <?= $g['end'] ?></td>
                 </tr>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
+            </table>
+        </div>
     </div>
 
 </div>
+</section>
 
 <script>
 function showTab(tabId, btn) {
-    // Hide all tabs
+    // Hide all tab content
     document.querySelectorAll('.tab-content').forEach(function(el) {
         el.classList.remove('active');
     });
-    // Show selected tab
+    
+    // Show selected tab content
     document.getElementById(tabId).classList.add('active');
     
-    // Update button states
-    document.querySelectorAll('.muhurtha-nav button').forEach(function(el) {
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.kundli-tabs a').forEach(function(el) {
         el.classList.remove('active');
     });
+    
+    // Add active class to clicked button
     btn.classList.add('active');
 }
 </script>
