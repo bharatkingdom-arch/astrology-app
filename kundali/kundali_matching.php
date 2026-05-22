@@ -211,6 +211,8 @@ if(isset($_GET['b_day'])){
     include "match.php";
     include "rajju.php";
     include "mahendra.php";
+    include "vedha.php";
+    include "tattwa.php";
 
     echo "</div>";
 }
