@@ -38,7 +38,7 @@ function mahendraScore($boy, $girl, $nak_order){
 // ================= INPUT =================
 $boy = $boy ?? '';
 $girl = $girl ?? '';
-<?php
+
 if($boy && $girl){
 
     list($distance,$points,$status) = mahendraScore($boy,$girl,$nak_order);

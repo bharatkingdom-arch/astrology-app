@@ -70,7 +70,7 @@ function vedhaScore($boy, $girl, $vedha_pairs, $vedha_exception){
 // ================= INPUT =================
 $boy = $_GET['boy'] ?? $boy ?? '';
 $girl = $_GET['girl'] ?? $girl ?? '';
-<?php
+
 if($boy && $girl){
 
     list($points,$status) = vedhaScore($boy,$girl,$vedha_pairs,$vedha_exception);
