@@ -94,46 +94,27 @@ $boy = $_GET['boy'] ?? $boy ?? '';
 $girl = $_GET['girl'] ?? $girl ?? '';
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-body {font-family: Arial;}
-table {border-collapse: collapse; margin-top:20px;}
-td, th {border:1px solid #999; padding:10px;}
-th {background:#333; color:#fff;}
-.good {color:green;}
-.avg {color:orange;}
-.bad {color:red;}
-</style>
-</head>
-
-<body>
-
-<h2>Tattwa Matching</h2>
-
-
-
 <?php
 if($boy && $girl){
 
     list($bt,$gt,$points,$status) = tattwaScoreAdvanced($boy,$girl,$tattwa_map);
 
-    $class = ($points==2) ? "good" : (($points==1) ? "avg" : "bad");
+    echo "<div class='match-scorecard'>";
+    echo "<h3>✦ Tattwa Compatibility</h3>";
 
-    echo "<table>";
+    $badge_class = ($points == 2) ? "badge-good" : (($points == 1) ? "badge-avg" : "badge-bad");
+
+    echo "<table class='match-table'>";
     echo "<tr><th>Item</th><th>Details</th></tr>";
 
     echo "<tr><td>Boy Nakshatra</td><td>$boy</td></tr>";
     echo "<tr><td>Girl Nakshatra</td><td>$girl</td></tr>";
     echo "<tr><td>Boy Tattwa</td><td>$bt</td></tr>";
     echo "<tr><td>Girl Tattwa</td><td>$gt</td></tr>";
-    echo "<tr><td>Result</td><td class='$class'>$status</td></tr>";
-    echo "<tr><td>Points</td><td class='$class'>$points / 2</td></tr>";
+    echo "<tr><td>Result</td><td><span class='badge $badge_class'>$status</span></td></tr>";
+    echo "<tr><td>Points</td><td><span class='score-highlight'>$points</span> / 2</td></tr>";
 
     echo "</table>";
+    echo "</div>";
 }
 ?>
-
-</body>
-</html>

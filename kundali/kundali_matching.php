@@ -198,22 +198,17 @@ if(isset($_GET['b_day'])){
         <a href='kundali_matching.php' class='login-btn-kundli' style='text-decoration:none;'>🔄 New Match</a>
     </div>";
 
-    echo "<div class='details-box'>";
-    echo "<h3>Result</h3>";
-    echo "<b>Boy:</b> $boyNak (Pada $boyPada)<br>";
-    echo "<b>Girl:</b> $girlNak (Pada $girlPada)<br>";
-
     $boy = $boyNak;
     $boy_pada = $boyPada;
     $girl = $girlNak;
     $girl_pada = $girlPada;
 
+    echo "<div class='match-results-wrapper'>";
     include "match.php";
     include "rajju.php";
     include "mahendra.php";
     include "vedha.php";
     include "tattwa.php";
-
     echo "</div>";
 }
 ?>

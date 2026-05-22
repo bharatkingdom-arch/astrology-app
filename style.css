@@ -691,3 +691,114 @@ tr:hover td{background:var(--bg-card-hover)}
   border-bottom-color: var(--bg-tertiary) !important;
   border-top-color: var(--bg-tertiary) !important;
 }
+
+/* ============================================================
+   MATCH DASHBOARD (Kundali Matching)
+   ============================================================ */
+.match-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s6);
+  margin-top: var(--s8);
+}
+.match-scorecard {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: var(--s6);
+  box-shadow: var(--sh-md);
+  position: relative;
+  overflow: hidden;
+}
+.match-scorecard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #f0a030, #e08818);
+}
+.match-scorecard h3 {
+  margin-top: 0;
+  color: var(--amber);
+  margin-bottom: var(--s5);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.match-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--s6);
+}
+.match-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.match-table th, .match-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.match-table th {
+  background: var(--bg-card);
+  color: var(--text-2);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.match-table td {
+  background: transparent;
+  color: var(--text-1);
+  font-size: 14px;
+}
+.match-table tr:last-child th,
+.match-table tr:last-child td {
+  border-bottom: none;
+}
+.match-table tr:hover td {
+  background: var(--bg-card-hover);
+}
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.badge-good { background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid rgba(46, 213, 115, 0.3); }
+.badge-avg { background: rgba(255, 165, 2, 0.15); color: #ffa502; border: 1px solid rgba(255, 165, 2, 0.3); }
+.badge-bad { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid rgba(255, 71, 87, 0.3); }
+
+.score-highlight {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--amber);
+}
+.total-score-box {
+  background: var(--bg-card);
+  border-radius: var(--r-md);
+  padding: var(--s5);
+  text-align: center;
+  border: 1px solid var(--border);
+  margin-top: var(--s4);
+}
+.total-score-box .score {
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #f0a030, #e08818);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.total-score-box .label {
+  font-size: 13px;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 5px;
+}

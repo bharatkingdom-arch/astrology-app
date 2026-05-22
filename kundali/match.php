@@ -396,19 +396,6 @@ function yoniScoreTable($boy,$girl,$nak_num){
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-table {border-collapse: collapse; font-family: Arial;}
-td, th {border:1px solid #999; padding:8px;}
-th {background:#333; color:#fff;}
-</style>
-</head>
-
-
-
-
 <?php
 if($boy && $girl){
 
@@ -421,127 +408,104 @@ $girl_rasi = getRasiFromNakshatra($girl,$girl_pada);
 $b=$nakshatra_data[$boy];
 $g=$nakshatra_data[$girl];
 
-// ================= BOY GIRL TABLE =================
-echo "<div style='display:flex; gap:40px;'>";
+echo "<div class='match-dashboard'>";
 
-// ---------- COMMON VALUES ----------
+// ================= BOY GIRL TABLE =================
 list($t1,$t2,$tmp)=taraScore($boy,$girl,$nak_order);
 
-// ---------- BOY ----------
-echo "<table><tr><th colspan=2>Boy ($boy)</th></tr>";
+echo "<div class='match-scorecard'>";
+echo "<h3>✦ Natal Details</h3>";
+echo "<div class='match-grid'>";
 
+// ---------- BOY ----------
+echo "<div>";
+echo "<table class='match-table'><tr><th colspan=2>Boy ($boy)</th></tr>";
 echo "<tr><td><b>Varna</b></td><td>".$rasi_varna[$boy_rasi]."</td></tr>";
 echo "<tr><td><b>Vashya</b></td><td>$rasi_vashya[$boy_rasi]</td></tr>";
 echo "<tr><td><b>Tara</b></td><td>$t1</td></tr>";
 echo "<tr><td><b>Yoni</b></td><td>{$b['yoni']}</td></tr>";
 echo "<tr><td><b>Graha (Lord)</b></td><td>".$rasi_lord[$boy_rasi]."</td></tr>";
 echo "<tr><td><b>Gana</b></td><td>{$b['gana']}</td></tr>";
-echo "<tr><td><b>Rasi</b></td><td>$boy_rasi</td></tr>"; // ✅ FIXED
+echo "<tr><td><b>Rasi</b></td><td>$boy_rasi</td></tr>";
 echo "<tr><td><b>Nadi</b></td><td>{$b['nadi']}</td></tr>";
-
-echo "</table>";
-
+echo "</table></div>";
 
 // ---------- GIRL ----------
-echo "<table><tr><th colspan=2>Girl ($girl)</th></tr>";
-
-echo "<tr><td><b>Varna</b></td><td>".$rasi_varna[$girl_rasi]."</td></tr>"; // ✅ FIXED
+echo "<div>";
+echo "<table class='match-table'><tr><th colspan=2>Girl ($girl)</th></tr>";
+echo "<tr><td><b>Varna</b></td><td>".$rasi_varna[$girl_rasi]."</td></tr>";
 echo "<tr><td><b>Vashya</b></td><td>$rasi_vashya[$girl_rasi]</td></tr>";
 echo "<tr><td><b>Tara</b></td><td>$t2</td></tr>";
 echo "<tr><td><b>Yoni</b></td><td>{$g['yoni']}</td></tr>";
-echo "<tr><td><b>Graha (Lord)</b></td><td>".$rasi_lord[$girl_rasi]."</td></tr>"; // ✅ FIXED
+echo "<tr><td><b>Graha (Lord)</b></td><td>".$rasi_lord[$girl_rasi]."</td></tr>";
 echo "<tr><td><b>Gana</b></td><td>{$g['gana']}</td></tr>";
-echo "<tr><td><b>Rasi</b></td><td>$girl_rasi</td></tr>"; // ✅ FIXED
+echo "<tr><td><b>Rasi</b></td><td>$girl_rasi</td></tr>";
 echo "<tr><td><b>Nadi</b></td><td>{$g['nadi']}</td></tr>";
+echo "</table></div>";
 
-echo "</table>";
+echo "</div></div>"; // End match-grid & match-scorecard
 
-echo "</div><br><br>";
-
-
-// ================= COMPARISON =================
-echo "<table>";
+// ================= ASHTA KOOTA =================
+echo "<div class='match-scorecard'>";
+echo "<h3>✦ Ashta Koota Compatibility</h3>";
+echo "<table class='match-table'>";
 echo "<tr><th>Koota</th><th>Boy</th><th>Girl</th><th>Points</th></tr>";
 
 $total = 0;
 
 // ---------- Varna ----------
-$p=($rank[$rasi_varna[$boy_rasi]]>=$rank[$rasi_varna[$girl_rasi]])?1:0; // ✅ FIXED
+$p=($rank[$rasi_varna[$boy_rasi]]>=$rank[$rasi_varna[$girl_rasi]])?1:0;
 $total+=$p;
-
-$boy_varna = $rasi_varna[$boy_rasi];   // ✅ FIXED
-$girl_varna = $rasi_varna[$girl_rasi]; // ✅ FIXED
-
-echo "<tr><td>Varna</td><td>$boy_varna</td><td>$girl_varna</td><td>$p</td></tr>";
-
+$boy_varna = $rasi_varna[$boy_rasi];
+$girl_varna = $rasi_varna[$girl_rasi];
+echo "<tr><td>Varna</td><td>$boy_varna</td><td>$girl_varna</td><td><span class='score-highlight'>$p</span> / 1</td></tr>";
 
 // ---------- Vashya ----------
 $p = vashyaScore($rasi_vashya[$boy_rasi], $rasi_vashya[$girl_rasi]);
 $total += $p;
-
-echo "<tr><td>Vashya</td><td>{$b['vashya']}</td><td>{$g['vashya']}</td><td>$p</td></tr>";
-
+echo "<tr><td>Vashya</td><td>{$b['vashya']}</td><td>{$g['vashya']}</td><td><span class='score-highlight'>$p</span> / 2</td></tr>";
 
 // ---------- Tara ----------
 list($t1,$t2,$p)=taraScore($boy,$girl,$nak_order);
 $total+=$p;
-
-echo "<tr><td>Tara</td><td>$t1</td><td>$t2</td><td>$p</td></tr>";
-
+echo "<tr><td>Tara</td><td>$t1</td><td>$t2</td><td><span class='score-highlight'>$p</span> / 3</td></tr>";
 
 // ---------- Yoni ----------
 $p = yoniScoreTable($boy,$girl,$nak_num);
 $total+=$p;
-
-echo "<tr><td>Yoni</td><td>{$b['yoni']}</td><td>{$g['yoni']}</td><td>$p</td></tr>";
-
+echo "<tr><td>Yoni</td><td>{$b['yoni']}</td><td>{$g['yoni']}</td><td><span class='score-highlight'>$p</span> / 4</td></tr>";
 
 // ---------- Graha ----------
-$boy_lord = $rasi_lord[$boy_rasi];   // ✅ FIXED
-$girl_lord = $rasi_lord[$girl_rasi]; // ✅ FIXED
-
+$boy_lord = $rasi_lord[$boy_rasi];
+$girl_lord = $rasi_lord[$girl_rasi];
 $p = grahaMaitriScore($boy_lord,$girl_lord,$graha_rel);
 $total+=$p;
-
-echo "<tr><td>Graha</td><td>$boy_lord</td><td>$girl_lord</td><td>$p</td></tr>";
-
+echo "<tr><td>Graha</td><td>$boy_lord</td><td>$girl_lord</td><td><span class='score-highlight'>$p</span> / 5</td></tr>";
 
 // ---------- Gana ----------
 $p = ganaScore($b['gana'],$g['gana']);
 $total+=$p;
-
-echo "<tr><td>Gana</td><td>{$b['gana']}</td><td>{$g['gana']}</td><td>$p</td></tr>";
-
+echo "<tr><td>Gana</td><td>{$b['gana']}</td><td>{$g['gana']}</td><td><span class='score-highlight'>$p</span> / 6</td></tr>";
 
 // ---------- Bhakoot ----------
-list($p,$status) = bhakootScoreAdvanced(
-    $boy_rasi,   // ✅ FIXED
-    $girl_rasi,  // ✅ FIXED
-    $rasi_map,
-    $rasi_lord,
-    $graha_rel
-);
-
+list($p,$status) = bhakootScoreAdvanced($boy_rasi, $girl_rasi, $rasi_map, $rasi_lord, $graha_rel);
 $total += $p;
-
-echo "<tr>
-<td>Bhakoot</td>
-<td>$boy_rasi</td>
-<td>$girl_rasi</td>
-<td>$p <br><small>$status</small></td>
-</tr>";
-
+echo "<tr><td>Bhakoot</td><td>$boy_rasi</td><td>$girl_rasi</td><td><span class='score-highlight'>$p</span> / 7 <br><span class='badge badge-".($p>=3.5?'good':'bad')."'>$status</span></td></tr>";
 
 // ---------- Nadi ----------
 $p=($b['nadi']!=$g['nadi'])?8:0;
 $total+=$p;
+echo "<tr><td>Nadi</td><td>{$b['nadi']}</td><td>{$g['nadi']}</td><td><span class='score-highlight'>$p</span> / 8</td></tr>";
 
-echo "<tr><td>Nadi</td><td>{$b['nadi']}</td><td>{$g['nadi']}</td><td>$p</td></tr>";
-
-echo "<tr><th colspan=3>Total</th><th>$total / 36</th></tr>";
 echo "</table>";
+
+// Total Score
+echo "<div class='total-score-box'>";
+echo "<div class='score'>$total / 36</div>";
+echo "<div class='label'>Total Ashta Koota Points</div>";
+echo "</div>";
+
+echo "</div>"; // End Ashta Koota Scorecard
+
 }
 ?>
-
-</body>
-</html>

@@ -38,51 +38,26 @@ function mahendraScore($boy, $girl, $nak_order){
 // ================= INPUT =================
 $boy = $boy ?? '';
 $girl = $girl ?? '';
-?>
-
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-body {font-family: Arial;}
-table {border-collapse: collapse; margin-top:20px;}
-td, th {border:1px solid #999; padding:10px;}
-th {background:#333; color:#fff;}
-.result {margin-top:20px; font-size:18px;}
-</style>
-</head>
-
-<body>
-
-<h2>Mahendra Matching</h2>
-
-
 <?php
 if($boy && $girl){
 
     list($distance,$points,$status) = mahendraScore($boy,$girl,$nak_order);
 
-    echo "<table>";
+    echo "<div class='match-scorecard'>";
+    echo "<h3>✦ Mahendra Koota</h3>";
+
+    echo "<table class='match-table'>";
     echo "<tr><th>Item</th><th>Details</th></tr>";
+
+    $badge_class = ($points == 2) ? "badge-good" : "badge-bad";
 
     echo "<tr><td>Girl Nakshatra</td><td>$girl</td></tr>";
     echo "<tr><td>Boy Nakshatra</td><td>$boy</td></tr>";
     echo "<tr><td>Distance (Girl → Boy)</td><td>$distance</td></tr>";
-    echo "<tr><td>Result</td><td>$status</td></tr>";
-    echo "<tr><td>Points</td><td>$points / 2</td></tr>";
+    echo "<tr><td>Result</td><td><span class='badge $badge_class'>$status</span></td></tr>";
+    echo "<tr><td>Points</td><td><span class='score-highlight'>$points</span> / 2</td></tr>";
 
     echo "</table>";
-
-    // Final message
-    echo "<div class='result'>";
-    if($points == 2){
-        echo "✅ Mahendra Present - Good for prosperity & children";
-    } else {
-        echo "❌ Mahendra Not Present";
-    }
     echo "</div>";
 }
 ?>
-
-</body>
-</html>

@@ -5,21 +5,6 @@ $boy = $boy ?? '';
 $girl = $girl ?? '';
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-body {font-family: Arial;}
-table {border-collapse: collapse; margin-top:20px;}
-td, th {border:1px solid #999; padding:10px;}
-th {background:#333; color:#fff;}
-.result {font-size:20px; margin-top:20px;}
-</style>
-</head>
-
-<body>
-
-
 <?php
 if($boy && $girl){
 
@@ -28,29 +13,22 @@ if($boy && $girl){
 
     list($points,$status) = rajjuScore($boy,$girl);
 
-    echo "<table>";
+    echo "<div class='match-scorecard'>";
+    echo "<h3>✦ Rajju Dosha Check</h3>";
+    echo "<table class='match-table'>";
     echo "<tr><th>Factor</th><th>Boy</th><th>Girl</th><th>Result</th></tr>";
+
+    $badge_class = ($points == 0) ? "badge-bad" : (($points <= 2) ? "badge-avg" : "badge-good");
 
     echo "<tr>
     <td>Rajju</td>
     <td>$b_type ($b_dir)</td>
     <td>$g_type ($g_dir)</td>
-    <td>$points <br><b>$status</b></td>
+    <td><span class='score-highlight'>$points</span> / 4 <br><span class='badge $badge_class'>$status</span></td>
     </tr>";
 
     echo "</table>";
 
-    echo "<div class='result'>";
-    if($points == 0){
-        echo "❌ Rajju Dosha - Not Recommended";
-    } elseif($points <= 2){
-        echo "⚠️ Average Compatibility";
-    } else {
-        echo "✅ Good Compatibility";
-    }
     echo "</div>";
 }
 ?>
-
-</body>
-</html>
