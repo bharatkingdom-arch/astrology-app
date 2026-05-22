@@ -90,8 +90,8 @@ function tattwaScoreAdvanced($boy, $girl, $map){
 }
 
 // ================= INPUT =================
-$boy = $_GET['boy'] ?? '';
-$girl = $_GET['girl'] ?? '';
+$boy = $_GET['boy'] ?? $boy ?? '';
+$girl = $_GET['girl'] ?? $girl ?? '';
 ?>
 
 <!DOCTYPE html>

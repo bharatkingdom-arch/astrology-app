@@ -30,8 +30,8 @@ function streeDeerghaScore($boy, $girl, $nak_order){
     }
 }
 // ================= INPUT =================
-$boy = $_GET['boy'] ?? '';
-$girl = $_GET['girl'] ?? '';
+$boy = $_GET['boy'] ?? $boy ?? '';
+$girl = $_GET['girl'] ?? $girl ?? '';
 ?>
 
 <!DOCTYPE html>

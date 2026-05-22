@@ -412,8 +412,8 @@ th {background:#333; color:#fff;}
 <?php
 if($boy && $girl){
 
-$boy_pada = $_GET['boy_pada'] ?? 1;
-$girl_pada = $_GET['girl_pada'] ?? 1;
+$boy_pada = $_GET['boy_pada'] ?? $boy_pada ?? 1;
+$girl_pada = $_GET['girl_pada'] ?? $girl_pada ?? 1;
 
 $boy_rasi = getRasiFromNakshatra($boy,$boy_pada);
 $girl_rasi = getRasiFromNakshatra($girl,$girl_pada);

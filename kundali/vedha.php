@@ -68,8 +68,8 @@ function vedhaScore($boy, $girl, $vedha_pairs, $vedha_exception){
 }
 
 // ================= INPUT =================
-$boy = $_GET['boy'] ?? '';
-$girl = $_GET['girl'] ?? '';
+$boy = $_GET['boy'] ?? $boy ?? '';
+$girl = $_GET['girl'] ?? $girl ?? '';
 ?>
 
 <!DOCTYPE html>
