@@ -595,6 +595,9 @@ tr:hover td{background:var(--bg-card-hover)}
   .footer-links{grid-template-columns:repeat(2,1fr);gap:var(--s6)}
   .birth-grid{grid-template-columns:1fr}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .match-grid{grid-template-columns:1fr;gap:var(--s4)}
+  .match-scorecard{padding:var(--s4)}
+  .match-table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
 }
 
 
@@ -613,6 +616,8 @@ tr:hover td{background:var(--bg-card-hover)}
   .south-chart{max-width:100%}
   .news-card,.blog-card{flex:0 0 85%;min-width:240px}
   .astrologer-card{flex:0 0 70%;min-width:180px}
+  .match-scorecard{padding:var(--s3)}
+  .match-table th,.match-table td{padding:8px 10px;font-size:12px}
 }
 
 @media print{
