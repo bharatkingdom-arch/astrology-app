@@ -596,10 +596,10 @@ tr:hover td{background:var(--bg-card-hover)}
   .birth-grid{grid-template-columns:1fr}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .match-grid{grid-template-columns:1fr;gap:var(--s4)}
-  .match-scorecard{padding:16px;overflow-x:auto;overflow-y:hidden}
-  .match-table th, .match-table td { padding: 8px 6px; font-size: 12px; }
+  .match-scorecard{padding:16px}
+  .match-table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  .match-table th, .match-table td { padding: 12px 10px; font-size: 13px; }
   .score-highlight{font-size:18px}
-  .badge{white-space:normal;line-height:1.2}
 }
 
 
@@ -618,10 +618,11 @@ tr:hover td{background:var(--bg-card-hover)}
   .south-chart{max-width:100%}
   .news-card,.blog-card{flex:0 0 85%;min-width:240px}
   .astrologer-card{flex:0 0 70%;min-width:180px}
-  .match-scorecard{padding:12px;overflow-x:auto;overflow-y:hidden}
-  .match-table th,.match-table td{padding:8px 2px;font-size:11px;white-space:normal;word-break:normal;hyphens:none}
+  .match-scorecard{padding:12px}
+  .match-table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  .match-table th,.match-table td{padding:10px 8px;font-size:12px;text-align:left}
   .score-highlight{font-size:16px}
-  .badge{white-space:normal;line-height:1.2;padding:4px 6px;font-size:11px}
+  .badge{font-size:11px}
 }
 
 @media print{
@@ -746,7 +747,6 @@ tr:hover td{background:var(--bg-card-hover)}
   border-radius: var(--r-sm);
   overflow: hidden;
   border: 1px solid var(--border);
-  table-layout: fixed;
 }
 .match-table th, .match-table td {
   padding: 12px 16px;
