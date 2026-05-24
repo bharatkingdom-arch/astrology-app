@@ -597,8 +597,8 @@ tr:hover td{background:var(--bg-card-hover)}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .match-grid{grid-template-columns:1fr;gap:var(--s4)}
   .match-scorecard{padding:16px}
-  .match-table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
-  .match-table th, .match-table td { padding: 12px 10px; font-size: 13px; }
+  .table-responsive{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .match-table th, .match-table td { padding: 12px 10px; font-size: 13px; white-space:nowrap }
   .score-highlight{font-size:18px}
 }
 
@@ -619,8 +619,8 @@ tr:hover td{background:var(--bg-card-hover)}
   .news-card,.blog-card{flex:0 0 85%;min-width:240px}
   .astrologer-card{flex:0 0 70%;min-width:180px}
   .match-scorecard{padding:12px}
-  .match-table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
-  .match-table th,.match-table td{padding:10px 8px;font-size:12px;text-align:left}
+  .table-responsive{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:var(--s4)}
+  .match-table th,.match-table td{padding:10px 8px;font-size:12px;text-align:left;white-space:nowrap}
   .score-highlight{font-size:16px}
   .badge{font-size:11px}
 }

@@ -418,7 +418,7 @@ echo "<h3>✦ Natal Details</h3>";
 echo "<div class='match-grid'>";
 
 // ---------- BOY ----------
-echo "<div>";
+echo "<div class='table-responsive'>";
 echo "<table class='match-table'><tr><th colspan=2>Boy ($boy)</th></tr>";
 echo "<tr><td><b>Varna</b></td><td>".$rasi_varna[$boy_rasi]."</td></tr>";
 echo "<tr><td><b>Vashya</b></td><td>$rasi_vashya[$boy_rasi]</td></tr>";
@@ -431,7 +431,7 @@ echo "<tr><td><b>Nadi</b></td><td>{$b['nadi']}</td></tr>";
 echo "</table></div>";
 
 // ---------- GIRL ----------
-echo "<div>";
+echo "<div class='table-responsive'>";
 echo "<table class='match-table'><tr><th colspan=2>Girl ($girl)</th></tr>";
 echo "<tr><td><b>Varna</b></td><td>".$rasi_varna[$girl_rasi]."</td></tr>";
 echo "<tr><td><b>Vashya</b></td><td>$rasi_vashya[$girl_rasi]</td></tr>";
@@ -448,7 +448,7 @@ echo "</div></div>"; // End match-grid & match-scorecard
 // ================= ASHTA KOOTA =================
 echo "<div class='match-scorecard'>";
 echo "<h3>✦ Ashta Koota Compatibility</h3>";
-echo "<table class='match-table'>";
+echo "<div class='table-responsive'><table class='match-table'>";
 echo "<tr><th>Koota</th><th>Boy</th><th>Girl</th><th>Points</th></tr>";
 
 $total = 0;
@@ -497,7 +497,7 @@ $p=($b['nadi']!=$g['nadi'])?8:0;
 $total+=$p;
 echo "<tr><td>Nadi</td><td>{$b['nadi']}</td><td>{$g['nadi']}</td><td><span class='score-highlight'>$p</span> / 8</td></tr>";
 
-echo "</table>";
+echo "</table></div>";
 
 // Total Score
 echo "<div class='total-score-box'>";
