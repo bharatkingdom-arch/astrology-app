@@ -15,7 +15,7 @@ if($boy && $girl){
 
     echo "<div class='match-scorecard'>";
     echo "<h3>✦ Rajju Dosha Check</h3>";
-    echo "<table class='match-table'>";
+    echo "<div class='table-responsive'><table class='match-table'>";
     echo "<tr><th>Factor</th><th>Boy</th><th>Girl</th><th>Result</th></tr>";
 
     $badge_class = ($points == 0) ? "badge-bad" : (($points <= 2) ? "badge-avg" : "badge-good");
@@ -27,7 +27,7 @@ if($boy && $girl){
     <td><span class='score-highlight'>$points</span> / 4 <br><span class='badge $badge_class'>$status</span></td>
     </tr>";
 
-    echo "</table>";
+    echo "</table></div>";
 
     echo "</div>";
 }

@@ -104,7 +104,7 @@ if($boy && $girl){
 
     $badge_class = ($points == 2) ? "badge-good" : (($points == 1) ? "badge-avg" : "badge-bad");
 
-    echo "<table class='match-table'>";
+    echo "<div class='table-responsive'><table class='match-table'>";
     echo "<tr><th>Item</th><th>Details</th></tr>";
 
     echo "<tr><td>Boy Nakshatra</td><td>$boy</td></tr>";
@@ -114,7 +114,7 @@ if($boy && $girl){
     echo "<tr><td>Result</td><td><span class='badge $badge_class'>$status</span></td></tr>";
     echo "<tr><td>Points</td><td><span class='score-highlight'>$points</span> / 2</td></tr>";
 
-    echo "</table>";
+    echo "</table></div>";
     echo "</div>";
 }
 ?>
