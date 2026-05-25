@@ -13,8 +13,19 @@ $place = "Tenali, Andhra Pradesh";
 
 // Current Date
 date_default_timezone_set('Asia/Kolkata');
-$currentDate = date("d-M-Y");
-$timestamp = time();
+
+$date_input = $_GET['date'] ?? null;
+if ($date_input) {
+    // Expected format DD-MM-YYYY
+    $timestamp = strtotime($date_input . " 12:00:00");
+    if (!$timestamp) {
+        $timestamp = time();
+    }
+} else {
+    $timestamp = time();
+}
+
+$currentDate = date("d-M-Y", $timestamp);
 $dateObj = new DateTime("@$timestamp");
 $utDate = $dateObj->format('d.m.Y');
 $utTime = $dateObj->format('H:i:s');
@@ -77,7 +88,7 @@ $panchanga = Panchanga::calculate($sunLon, $moonLon, $jd, 0.98, 13.1, $sunriseTs
 $advancedPanchanga = AdvancedPanchanga::calculate($timestamp, $lat, $lon, $timezone, $sunLon, $moonLon, $panchanga);
 
 // ------------------------------------------------------------------
-// LAGNA CALCULATION (Approximate based on Sun at Sunrise)
+// LAGNA CALCULATION (Precise using Swiss Ephemeris)
 // ------------------------------------------------------------------
 $signs = ["Mesha", "Vrishabha", "Mithuna", "Kataka", "Simha", "Kanya", "Thula", "Vrischika", "Dhanus", "Makara", "Kumbha", "Meena"];
 $nakshatras = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha","Magha","P-phalguni","U-phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha","Moola","P-ashadha","U-ashadha","Shravana","Dhanishta","Shatabhisha","P-bhadra","U-bhadra","Revati"];
@@ -87,26 +98,109 @@ $sunriseNakIdx = floor($sunLon / (13 + 1/3));
 
 $lagnaAtSunrise = $signs[$sunriseSignIdx] . " - " . $nakshatras[$sunriseNakIdx];
 
+$getAsc = function($ts) use ($lat, $lon, $swetestPath, $ephePath) {
+    $dt = new DateTime("@$ts");
+    $utDate = $dt->format("d.m.Y");
+    $utTime = $dt->format("H:i:s");
+    $cmd = "$swetestPath -edir$ephePath -sid1 -b$utDate -ut$utTime -house$lon,$lat,P -fPl";
+    $out = shell_exec($cmd);
+    if ($out) {
+        $lines = explode("\n", trim($out));
+        foreach ($lines as $line) {
+            if (strpos(trim($line), 'Ascendant') === 0) {
+                $parts = preg_split('/\s+/', trim($line));
+                return floatval($parts[1]);
+            }
+        }
+    }
+    return 0;
+};
+
+$getMuhurthaVars = function($ts) use ($swetestPath, $ephePath) {
+    $dt = new DateTime("@$ts");
+    $utDate = $dt->format("d.m.Y");
+    $utTime = $dt->format("H:i:s");
+    $cmd = "$swetestPath -edir$ephePath -sid1 -b$utDate -ut$utTime -p01 -fPl";
+    $out = shell_exec($cmd);
+    $sun = 0; $moon = 0;
+    if ($out) {
+        $lines = explode("\n", trim($out));
+        foreach ($lines as $line) {
+            if (strpos(trim($line), 'Sun') === 0) {
+                $parts = preg_split('/\s+/', trim($line));
+                $sun = floatval($parts[1]);
+            } elseif (strpos(trim($line), 'Moon') === 0) {
+                $parts = preg_split('/\s+/', trim($line));
+                $moon = floatval($parts[1]);
+            }
+        }
+    }
+    $diff = $moon - $sun;
+    if ($diff < 0) $diff += 360;
+    $tithi = floor($diff / 12) + 1;
+    $nak = floor($moon / (13 + 1/3)) + 1;
+    return ['tithi' => $tithi, 'nak' => $nak];
+};
+
 $lagnas = [];
-$currentLagLon = $sunLon;
-$currentLagTime = $sunriseTs;
+$currentTs = $sunriseTs;
+$endTs = $currentTs + 86400; // 24 hours
+$vara_num = date('w', $currentTs) + 1; // 1 = Sunday
+
+$lastAsc = $getAsc($currentTs);
+$lastSign = floor($lastAsc / 30); // 0-based index for $signs
+
+$currentStart = $currentTs;
+
 for ($i = 0; $i <= 12; $i++) {
-    $idx = ($sunriseSignIdx + $i) % 12;
-    $degRemainingInSign = 30 - fmod($currentLagLon, 30);
-    // Approx 4 minutes per degree = 240 seconds
-    $durationSeconds = $degRemainingInSign * 240;
+    $remDeg = ($lastSign + 1) * 30 - $lastAsc;
+    if ($remDeg <= 0) $remDeg += 30;
     
-    $endTime = $currentLagTime + $durationSeconds;
+    $jumpMins = floor($remDeg * 3.5);
+    if ($jumpMins < 5) $jumpMins = 5;
+    
+    $testTs = $currentStart + ($jumpMins * 60);
+    $testAsc = $getAsc($testTs);
+    $testSign = floor($testAsc / 30);
+    
+    while ($testSign == $lastSign && $testTs < $endTs) {
+        $testTs += 300;
+        $testAsc = $getAsc($testTs);
+        $testSign = floor($testAsc / 30);
+    }
+    
+    while ($testSign != $lastSign && $testTs > $currentStart) {
+        $testTs -= 60;
+        $testAsc = $getAsc($testTs);
+        $testSign = floor($testAsc / 30);
+    }
+    
+    $endOfLagna = $testTs;
+    $mvars = $getMuhurthaVars($currentStart);
+    
+    // Panchaka Rahita Calculation: Tithi + Vara + Nakshatra + Lagna
+    // Note: $lastSign is 0-based (0=Mesha), so we use $lastSign + 1 for math
+    $lagna_num = $lastSign + 1; 
+    $p_sum = $mvars['tithi'] + $vara_num + $mvars['nak'] + $lagna_num;
+    $p_rem = $p_sum % 9;
+    $is_rahita = in_array($p_rem, [3, 5, 7, 0]);
     
     $lagnas[] = [
-        "sign" => $signs[$idx],
-        "start" => date("h:i A", (int)$currentLagTime),
-        "end" => date("h:i A", (int)$endTime),
-        "is_next_day" => ($endTime > strtotime("midnight tomorrow", $sunriseTs))
+        "sign" => $signs[$lastSign],
+        "start" => date("h:i A", (int)$currentStart),
+        "end" => date("h:i A", (int)$endOfLagna),
+        "is_next_day" => ($endOfLagna > strtotime("midnight tomorrow", $sunriseTs)),
+        "is_rahita" => $is_rahita,
+        "rem" => $p_rem
     ];
     
-    $currentLagLon += $degRemainingInSign;
-    $currentLagTime = $endTime;
+    $currentStart = $endOfLagna + 60;
+    $lastAsc = $getAsc($currentStart);
+    $lastSign = floor($lastAsc / 30);
+    
+    if ($currentStart >= $endTs) {
+        break;
+    }
 }
 
 // ------------------------------------------------------------------
@@ -378,11 +472,19 @@ require 'header.php';
                 <tr>
                     <th>Lagna</th>
                     <th>Start Time - End Time</th>
+                    <th>Panchaka Status</th>
                 </tr>
                 <?php foreach($lagnas as $l): ?>
-                <tr>
+                <tr style="<?= $l['is_rahita'] ? 'background: rgba(46, 204, 113, 0.05);' : 'background: rgba(231, 76, 60, 0.05);' ?>">
                     <td style="font-weight:600; color:var(--text-1);"><?= $l['sign'] ?></td>
                     <td><?= $l['start'] ?> - <?= $l['end'] ?> <span style="color:var(--text-3);"><?= $l['is_next_day'] ? '*' : '' ?></span></td>
+                    <td>
+                        <?php if($l['is_rahita']): ?>
+                            <span style="color:#2ecc71; font-weight:bold; font-size:14px;">Panchaka Rahita</span>
+                        <?php else: ?>
+                            <span style="color:#e74c3c; font-weight:bold; font-size:14px;">Dosha (Rem: <?= $l['rem'] ?>)</span>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </table>

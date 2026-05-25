@@ -410,7 +410,7 @@ body.dark-mode {
             <?php if (count($auspicious_dates) > 0): ?>
                 <div class="tara-grid">
                     <?php foreach ($auspicious_dates as $ad): ?>
-                        <a href="pachakarahita.php?date=<?= urlencode($ad['date']) ?>" style="text-decoration: none; color: inherit;">
+                        <a href="daily-muhurtha.php?date=<?= urlencode($ad['date']) ?>" style="text-decoration: none; color: inherit;">
                             <div class="tara-card">
                                 <div class="tara-date"><?= date('d M Y', strtotime($ad['date'])) ?></div>
                                 <div class="tara-nak"><?= $ad['daily_nak'] ?> <br><small style="opacity:0.8"><?= $ad['daily_rasi'] ?></small></div>
