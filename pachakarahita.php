@@ -117,19 +117,109 @@ if (in_array($panchaka_rem, [3, 5, 7, 0])) {
     $panchaka_color = "var(--danger, #e74c3c)";
 }
 
-// 4. Lagnas of the Day (Approximate starting from Sunrise Lagna)
+// 4. Exact Lagnas of the Day with Panchaka Rahita Status
 $signs = [
     1=>"Aries (Mesha)", 2=>"Taurus (Vrishabha)", 3=>"Gemini (Mithuna)", 4=>"Cancer (Karka)",
     5=>"Leo (Simha)", 6=>"Virgo (Kanya)", 7=>"Libra (Tula)", 8=>"Scorpio (Vrischika)",
     9=>"Sagittarius (Dhanu)", 10=>"Capricorn (Makara)", 11=>"Aquarius (Kumbha)", 12=>"Pisces (Meena)"
 ];
 
+date_default_timezone_set('Asia/Kolkata');
+$currentTs = strtotime("$year-$month-$day 06:00:00");
+$endTs = $currentTs + 86400; // 24 hours
+
+$getAsc = function($ts) use ($lat, $lon, $swetestPath, $ephePath) {
+    $dt = new DateTime("@$ts");
+    $utDate = $dt->format("d.m.Y");
+    $utTime = $dt->format("H:i:s");
+    $cmd = "$swetestPath -edir$ephePath -sid1 -b$utDate -ut$utTime -house$lon,$lat,P -fPl";
+    $out = shell_exec($cmd);
+    if ($out) {
+        $lines = explode("\n", trim($out));
+        foreach ($lines as $line) {
+            if (strpos(trim($line), 'Ascendant') === 0) {
+                $parts = preg_split('/\s+/', trim($line));
+                return floatval($parts[1]);
+            }
+        }
+    }
+    return 0;
+};
+
+$getMuhurthaVars = function($ts) use ($swetestPath, $ephePath) {
+    $dt = new DateTime("@$ts");
+    $utDate = $dt->format("d.m.Y");
+    $utTime = $dt->format("H:i:s");
+    $cmd = "$swetestPath -edir$ephePath -sid1 -b$utDate -ut$utTime -p01 -fPl";
+    $out = shell_exec($cmd);
+    $sun = 0; $moon = 0;
+    if ($out) {
+        $lines = explode("\n", trim($out));
+        foreach ($lines as $line) {
+            if (strpos(trim($line), 'Sun') === 0) {
+                $parts = preg_split('/\s+/', trim($line));
+                $sun = floatval($parts[1]);
+            } elseif (strpos(trim($line), 'Moon') === 0) {
+                $parts = preg_split('/\s+/', trim($line));
+                $moon = floatval($parts[1]);
+            }
+        }
+    }
+    $diff = $moon - $sun;
+    if ($diff < 0) $diff += 360;
+    $tithi = floor($diff / 12) + 1;
+    $nak = floor($moon / (13 + 1/3)) + 1;
+    return ['tithi' => $tithi, 'nak' => $nak];
+};
+
 $lagnas_of_day = [];
-$current_l_num = $lagna_num;
-for ($i=0; $i<12; $i++) {
-    $lagnas_of_day[] = $signs[$current_l_num];
-    $current_l_num++;
-    if ($current_l_num > 12) $current_l_num = 1;
+$lastAsc = $getAsc($currentTs);
+$lastSign = floor($lastAsc / 30) + 1;
+$currentStart = $currentTs;
+
+for ($i = 0; $i < 12; $i++) {
+    $remDeg = ($lastSign * 30) - $lastAsc;
+    if ($remDeg <= 0) $remDeg += 30;
+    
+    $jumpMins = floor($remDeg * 3.5);
+    if ($jumpMins < 5) $jumpMins = 5;
+    
+    $testTs = $currentStart + ($jumpMins * 60);
+    $testAsc = $getAsc($testTs);
+    $testSign = floor($testAsc / 30) + 1;
+    
+    while ($testSign == $lastSign && $testTs < $endTs) {
+        $testTs += 300; // +5 mins
+        $testAsc = $getAsc($testTs);
+        $testSign = floor($testAsc / 30) + 1;
+    }
+    
+    while ($testSign != $lastSign && $testTs > $currentStart) {
+        $testTs -= 60; // -1 min
+        $testAsc = $getAsc($testTs);
+        $testSign = floor($testAsc / 30) + 1;
+    }
+    
+    $endOfLagna = $testTs;
+    $mvars = $getMuhurthaVars($currentStart);
+    
+    // Calculate Panchaka
+    $p_sum = $mvars['tithi'] + $vara_num + $mvars['nak'] + $lastSign;
+    $p_rem = $p_sum % 9;
+    
+    $is_rahita = in_array($p_rem, [3, 5, 7, 0]);
+    
+    $lagnas_of_day[] = [
+        'sign_name' => $signs[$lastSign],
+        'start' => date("h:i A", $currentStart),
+        'end' => date("h:i A", $endOfLagna),
+        'is_rahita' => $is_rahita,
+        'rem' => $p_rem
+    ];
+    
+    $currentStart = $endOfLagna + 60;
+    $lastAsc = $getAsc($currentStart);
+    $lastSign = floor($lastAsc / 30) + 1;
 }
 
 // 5. Build D1 and D9 Charts
@@ -296,14 +386,37 @@ body.dark-mode .pr-val { color: #ecf0f1; }
             </div>
 
             <div class="pr-card">
-                <h2>Lagnas of the Day</h2>
+                <h2>Precise Lagnas of the Day</h2>
                 <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 15px;">
-                    Starting from the Sunrise Ascendant (<?= $signs[$lagna_num] ?>), the Lagna changes approximately every 2 hours in the following sequence throughout the day:
+                    Lagnas change throughout the day based on the Earth's rotation. The table below shows precise start and end times for each Lagna along with its specific Panchaka Rahita status.
                 </p>
-                <div class="lagna-list">
-                    <?php foreach($lagnas_of_day as $index => $l): ?>
-                        <div class="lagna-tag"><?= ($index+1) ?>. <?= $l ?></div>
-                    <?php endforeach; ?>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 600px;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border, #ecf0f1);">
+                                <th style="padding: 12px; color: var(--text-secondary);">#</th>
+                                <th style="padding: 12px; color: var(--text-secondary);">Lagna Sign</th>
+                                <th style="padding: 12px; color: var(--text-secondary);">Timing</th>
+                                <th style="padding: 12px; color: var(--text-secondary);">Panchaka Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($lagnas_of_day as $index => $l): ?>
+                            <tr style="border-bottom: 1px solid var(--border, #ecf0f1); <?= $l['is_rahita'] ? 'background: rgba(46, 204, 113, 0.05);' : 'background: rgba(231, 76, 60, 0.05);' ?>">
+                                <td style="padding: 12px;"><?= $index+1 ?></td>
+                                <td style="padding: 12px; font-weight: 600; color: var(--text-primary);"><?= $l['sign_name'] ?></td>
+                                <td style="padding: 12px; color: var(--text-primary);"><?= $l['start'] ?> - <?= $l['end'] ?></td>
+                                <td style="padding: 12px;">
+                                    <?php if($l['is_rahita']): ?>
+                                        <span style="display:inline-block; padding: 4px 10px; background: #2ecc71; color: white; border-radius: 4px; font-size: 0.85rem; font-weight:bold;">Panchaka Rahita</span>
+                                    <?php else: ?>
+                                        <span style="display:inline-block; padding: 4px 10px; background: #e74c3c; color: white; border-radius: 4px; font-size: 0.85rem; font-weight:bold;">Dosha (Rem: <?= $l['rem'] ?>)</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
