@@ -56,21 +56,46 @@ $srDt = new DateTime("@$sunriseUtcTs");
 $srUtDate = $srDt->format('d.m.Y');
 $srUtTime = $srDt->format('H:i:s');
 
-$cmd = "$swetestPath -edir$ephePath -b$srUtDate -ut$srUtTime -p01 -fPl -sid1";
+$cmd = "$swetestPath -edir$ephePath -b$srUtDate -ut$srUtTime -p0123456789t -fPl -sid1";
 $output = shell_exec($cmd);
 $lines = explode("\n", trim($output));
 $sunLon = 0;
 $moonLon = 0;
+$allPlanets = [];
+$short = [
+    "Sun"=>"Su","Moon"=>"Mo","Mercury"=>"Me","Venus"=>"Ve",
+    "Mars"=>"Ma","Jupiter"=>"Ju","Saturn"=>"Sa","Rahu"=>"Ra","Ketu"=>"Ke"
+];
 foreach ($lines as $line) {
-    if (strpos($line, 'Sun') !== false) {
-        $parts = preg_split('/\s+/', trim($line));
-        $sunLon = floatval($parts[1]);
-    }
-    if (strpos($line, 'Moon') !== false) {
-        $parts = preg_split('/\s+/', trim($line));
-        $moonLon = floatval($parts[1]);
+    if (preg_match('/^(Sun|Moon|Mercury|Venus|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto|true Node|True Node)\s+([\d\.]+)/', trim($line), $matches)) {
+        $name = strtolower($matches[1]);
+        $val = floatval($matches[2]);
+        if ($name === 'true node') $planetName = 'Rahu';
+        else $planetName = ucfirst($name);
+        $allPlanets[$planetName] = ['decimal' => $val];
+        
+        if ($planetName == 'Sun') $sunLon = $val;
+        if ($planetName == 'Moon') $moonLon = $val;
     }
 }
+if (isset($allPlanets['Rahu'])) {
+    $ketuDecimal = fmod($allPlanets['Rahu']['decimal'] + 180, 360);
+    if ($ketuDecimal < 0) $ketuDecimal += 360;
+    $allPlanets['Ketu'] = ['decimal' => $ketuDecimal];
+}
+
+require_once __DIR__ . '/engine/Navamsha.php';
+$d1 = [];
+$d9 = [];
+foreach ($allPlanets as $planet => $pData) {
+    if (!isset($short[$planet])) continue;
+    $deg = $pData['decimal'];
+    $r1 = floor($deg / 30) + 1;
+    $r9 = Navamsha::calculate($deg);
+    $d1[$r1][] = ["short" => $short[$planet]];
+    $d9[$r9][] = ["short" => $short[$planet]];
+}
+
 
 // JD Calculation
 $y = (int)date("Y", $sunriseUtcTs);
@@ -149,6 +174,16 @@ $vara_num = date('w', $currentTs) + 1; // 1 = Sunday
 
 $lastAsc = $getAsc($currentTs);
 $lastSign = floor($lastAsc / 30); // 0-based index for $signs
+
+$lagnaRasiD1 = floor($lastAsc / 30) + 1;
+$lagnaRasiD9 = Navamsha::calculate($lastAsc);
+$d1[$lagnaRasiD1][] = ["short" => "Lagna"];
+$d9[$lagnaRasiD9][] = ["short" => "Lagna"];
+
+for ($i=1; $i<=12; $i++) {
+    if (!isset($d1[$i])) $d1[$i] = [];
+    if (!isset($d9[$i])) $d9[$i] = [];
+}
 
 $currentStart = $currentTs;
 
@@ -322,6 +357,51 @@ for ($i = 0; $i < 8; $i++) {
     $gNIdx++;
 }
 
+function renderSouthChart($data, $showDegree = false, $lagnaRasi = null) {
+    $positions = [
+        12 => [10,20], 1=>[110,20], 2=>[210,20], 3=>[310,20],
+        11 => [10,120], 4=>[310,120],
+        10 => [10,220], 5=>[310,220],
+        9 => [10,320], 8=>[110,320], 7=>[210,320], 6=>[310,320],
+    ];
+    
+    echo '<svg viewBox="0 0 400 400" width="100%" style="background:#e6e0cf; max-width:400px; height:auto; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">';
+    
+    if ($lagnaRasi !== null && isset($positions[$lagnaRasi])) {
+        $x = floor($positions[$lagnaRasi][0] / 100) * 100;
+        $y = floor($positions[$lagnaRasi][1] / 100) * 100;
+        echo '<rect x="'.$x.'" y="'.$y.'" width="100" height="100" fill="#fff6b3"/>';
+    }
+    
+    echo '<rect x="0" y="0" width="400" height="400" fill="none" stroke="#444" stroke-width="2"/>';
+    
+    echo '<line x1="100" y1="0" x2="100" y2="400" stroke="#444"/>';
+    echo '<line x1="200" y1="0" x2="200" y2="100" stroke="#444"/>';
+    echo '<line x1="200" y1="300" x2="200" y2="400" stroke="#444"/>';
+    echo '<line x1="300" y1="0" x2="300" y2="400" stroke="#444"/>';
+    
+    echo '<line x1="0" y1="100" x2="400" y2="100" stroke="#444"/>';
+    echo '<line x1="0" y1="200" x2="100" y2="200" stroke="#444"/>';
+    echo '<line x1="300" y1="200" x2="400" y2="200" stroke="#444"/>';
+    echo '<line x1="0" y1="300" x2="400" y2="300" stroke="#444"/>';
+    
+    foreach ($positions as $rasi => $pos) {
+        if (!empty($data[$rasi])) {
+            $y = $pos[1];
+            foreach ($data[$rasi] as $p) {
+                echo '<text x="'.$pos[0].'" y="'.$y.'" font-size="12" fill="#000" font-weight="600">';
+                echo $p['short'];
+                if ($showDegree && isset($p['deg'])) {
+                    echo ' <tspan font-size="10" fill="#555">'.$p['deg'].'</tspan>';
+                }
+                echo '</text>';
+                $y += 16;
+            }
+        }
+    }
+    echo '</svg>';
+}
+
 require 'header.php';
 ?>
 
@@ -341,6 +421,7 @@ require 'header.php';
         <a href="javascript:void(0)" onclick="showTab('tab-hora', this)">Hora</a>
         <a href="javascript:void(0)" onclick="showTab('tab-choghadiya', this)">Choghadiya</a>
         <a href="javascript:void(0)" onclick="showTab('tab-gowri', this)">Gowri</a>
+        <a href="javascript:void(0)" onclick="showTab('tab-kundli', this)">Kundli</a>
     </div>
 
     <style>
@@ -601,6 +682,20 @@ require 'header.php';
                 </tr>
                 <?php endforeach; ?>
             </table>
+        </div>
+    </div>
+
+    <!-- KUNDLI TAB -->
+    <div id="tab-kundli" class="tab-content">
+        <div class="table-box" style="display:flex; flex-wrap:wrap; gap:30px; justify-content:center; padding: 20px;">
+            <div style="flex:1; min-width:300px; text-align:center;">
+                <h4 style="margin-bottom:15px; color:var(--text-primary);">Rasi (D1) at Sunrise</h4>
+                <?php renderSouthChart($d1, false, $lagnaRasiD1); ?>
+            </div>
+            <div style="flex:1; min-width:300px; text-align:center;">
+                <h4 style="margin-bottom:15px; color:var(--text-primary);">Navamsa (D9) at Sunrise</h4>
+                <?php renderSouthChart($d9, false, $lagnaRasiD9); ?>
+            </div>
         </div>
     </div>
 
