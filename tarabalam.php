@@ -28,7 +28,7 @@ $tara_names = [
 $auspicious_tara = [2, 4, 6, 8, 9];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $num_days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+    $num_days = date('t', strtotime("$year-$month-01"));
     
     $swetestPath = __DIR__ . '/swisseph/swetest';
     $ephePath = __DIR__ . '/swisseph/ephe'; // Ephemeris usually here
