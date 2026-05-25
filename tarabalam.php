@@ -14,8 +14,17 @@ $nakshatras = [
     26=>"Uttara Bhadrapada",27=>"Revati"
 ];
 
+$rasis = [
+    1=>"Mesha (Aries)",2=>"Vrishabha (Taurus)",3=>"Mithuna (Gemini)",
+    4=>"Karka (Cancer)",5=>"Simha (Leo)",6=>"Kanya (Virgo)",
+    7=>"Tula (Libra)",8=>"Vrischika (Scorpio)",9=>"Dhanu (Sagittarius)",
+    10=>"Makara (Capricorn)",11=>"Kumbha (Aquarius)",12=>"Meena (Pisces)"
+];
+
 $bride_nak = $_POST['bride_nak'] ?? 1;
 $groom_nak = $_POST['groom_nak'] ?? 1;
+$bride_rasi = $_POST['bride_rasi'] ?? 1;
+$groom_rasi = $_POST['groom_rasi'] ?? 1;
 $month = $_POST['month'] ?? date('m');
 $year = $_POST['year'] ?? date('Y');
 
@@ -26,6 +35,14 @@ $tara_names = [
     7 => "Naidhana (Very Bad)", 8 => "Mitra (Good)", 9 => "Parama Mitra (Very Good)"
 ];
 $auspicious_tara = [2, 4, 6, 8, 9];
+
+$chandra_names = [
+    1 => "1st (Good)", 2 => "2nd (Average)", 3 => "3rd (Good)", 
+    4 => "4th (Bad)", 5 => "5th (Average)", 6 => "6th (Good)", 
+    7 => "7th (Good)", 8 => "8th/Ashtama (Very Bad)", 9 => "9th (Average)", 
+    10 => "10th (Good)", 11 => "11th (Good)", 12 => "12th (Bad)"
+];
+$bad_chandra = [4, 8, 12];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $num_days = date('t', strtotime("$year-$month-01"));
@@ -48,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (preg_match('/^Moon\s+([\d\.]+)/i', trim($line), $matches)) {
                     $moon_lon = floatval($matches[1]);
                     $nak_idx = floor($moon_lon / (13 + 1/3)) + 1; // 1 to 27
+                    $daily_rasi_idx = floor($moon_lon / 30) + 1; // 1 to 12
                     
                     $b_distance = ($nak_idx - $bride_nak + 27) % 27;
                     $b_count = $b_distance + 1;
@@ -59,12 +77,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $g_tara = $g_count % 9;
                     if ($g_tara == 0) $g_tara = 9;
                     
-                    if (in_array($b_tara, $auspicious_tara) && in_array($g_tara, $auspicious_tara)) {
+                    $b_chandra = ($daily_rasi_idx - $bride_rasi + 12) % 12 + 1;
+                    $g_chandra = ($daily_rasi_idx - $groom_rasi + 12) % 12 + 1;
+                    
+                    if (in_array($b_tara, $auspicious_tara) && in_array($g_tara, $auspicious_tara) && 
+                        !in_array($b_chandra, $bad_chandra) && !in_array($g_chandra, $bad_chandra)) {
                         $auspicious_dates[] = [
                             'date' => sprintf("%02d-%02d-%04d", $day, $month, $year),
                             'daily_nak' => $nakshatras[$nak_idx],
+                            'daily_rasi' => $rasis[$daily_rasi_idx],
                             'b_tara' => $b_tara,
-                            'g_tara' => $g_tara
+                            'g_tara' => $g_tara,
+                            'b_chandra' => $b_chandra,
+                            'g_chandra' => $g_chandra
                         ];
                     }
                 }
@@ -301,7 +326,7 @@ body.dark-mode {
     <div class="tara-container">
         
         <div class="tara-header">
-            <h1>Tarabalam Muhurtha Finder</h1>
+            <h1>Tarabalam & Chandrabalam Finder</h1>
             <p>Discover Auspicious Dates for Marriage & Events</p>
         </div>
 
@@ -318,10 +343,28 @@ body.dark-mode {
                 </div>
 
                 <div class="tara-form-group">
+                    <label>Bride's Rasi</label>
+                    <select name="bride_rasi" class="tara-select">
+                        <?php foreach($rasis as $id => $name): ?>
+                            <option value="<?= $id ?>" <?= ($bride_rasi == $id) ? 'selected' : '' ?>><?= $name ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="tara-form-group">
                     <label>Groom's Nakshatra</label>
                     <select name="groom_nak" class="tara-select">
                         <?php foreach($nakshatras as $id => $name): ?>
                             <option value="<?= $id ?>" <?= ($groom_nak == $id) ? 'selected' : '' ?>><?= $name ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="tara-form-group">
+                    <label>Groom's Rasi</label>
+                    <select name="groom_rasi" class="tara-select">
+                        <?php foreach($rasis as $id => $name): ?>
+                            <option value="<?= $id ?>" <?= ($groom_rasi == $id) ? 'selected' : '' ?>><?= $name ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -369,7 +412,7 @@ body.dark-mode {
                     <?php foreach ($auspicious_dates as $ad): ?>
                         <div class="tara-card">
                             <div class="tara-date"><?= date('d M Y', strtotime($ad['date'])) ?></div>
-                            <div class="tara-nak"><?= $ad['daily_nak'] ?></div>
+                            <div class="tara-nak"><?= $ad['daily_nak'] ?> <br><small style="opacity:0.8"><?= $ad['daily_rasi'] ?></small></div>
                             
                             <div class="tara-details">
                                 <div class="tara-detail-row">
@@ -380,13 +423,21 @@ body.dark-mode {
                                     <span class="tara-detail-label">Groom Tara</span>
                                     <span class="tara-detail-value"><?= $tara_names[$ad['g_tara']] ?></span>
                                 </div>
+                                <div class="tara-detail-row">
+                                    <span class="tara-detail-label">Bride Chandra</span>
+                                    <span class="tara-detail-value"><?= $chandra_names[$ad['b_chandra']] ?></span>
+                                </div>
+                                <div class="tara-detail-row">
+                                    <span class="tara-detail-label">Groom Chandra</span>
+                                    <span class="tara-detail-value"><?= $chandra_names[$ad['g_chandra']] ?></span>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
                 <div class="tara-no-results">
-                    No fully auspicious dates found in this month for both bride and groom based on Tarabalam alone.<br>
+                    No fully auspicious dates found in this month for both bride and groom based on Tarabalam & Chandrabalam.<br>
                     Try checking the next month.
                 </div>
             <?php endif; ?>
