@@ -410,29 +410,31 @@ body.dark-mode {
             <?php if (count($auspicious_dates) > 0): ?>
                 <div class="tara-grid">
                     <?php foreach ($auspicious_dates as $ad): ?>
-                        <div class="tara-card">
-                            <div class="tara-date"><?= date('d M Y', strtotime($ad['date'])) ?></div>
-                            <div class="tara-nak"><?= $ad['daily_nak'] ?> <br><small style="opacity:0.8"><?= $ad['daily_rasi'] ?></small></div>
-                            
-                            <div class="tara-details">
-                                <div class="tara-detail-row">
-                                    <span class="tara-detail-label">Bride Tara</span>
-                                    <span class="tara-detail-value"><?= $tara_names[$ad['b_tara']] ?></span>
-                                </div>
-                                <div class="tara-detail-row">
-                                    <span class="tara-detail-label">Groom Tara</span>
-                                    <span class="tara-detail-value"><?= $tara_names[$ad['g_tara']] ?></span>
-                                </div>
-                                <div class="tara-detail-row">
-                                    <span class="tara-detail-label">Bride Chandra</span>
-                                    <span class="tara-detail-value"><?= $chandra_names[$ad['b_chandra']] ?></span>
-                                </div>
-                                <div class="tara-detail-row">
-                                    <span class="tara-detail-label">Groom Chandra</span>
-                                    <span class="tara-detail-value"><?= $chandra_names[$ad['g_chandra']] ?></span>
+                        <a href="pachakarahita.php?date=<?= urlencode($ad['date']) ?>" style="text-decoration: none; color: inherit;">
+                            <div class="tara-card">
+                                <div class="tara-date"><?= date('d M Y', strtotime($ad['date'])) ?></div>
+                                <div class="tara-nak"><?= $ad['daily_nak'] ?> <br><small style="opacity:0.8"><?= $ad['daily_rasi'] ?></small></div>
+                                
+                                <div class="tara-details">
+                                    <div class="tara-detail-row">
+                                        <span class="tara-detail-label">Bride Tara</span>
+                                        <span class="tara-detail-value"><?= $tara_names[$ad['b_tara']] ?></span>
+                                    </div>
+                                    <div class="tara-detail-row">
+                                        <span class="tara-detail-label">Groom Tara</span>
+                                        <span class="tara-detail-value"><?= $tara_names[$ad['g_tara']] ?></span>
+                                    </div>
+                                    <div class="tara-detail-row">
+                                        <span class="tara-detail-label">Bride Chandra</span>
+                                        <span class="tara-detail-value"><?= $chandra_names[$ad['b_chandra']] ?></span>
+                                    </div>
+                                    <div class="tara-detail-row">
+                                        <span class="tara-detail-label">Groom Chandra</span>
+                                        <span class="tara-detail-value"><?= $chandra_names[$ad['g_chandra']] ?></span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
