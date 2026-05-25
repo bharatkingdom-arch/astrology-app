@@ -220,13 +220,23 @@ for ($i = 0; $i <= 12; $i++) {
     $p_rem = $p_sum % 9;
     $is_rahita = in_array($p_rem, [3, 5, 7, 0]);
     
+    $panchaka_names = [
+        1 => "Mrityu Panchaka",
+        2 => "Agni Panchaka",
+        4 => "Raja Panchaka",
+        6 => "Chora Panchaka",
+        8 => "Roga Panchaka"
+    ];
+    $dosha_name = isset($panchaka_names[$p_rem]) ? $panchaka_names[$p_rem] : "Dosha";
+    
     $lagnas[] = [
         "sign" => $signs[$lastSign],
         "start" => date("h:i A", (int)$currentStart),
         "end" => date("h:i A", (int)$endOfLagna),
         "is_next_day" => ($endOfLagna > strtotime("midnight tomorrow", $sunriseTs)),
         "is_rahita" => $is_rahita,
-        "rem" => $p_rem
+        "rem" => $p_rem,
+        "dosha_name" => $dosha_name
     ];
     
     $currentStart = $endOfLagna + 60;
@@ -563,7 +573,7 @@ require 'header.php';
                         <?php if($l['is_rahita']): ?>
                             <span style="color:#2ecc71; font-weight:bold; font-size:14px;">Panchaka Rahita</span>
                         <?php else: ?>
-                            <span style="color:#e74c3c; font-weight:bold; font-size:14px;">Dosha (Rem: <?= $l['rem'] ?>)</span>
+                            <span style="color:#e74c3c; font-weight:bold; font-size:14px;"><?= $l['dosha_name'] ?></span>
                         <?php endif; ?>
                     </td>
                 </tr>
