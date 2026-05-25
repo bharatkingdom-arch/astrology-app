@@ -73,6 +73,7 @@ $CSS_VER = "3.2." . time(); // Cache buster
                     <a href="#">Calculators ▾</a>
                     <div class="dropdown-content">
                         <a href="<?= $BASE_URL ?>calculators/PRcalculator.php">PR Calculator</a>
+                        <a href="<?= $BASE_URL ?>tarabalam.php">Tarabalam Finder</a>
                     </div>
                 </div>
                 <a href="<?= $BASE_URL ?>horoscope.php">Horoscopes</a>
