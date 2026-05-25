@@ -58,19 +58,20 @@ require 'header.php';
             <form method="POST" action="settings.php">
                 <h3 style="margin-bottom:20px; color:var(--text-1); border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;">Default Location Settings</h3>
                 
-                <div style="margin-bottom: 15px;">
+                <div style="margin-bottom: 15px; position: relative;">
                     <label style="display:block; margin-bottom: 5px; font-weight: 600; color:var(--text-2);">City Name</label>
-                    <input type="text" name="place" value="<?= htmlspecialchars($place) ?>" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #bdc3c7;" required>
+                    <input type="text" id="place_input" name="place" value="<?= htmlspecialchars($place) ?>" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #bdc3c7;" required autocomplete="off">
+                    <div id="place_suggestions" class="place-suggestions" style="display:none; position:absolute; z-index:10; background:var(--bg-primary, #fff); border:1px solid #bdc3c7; width:100%; max-height:200px; overflow-y:auto; border-radius:4px; box-shadow:0 2px 10px rgba(0,0,0,0.1);"></div>
                 </div>
 
                 <div style="display:flex; gap: 15px; margin-bottom: 15px;">
                     <div style="flex: 1;">
                         <label style="display:block; margin-bottom: 5px; font-weight: 600; color:var(--text-2);">Latitude</label>
-                        <input type="number" step="any" name="lat" value="<?= $lat ?>" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #bdc3c7;" required>
+                        <input type="number" step="any" id="latitude" name="lat" value="<?= $lat ?>" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #bdc3c7;" required>
                     </div>
                     <div style="flex: 1;">
                         <label style="display:block; margin-bottom: 5px; font-weight: 600; color:var(--text-2);">Longitude</label>
-                        <input type="number" step="any" name="lon" value="<?= $lon ?>" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #bdc3c7;" required>
+                        <input type="number" step="any" id="longitude" name="lon" value="<?= $lon ?>" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #bdc3c7;" required>
                     </div>
                 </div>
 
@@ -85,5 +86,71 @@ require 'header.php';
         </div>
     </div>
 </section>
+
+<style>
+.place-item { padding: 10px; cursor: pointer; border-bottom: 1px solid var(--border-color, #ecf0f1); color: var(--text-primary); }
+.place-item:hover { background: var(--bg-tertiary, #f8f9fa); }
+.place-empty { padding: 10px; color: var(--text-secondary); }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const apiKey = "fce70220d8a54a3b898d9363403bcae1";
+    const input = document.getElementById("place_input");
+    const suggestions = document.getElementById("place_suggestions");
+    let timeout = null;
+
+    input.addEventListener("input", function() {
+        clearTimeout(timeout);
+        const text = this.value;
+
+        if (text.length < 3) {
+            suggestions.innerHTML = "";
+            suggestions.style.display = "none";
+            return;
+        }
+
+        timeout = setTimeout(async () => {
+            let url = "https://api.geoapify.com/v1/geocode/autocomplete?text=" + encodeURIComponent(text) + "&limit=5&apiKey=" + apiKey;
+            try {
+                let res = await fetch(url);
+                let data = await res.json();
+                
+                suggestions.innerHTML = "";
+                suggestions.style.display = "block";
+
+                if (!data.features || !data.features.length) {
+                    suggestions.innerHTML = "<div class='place-empty'>No results</div>";
+                    return;
+                }
+
+                data.features.forEach(place => {
+                    let item = document.createElement("div");
+                    item.className = "place-item";
+                    item.innerText = place.properties.formatted;
+                    
+                    item.onclick = function() {
+                        input.value = place.properties.formatted;
+                        document.getElementById("latitude").value = place.properties.lat;
+                        document.getElementById("longitude").value = place.properties.lon;
+                        
+                        suggestions.innerHTML = "";
+                        suggestions.style.display = "none";
+                    };
+                    
+                    suggestions.appendChild(item);
+                });
+            } catch(e) {
+                console.error("Autocomplete error:", e);
+            }
+        }, 300);
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target !== input && e.target !== suggestions) {
+            suggestions.style.display = "none";
+        }
+    });
+});
+</script>
 
 <?php require 'footer.php'; ?>
