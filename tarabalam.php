@@ -49,10 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $moon_lon = floatval($matches[1]);
                     $nak_idx = floor($moon_lon / (13 + 1/3)) + 1; // 1 to 27
                     
-                    $b_tara = (($nak_idx - $bride_nak + 27) % 9);
+                    $b_distance = ($nak_idx - $bride_nak + 27) % 27;
+                    $b_count = $b_distance + 1;
+                    $b_tara = $b_count % 9;
                     if ($b_tara == 0) $b_tara = 9;
                     
-                    $g_tara = (($nak_idx - $groom_nak + 27) % 9);
+                    $g_distance = ($nak_idx - $groom_nak + 27) % 27;
+                    $g_count = $g_distance + 1;
+                    $g_tara = $g_count % 9;
                     if ($g_tara == 0) $g_tara = 9;
                     
                     if (in_array($b_tara, $auspicious_tara) && in_array($g_tara, $auspicious_tara)) {
