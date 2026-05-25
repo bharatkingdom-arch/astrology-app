@@ -5,11 +5,19 @@ require_once __DIR__ . '/engine/SunriseSunset.php';
 require_once __DIR__ . '/engine/Panchanga.php';
 require_once __DIR__ . '/engine/AdvancedPanchanga.php';
 
-// Default Location (Tenali, Andhra Pradesh as per screenshot)
-$lat = 16.23;
-$lon = 80.64;
-$timezone = 5.5; // +05:30
-$place = "Tenali, Andhra Pradesh";
+// Default Location
+if (isset($_COOKIE['default_location'])) {
+    $loc = json_decode($_COOKIE['default_location'], true);
+    $lat = floatval($loc['lat']);
+    $lon = floatval($loc['lon']);
+    $timezone = floatval($loc['timezone']);
+    $place = htmlspecialchars($loc['place']);
+} else {
+    $lat = 16.23;
+    $lon = 80.64;
+    $timezone = 5.5; // +05:30
+    $place = "Tenali, Andhra Pradesh";
+}
 
 // Current Date
 date_default_timezone_set('Asia/Kolkata');

@@ -89,10 +89,14 @@ $CSS_VER = "3.2." . time(); // Cache buster
                         <span style="font-weight:600; margin-right: 15px;">
                             Hi, <?= htmlspecialchars($_SESSION['user_name'] ?: $_SESSION['user_email']) ?>
                         </span>
+                        <a href="<?= $BASE_URL ?>settings.php" class="login-btn" style="text-decoration:none; margin-right: 10px; background: rgba(0,0,0,0.05); color: var(--text-1);">Settings</a>
                         <a href="<?= $BASE_URL ?>logout.php" class="login-btn" style="text-decoration:none;">Logout</a>
                     </div>
                 <?php else: ?>
-                    <a href="<?= $BASE_URL ?>login.php" class="login-btn" style="text-decoration:none;">Login / Signup</a>
+                    <div style="display:inline-flex; align-items:center;">
+                        <a href="<?= $BASE_URL ?>settings.php" class="login-btn" style="text-decoration:none; margin-right: 10px; background: rgba(0,0,0,0.05); color: var(--text-1);">Settings</a>
+                        <a href="<?= $BASE_URL ?>login.php" class="login-btn" style="text-decoration:none;">Login / Signup</a>
+                    </div>
                 <?php endif; ?>
             </div>
 
