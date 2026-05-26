@@ -282,10 +282,14 @@ for ($i = 0; $i < 12; $i++) {
     ];
     $dosha_name = isset($panchaka_names[$p_rem]) ? $panchaka_names[$p_rem] : "Dosha";
     
+    // Format display strings to avoid 1-minute visual gap
+    $displayStart = isset($lagnas[count($lagnas)-1]) ? $lagnas[count($lagnas)-1]['end'] : date("h:i A", (int)$currentStart);
+    $displayEnd = date("h:i A", (int)$endOfLagna);
+
     $lagnas[] = [
         "sign" => $signs[$lastSign],
-        "start" => date("h:i A", (int)$currentStart),
-        "end" => date("h:i A", (int)$endOfLagna),
+        "start" => $displayStart,
+        "end" => $displayEnd,
         "is_next_day" => ($endOfLagna > strtotime("midnight tomorrow", $sunriseTs)),
         "is_rahita" => $is_rahita,
         "rem" => $p_rem,
