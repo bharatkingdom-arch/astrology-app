@@ -5,8 +5,13 @@ require_once __DIR__ . '/engine/SunriseSunset.php';
 require_once __DIR__ . '/engine/Panchanga.php';
 require_once __DIR__ . '/engine/AdvancedPanchanga.php';
 
-// Default Location
-if (isset($_COOKIE['default_location'])) {
+// Location Handling
+if (isset($_GET['lat']) && isset($_GET['lon'])) {
+    $lat = floatval($_GET['lat']);
+    $lon = floatval($_GET['lon']);
+    $timezone = floatval($_GET['timezone'] ?? 5.5);
+    $place = htmlspecialchars($_GET['place'] ?? "Custom Location");
+} elseif (isset($_COOKIE['default_location'])) {
     $loc = json_decode($_COOKIE['default_location'], true);
     $lat = floatval($loc['lat']);
     $lon = floatval($loc['lon']);
@@ -500,7 +505,12 @@ require 'header.php';
     </style>
 
     <!-- META INFO -->
-    <div class="details-container" style="margin-top: 20px;">
+    <div style="display:flex; justify-content:flex-end; margin-top: 10px;">
+        <button onclick="document.getElementById('edit-modal').style.display='block'" class="tara-btn" style="padding: 10px 20px; font-size: 14px;">
+            Edit Date & Place
+        </button>
+    </div>
+    <div class="details-container" style="margin-top: 15px;">
         <div class="details-row">
             <div class="details-box">
                 <div class="detail-item">
@@ -787,6 +797,167 @@ function showTab(tabId, btn) {
     // Add active class to clicked button
     btn.classList.add('active');
 }
+
+// Edit Modal Logic
+const editModal = document.getElementById('edit-modal');
+const apiKey = "fce70220d8a54a3b898d9363403bcae1";
+const placeInput = document.getElementById("edit_place");
+const suggestionsBox = document.getElementById("edit_suggestions");
+let placeTimeout = null;
+
+placeInput.addEventListener("input", function() {
+    clearTimeout(placeTimeout);
+    const text = this.value;
+    
+    if(text.length < 3) {
+        suggestionsBox.innerHTML = "";
+        suggestionsBox.style.display = "none";
+        return;
+    }
+    
+    placeTimeout = setTimeout(async () => {
+        let url = "https://api.geoapify.com/v1/geocode/autocomplete?text=" + encodeURIComponent(text) + "&limit=5&apiKey=" + apiKey;
+        let res = await fetch(url);
+        let data = await res.json();
+        
+        suggestionsBox.innerHTML = "";
+        suggestionsBox.style.display = "block";
+        
+        if(!data.features.length){
+            suggestionsBox.innerHTML = "<div class='place-empty' style='padding:10px; color:#666;'>No results</div>";
+            return;
+        }
+        
+        data.features.forEach(place => {
+            let item = document.createElement("div");
+            item.className = "place-item";
+            item.style.padding = "10px";
+            item.style.cursor = "pointer";
+            item.style.borderBottom = "1px solid #eee";
+            item.innerText = place.properties.formatted;
+            
+            item.onclick = function() {
+                placeInput.value = place.properties.formatted;
+                document.getElementById("edit_lat").value = place.properties.lat;
+                document.getElementById("edit_lon").value = place.properties.lon;
+                
+                // Get timezone mapping roughly from Geoapify timezone
+                if (place.properties.timezone && place.properties.timezone.offset_STD) {
+                    let offsetString = place.properties.timezone.offset_STD; // e.g., "+05:30"
+                    let sign = offsetString.charAt(0) === '-' ? -1 : 1;
+                    let parts = offsetString.substring(1).split(':');
+                    let hours = parseInt(parts[0]);
+                    let minutes = parseInt(parts[1]);
+                    document.getElementById("edit_timezone").value = sign * (hours + (minutes / 60));
+                } else {
+                    document.getElementById("edit_timezone").value = "5.5"; // default fallback
+                }
+                
+                suggestionsBox.innerHTML = "";
+                suggestionsBox.style.display = "none";
+            };
+            suggestionsBox.appendChild(item);
+        });
+    }, 300);
+});
+
+// Flatpickr initialization
+flatpickr("#edit_date", {
+    altInput: true,
+    altFormat: "F j, Y",
+    dateFormat: "d-m-Y",
+    defaultDate: "<?= date('d-m-Y', $timestamp) ?>"
+});
+
+// Close modal if clicking outside
+window.onclick = function(event) {
+    if (event.target == editModal) {
+        editModal.style.display = "none";
+    }
+}
 </script>
+
+<style>
+/* Edit Modal Styles */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.5); 
+}
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto; 
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    position: relative;
+}
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: -10px;
+}
+.close-btn:hover { color: #333; }
+.modal-form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.modal-form input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+.place-suggestions {
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.place-item:hover {
+    background-color: #f1f1f1;
+}
+</style>
+
+<!-- Edit Modal HTML -->
+<div id="edit-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="document.getElementById('edit-modal').style.display='none'">&times;</span>
+        <h2 style="margin-top:0; color:var(--text-primary); border-bottom:1px solid #eee; padding-bottom:10px;">Edit Date & Place</h2>
+        
+        <form method="GET" action="daily-muhurtha.php" class="modal-form">
+            <label>Date</label>
+            <input type="text" id="edit_date" name="date" required>
+            
+            <label>Location</label>
+            <input type="text" id="edit_place" name="place" value="<?= htmlspecialchars($place) ?>" autocomplete="off" required>
+            <div id="edit_suggestions" class="place-suggestions" style="display:none;"></div>
+            
+            <input type="hidden" id="edit_lat" name="lat" value="<?= $lat ?>">
+            <input type="hidden" id="edit_lon" name="lon" value="<?= $lon ?>">
+            <input type="hidden" id="edit_timezone" name="timezone" value="<?= $timezone ?>">
+            
+            <button type="submit" class="tara-btn" style="width:100%; margin-top: 25px;">Update Details</button>
+        </form>
+    </div>
+</div>
 
 <?php require 'footer.php'; ?>
