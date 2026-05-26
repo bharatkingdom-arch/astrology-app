@@ -861,13 +861,16 @@ placeInput.addEventListener("input", function() {
     }, 300);
 });
 
-// Flatpickr initialization
-flatpickr("#edit_date", {
-    altInput: true,
-    altFormat: "F j, Y",
-    dateFormat: "d-m-Y",
-    defaultDate: "<?= date('d-m-Y', $timestamp) ?>"
-});
+// Custom Date Selectors Logic
+function updateHiddenDate() {
+    let d = document.getElementById('edit_day').value;
+    let m = document.getElementById('edit_month').value;
+    let y = document.getElementById('edit_year').value;
+    document.getElementById('edit_date').value = d + '-' + m + '-' + y;
+}
+document.getElementById('edit_day').addEventListener('change', updateHiddenDate);
+document.getElementById('edit_month').addEventListener('change', updateHiddenDate);
+document.getElementById('edit_year').addEventListener('change', updateHiddenDate);
 
 // Close modal if clicking outside
 window.onclick = function(event) {
@@ -961,7 +964,21 @@ window.onclick = function(event) {
         
         <form method="GET" action="daily-muhurtha.php" class="modal-form">
             <label>Date</label>
-            <input type="text" id="edit_date" name="date" required>
+            <div style="display:flex; gap:10px;">
+                <select id="edit_day" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; font-size:16px; background:#fff;">
+                    <?php for($i=1; $i<=31; $i++) echo "<option value='".sprintf("%02d", $i)."'" . (date('d', $timestamp) == $i ? ' selected' : '') . ">".sprintf("%02d", $i)."</option>"; ?>
+                </select>
+                <select id="edit_month" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; font-size:16px; background:#fff;">
+                    <?php for($i=1; $i<=12; $i++) echo "<option value='".sprintf("%02d", $i)."'" . (date('m', $timestamp) == $i ? ' selected' : '') . ">".date('M', mktime(0,0,0,$i,1))."</option>"; ?>
+                </select>
+                <select id="edit_year" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; font-size:16px; background:#fff;">
+                    <?php 
+                    $currY = date('Y');
+                    for($i=$currY-100; $i<=$currY+50; $i++) echo "<option value='$i'" . (date('Y', $timestamp) == $i ? ' selected' : '') . ">$i</option>"; 
+                    ?>
+                </select>
+            </div>
+            <input type="hidden" id="edit_date" name="date" value="<?= date('d-m-Y', $timestamp) ?>">
             
             <label>Location</label>
             <input type="text" id="edit_place" name="place" value="<?= htmlspecialchars($place) ?>" autocomplete="off" required>
