@@ -59,8 +59,7 @@ if (!file_exists($swetestPath)) {
     $ephePath = '/app/ephemeris';
 }
 
-$sunriseUtcTs = $sunriseTs - ($timezone * 3600);
-$srDt = new DateTime("@$sunriseUtcTs");
+$srDt = new DateTime("@$sunriseTs");
 $srUtDate = $srDt->format('d.m.Y');
 $srUtTime = $srDt->format('H:i:s');
 
@@ -106,14 +105,14 @@ foreach ($allPlanets as $planet => $pData) {
 
 
 // JD Calculation
-$y = (int)date("Y", $sunriseUtcTs);
-$m = (int)date("n", $sunriseUtcTs);
-$d = (int)date("j", $sunriseUtcTs);
+$y = (int)gmdate("Y", $sunriseTs);
+$m = (int)gmdate("n", $sunriseTs);
+$d = (int)gmdate("j", $sunriseTs);
 if ($m <= 2) { $y -= 1; $m += 12; }
 $A = floor($y / 100);
 $B = 2 - $A + floor($A / 4);
 $jd = floor(365.25 * ($y + 4716)) + floor(30.6001 * ($m + 1)) + $d + $B - 1524.5;
-$hourFrac = ((int)date("H", $sunriseUtcTs) + ((int)date("i", $sunriseUtcTs)/60)) / 24;
+$hourFrac = ((int)gmdate("H", $sunriseTs) + ((int)gmdate("i", $sunriseTs)/60)) / 24;
 $jd += $hourFrac;
 
 // Create getPositions closure for exact calculations
