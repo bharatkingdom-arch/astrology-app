@@ -779,106 +779,7 @@ require 'header.php';
 </div>
 </section>
 
-<script>
-function showTab(tabId, btn) {
-    // Hide all tab content
-    document.querySelectorAll('.tab-content').forEach(function(el) {
-        el.classList.remove('active');
-    });
-    
-    // Show selected tab content
-    document.getElementById(tabId).classList.add('active');
-    
-    // Remove active class from all tab buttons
-    document.querySelectorAll('.kundli-tabs a').forEach(function(el) {
-        el.classList.remove('active');
-    });
-    
-    // Add active class to clicked button
-    btn.classList.add('active');
-}
 
-// Edit Modal Logic
-const editModal = document.getElementById('edit-modal');
-const apiKey = "fce70220d8a54a3b898d9363403bcae1";
-const placeInput = document.getElementById("edit_place");
-const suggestionsBox = document.getElementById("edit_suggestions");
-let placeTimeout = null;
-
-placeInput.addEventListener("input", function() {
-    clearTimeout(placeTimeout);
-    const text = this.value;
-    
-    if(text.length < 3) {
-        suggestionsBox.innerHTML = "";
-        suggestionsBox.style.display = "none";
-        return;
-    }
-    
-    placeTimeout = setTimeout(async () => {
-        let url = "https://api.geoapify.com/v1/geocode/autocomplete?text=" + encodeURIComponent(text) + "&limit=5&apiKey=" + apiKey;
-        let res = await fetch(url);
-        let data = await res.json();
-        
-        suggestionsBox.innerHTML = "";
-        suggestionsBox.style.display = "block";
-        
-        if(!data.features.length){
-            suggestionsBox.innerHTML = "<div class='place-empty' style='padding:10px; color:#666;'>No results</div>";
-            return;
-        }
-        
-        data.features.forEach(place => {
-            let item = document.createElement("div");
-            item.className = "place-item";
-            item.style.padding = "10px";
-            item.style.cursor = "pointer";
-            item.style.borderBottom = "1px solid #eee";
-            item.innerText = place.properties.formatted;
-            
-            item.onclick = function() {
-                placeInput.value = place.properties.formatted;
-                document.getElementById("edit_lat").value = place.properties.lat;
-                document.getElementById("edit_lon").value = place.properties.lon;
-                
-                // Get timezone mapping roughly from Geoapify timezone
-                if (place.properties.timezone && place.properties.timezone.offset_STD) {
-                    let offsetString = place.properties.timezone.offset_STD; // e.g., "+05:30"
-                    let sign = offsetString.charAt(0) === '-' ? -1 : 1;
-                    let parts = offsetString.substring(1).split(':');
-                    let hours = parseInt(parts[0]);
-                    let minutes = parseInt(parts[1]);
-                    document.getElementById("edit_timezone").value = sign * (hours + (minutes / 60));
-                } else {
-                    document.getElementById("edit_timezone").value = "5.5"; // default fallback
-                }
-                
-                suggestionsBox.innerHTML = "";
-                suggestionsBox.style.display = "none";
-            };
-            suggestionsBox.appendChild(item);
-        });
-    }, 300);
-});
-
-// Custom Date Selectors Logic
-function updateHiddenDate() {
-    let d = document.getElementById('edit_day').value;
-    let m = document.getElementById('edit_month').value;
-    let y = document.getElementById('edit_year').value;
-    document.getElementById('edit_date').value = d + '-' + m + '-' + y;
-}
-document.getElementById('edit_day').addEventListener('change', updateHiddenDate);
-document.getElementById('edit_month').addEventListener('change', updateHiddenDate);
-document.getElementById('edit_year').addEventListener('change', updateHiddenDate);
-
-// Close modal if clicking outside
-window.onclick = function(event) {
-    if (event.target == editModal) {
-        editModal.style.display = "none";
-    }
-}
-</script>
 
 <style>
 /* Edit Modal Styles */
@@ -994,3 +895,103 @@ window.onclick = function(event) {
 </div>
 
 <?php require 'footer.php'; ?>
+<script>
+function showTab(tabId, btn) {
+    // Hide all tab content
+    document.querySelectorAll('.tab-content').forEach(function(el) {
+        el.classList.remove('active');
+    });
+    
+    // Show selected tab content
+    document.getElementById(tabId).classList.add('active');
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.kundli-tabs a').forEach(function(el) {
+        el.classList.remove('active');
+    });
+    
+    // Add active class to clicked button
+    btn.classList.add('active');
+}
+
+// Edit Modal Logic
+const editModal = document.getElementById('edit-modal');
+const apiKey = "fce70220d8a54a3b898d9363403bcae1";
+const placeInput = document.getElementById("edit_place");
+const suggestionsBox = document.getElementById("edit_suggestions");
+let placeTimeout = null;
+
+placeInput.addEventListener("input", function() {
+    clearTimeout(placeTimeout);
+    const text = this.value;
+    
+    if(text.length < 3) {
+        suggestionsBox.innerHTML = "";
+        suggestionsBox.style.display = "none";
+        return;
+    }
+    
+    placeTimeout = setTimeout(async () => {
+        let url = "https://api.geoapify.com/v1/geocode/autocomplete?text=" + encodeURIComponent(text) + "&limit=5&apiKey=" + apiKey;
+        let res = await fetch(url);
+        let data = await res.json();
+        
+        suggestionsBox.innerHTML = "";
+        suggestionsBox.style.display = "block";
+        
+        if(!data.features.length){
+            suggestionsBox.innerHTML = "<div class='place-empty' style='padding:10px; color:#666;'>No results</div>";
+            return;
+        }
+        
+        data.features.forEach(place => {
+            let item = document.createElement("div");
+            item.className = "place-item";
+            item.style.padding = "10px";
+            item.style.cursor = "pointer";
+            item.style.borderBottom = "1px solid #eee";
+            item.innerText = place.properties.formatted;
+            
+            item.onclick = function() {
+                placeInput.value = place.properties.formatted;
+                document.getElementById("edit_lat").value = place.properties.lat;
+                document.getElementById("edit_lon").value = place.properties.lon;
+                
+                // Get timezone mapping roughly from Geoapify timezone
+                if (place.properties.timezone && place.properties.timezone.offset_STD) {
+                    let offsetString = place.properties.timezone.offset_STD; // e.g., "+05:30"
+                    let sign = offsetString.charAt(0) === '-' ? -1 : 1;
+                    let parts = offsetString.substring(1).split(':');
+                    let hours = parseInt(parts[0]);
+                    let minutes = parseInt(parts[1]);
+                    document.getElementById("edit_timezone").value = sign * (hours + (minutes / 60));
+                } else {
+                    document.getElementById("edit_timezone").value = "5.5"; // default fallback
+                }
+                
+                suggestionsBox.innerHTML = "";
+                suggestionsBox.style.display = "none";
+            };
+            suggestionsBox.appendChild(item);
+        });
+    }, 300);
+});
+
+// Custom Date Selectors Logic
+function updateHiddenDate() {
+    let d = document.getElementById('edit_day').value;
+    let m = document.getElementById('edit_month').value;
+    let y = document.getElementById('edit_year').value;
+    document.getElementById('edit_date').value = d + '-' + m + '-' + y;
+}
+document.getElementById('edit_day').addEventListener('change', updateHiddenDate);
+document.getElementById('edit_month').addEventListener('change', updateHiddenDate);
+document.getElementById('edit_year').addEventListener('change', updateHiddenDate);
+
+// Close modal if clicking outside
+window.onclick = function(event) {
+    if (event.target == editModal) {
+        editModal.style.display = "none";
+    }
+}
+</script>
