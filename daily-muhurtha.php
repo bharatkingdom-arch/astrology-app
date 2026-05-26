@@ -506,7 +506,7 @@ require 'header.php';
 
     <!-- META INFO -->
     <div style="display:flex; justify-content:flex-end; margin-top: 10px;">
-        <button onclick="document.getElementById('edit-modal').style.display='block'" class="tara-btn" style="padding: 10px 20px; font-size: 14px;">
+        <button onclick="document.getElementById('edit-modal').style.display='block'" class="update-btn" style="padding: 10px 20px; font-size: 14px;">
             Edit Date & Place
         </button>
     </div>
@@ -935,6 +935,22 @@ window.onclick = function(event) {
 .place-item:hover {
     background-color: #f1f1f1;
 }
+.update-btn {
+    background: linear-gradient(135deg, #e67e22, #f39c12);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+}
+.update-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+}
 </style>
 
 <!-- Edit Modal HTML -->
@@ -955,7 +971,7 @@ window.onclick = function(event) {
             <input type="hidden" id="edit_lon" name="lon" value="<?= $lon ?>">
             <input type="hidden" id="edit_timezone" name="timezone" value="<?= $timezone ?>">
             
-            <button type="submit" class="tara-btn" style="width:100%; margin-top: 25px;">Update Details</button>
+            <button type="submit" class="update-btn" style="width:100%; margin-top: 25px;">Update Details</button>
         </form>
     </div>
 </div>
