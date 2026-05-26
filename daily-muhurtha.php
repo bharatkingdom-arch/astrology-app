@@ -116,8 +116,29 @@ $jd = floor(365.25 * ($y + 4716)) + floor(30.6001 * ($m + 1)) + $d + $B - 1524.5
 $hourFrac = ((int)date("H", $sunriseUtcTs) + ((int)date("i", $sunriseUtcTs)/60)) / 24;
 $jd += $hourFrac;
 
+// Create getPositions closure for exact calculations
+$getPositions = function($ts) use ($swetestPath, $ephePath) {
+    $dt = new DateTime("@" . (int)$ts);
+    $utDate = $dt->format("d.m.Y");
+    $utTime = $dt->format("H:i:s");
+    $cmd = "$swetestPath -edir$ephePath -sid1 -b$utDate -ut$utTime -p01 -fPl";
+    $out = shell_exec($cmd);
+    if (!$out) return null;
+    $sun = 0; $moon = 0;
+    foreach (explode("\n", trim($out)) as $line) {
+        if (strpos(trim($line), 'Sun') === 0) {
+            $parts = preg_split('/\s+/', trim($line));
+            $sun = floatval($parts[1]);
+        } elseif (strpos(trim($line), 'Moon') === 0) {
+            $parts = preg_split('/\s+/', trim($line));
+            $moon = floatval($parts[1]);
+        }
+    }
+    return ['sun' => $sun, 'moon' => $moon];
+};
+
 // Calculate Panchanga
-$panchanga = Panchanga::calculate($sunLon, $moonLon, $jd, 0.98, 13.1, $sunriseTs);
+$panchanga = Panchanga::calculate($sunLon, $moonLon, $jd, 0.98, 13.1, $sunriseTs, $getPositions);
 $advancedPanchanga = AdvancedPanchanga::calculate($timestamp, $lat, $lon, $timezone, $sunLon, $moonLon, $panchanga);
 
 // ------------------------------------------------------------------

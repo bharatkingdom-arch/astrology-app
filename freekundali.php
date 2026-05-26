@@ -85,13 +85,40 @@ if (isset($_POST['generate'])) {
 
                 $jd = $datetime->getTimestamp() / 86400 + 2440587.5;
 
+                $swetestPath = __DIR__ . '/swisseph/swetest';
+                $ephePath    = __DIR__ . '/ephemeris';
+                if (!file_exists($swetestPath)) {
+                    $swetestPath = '/app/swisseph/swetest';
+                    $ephePath = '/app/ephemeris';
+                }
+                $getPositions = function($ts) use ($swetestPath, $ephePath) {
+                    $dt = new DateTime("@" . (int)$ts);
+                    $utDate = $dt->format("d.m.Y");
+                    $utTime = $dt->format("H:i:s");
+                    $cmd = "$swetestPath -edir$ephePath -sid1 -b$utDate -ut$utTime -p01 -fPl";
+                    $out = shell_exec($cmd);
+                    if (!$out) return null;
+                    $sun = 0; $moon = 0;
+                    foreach (explode("\n", trim($out)) as $line) {
+                        if (strpos(trim($line), 'Sun') === 0) {
+                            $parts = preg_split('/\s+/', trim($line));
+                            $sun = floatval($parts[1]);
+                        } elseif (strpos(trim($line), 'Moon') === 0) {
+                            $parts = preg_split('/\s+/', trim($line));
+                            $moon = floatval($parts[1]);
+                        }
+                    }
+                    return ['sun' => $sun, 'moon' => $moon];
+                };
+
                 $panchanga = Panchanga::calculate(
                     $planets['Sun']['decimal'] ?? 0,
                     $planets['Moon']['decimal'] ?? 0,
                     $jd,
                     $planets['Sun']['speed'] ?? 0.98,
                     $planets['Moon']['speed'] ?? 13.1,
-                    $datetime->getTimestamp()
+                    $datetime->getTimestamp(),
+                    $getPositions
                 );
 
                 require_once __DIR__ . '/engine/AdvancedPanchanga.php';

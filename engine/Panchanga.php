@@ -2,7 +2,7 @@
 
 class Panchanga {
 
-    public static function calculate($sun, $moon, $jd, $sun_speed = 0.98, $moon_speed = 13.1, $timestamp = 0) {
+    public static function calculate($sun, $moon, $jd, $sun_speed = 0.98, $moon_speed = 13.1, $timestamp = 0, $getPositions = null) {
 
         // Normalize
         $sun  = fmod($sun, 360);
@@ -36,10 +36,35 @@ class Panchanga {
         $tithi_val = $diff / 12;
         $tithi_index = floor($tithi_val) + 1;
         
-        // Time remaining in days
-        $tithi_rem_deg = 12 - fmod($diff, 12);
-        $tithi_rem_days = $tithi_rem_deg / $rel_speed;
-        $tithi_end = $timestamp + ($tithi_rem_days * 86400);
+        $solveEndTime = function($current_sun, $current_moon, $target_deg, $speed_approx, $calc_deg) use ($timestamp, $getPositions) {
+            $initial_deg = $calc_deg($current_sun, $current_moon);
+            $rem_deg = $target_deg - $initial_deg;
+            if ($rem_deg <= 0) $rem_deg += 360;
+            
+            $est_ts = $timestamp + ($rem_deg / $speed_approx * 86400);
+            if (!$getPositions) return $est_ts;
+            
+            for ($i = 0; $i < 6; $i++) {
+                $pos = $getPositions($est_ts);
+                if (!$pos) break;
+                
+                $current = $calc_deg($pos['sun'], $pos['moon']);
+                $diff = $target_deg - $current;
+                
+                if ($diff < -180) $diff += 360;
+                if ($diff > 180) $diff -= 360;
+                
+                if (abs($diff) < 0.0001) break;
+                $est_ts += ($diff / $speed_approx * 86400);
+            }
+            return $est_ts;
+        };
+
+        $tithi_target = $tithi_index * 12;
+        $tithi_end = $solveEndTime($sun, $moon, $tithi_target, $rel_speed, function($s, $m) {
+            $d = $m - $s;
+            return $d < 0 ? $d + 360 : $d;
+        });
 
         $paksha = ($tithi_index <= 15) ? "Shukla" : "Krishna";
         $t_num = ($tithi_index <= 15) ? $tithi_index : $tithi_index - 15;
@@ -86,9 +111,10 @@ class Panchanga {
         $nak_val = $moon / (13 + 1/3);
         $nak_index = floor($nak_val) + 1;
         
-        $nak_rem_deg = (13 + 1/3) - fmod($moon, (13 + 1/3));
-        $nak_rem_days = $nak_rem_deg / $moon_speed;
-        $nak_end = $timestamp + ($nak_rem_days * 86400);
+        $nak_target = $nak_index * (13 + 1/3);
+        $nak_end = $solveEndTime($sun, $moon, $nak_target, $moon_speed, function($s, $m) {
+            return $m;
+        });
 
         $nakshatras = [
             1=>"Ashwini",2=>"Bharani",3=>"Krittika",4=>"Rohini",
@@ -115,9 +141,11 @@ class Panchanga {
         $yoga_val = $sum / (13 + 1/3);
         $yoga_index = floor($yoga_val) + 1;
         
-        $yoga_rem_deg = (13 + 1/3) - fmod($sum, (13 + 1/3));
-        $yoga_rem_days = $yoga_rem_deg / $sum_speed;
-        $yoga_end = $timestamp + ($yoga_rem_days * 86400);
+        $yoga_target = $yoga_index * (13 + 1/3);
+        $yoga_end = $solveEndTime($sun, $moon, $yoga_target, $sum_speed, function($s, $m) {
+            $sum = $s + $m;
+            return $sum >= 360 ? $sum - 360 : $sum;
+        });
 
         $yogas = [
             1=>"Vishkumbha",2=>"Priti",3=>"Ayushman",4=>"Saubhagya",
@@ -149,9 +177,11 @@ class Panchanga {
         $karana_val = $diff / 6;
         $karana_calc_index = floor($karana_val) + 1; // 1 to 60
         
-        $karana_rem_deg = 6 - fmod($diff, 6);
-        $karana_rem_days = $karana_rem_deg / $rel_speed;
-        $karana_end = $timestamp + ($karana_rem_days * 86400);
+        $karana_target = $karana_calc_index * 6;
+        $karana_end = $solveEndTime($sun, $moon, $karana_target, $rel_speed, function($s, $m) {
+            $d = $m - $s;
+            return $d < 0 ? $d + 360 : $d;
+        });
 
         $movable_karanas = ["Bava", "Balava", "Kaulava", "Taitila", "Garija", "Vanija", "Vishti (Bhadra)"];
         $fixed_karanas = ["Shakuni", "Chatushpada", "Naga", "Kimstughna"];
