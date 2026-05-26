@@ -213,9 +213,34 @@ for ($i=1; $i<=12; $i++) {
     if (!isset($d9[$i])) $d9[$i] = [];
 }
 
-$currentStart = $currentTs;
+$firstAsc = $getAsc($currentTs);
+$firstSign = floor($firstAsc / 30);
+$testTs = $currentTs;
+$degCovered = $firstAsc - ($firstSign * 30);
+if ($degCovered < 0) $degCovered += 30;
 
-for ($i = 0; $i <= 12; $i++) {
+$jumpMins = floor($degCovered * 3.5);
+if ($jumpMins < 5) $jumpMins = 5;
+$testTs -= ($jumpMins * 60);
+
+$testAsc = $getAsc($testTs);
+$testSign = floor($testAsc / 30);
+
+while ($testSign == $firstSign && $testTs > ($currentTs - 86400)) {
+    $testTs -= 300;
+    $testAsc = $getAsc($testTs);
+    $testSign = floor($testAsc / 30);
+}
+
+while ($testSign != $firstSign && $testTs < $currentTs) {
+    $testTs += 60;
+    $testAsc = $getAsc($testTs);
+    $testSign = floor($testAsc / 30);
+}
+
+$currentStart = $testTs;
+
+for ($i = 0; $i < 12; $i++) {
     $remDeg = ($lastSign + 1) * 30 - $lastAsc;
     if ($remDeg <= 0) $remDeg += 30;
     
